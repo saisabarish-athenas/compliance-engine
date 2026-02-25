@@ -123,4 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Single Tenant Mode
+    |--------------------------------------------------------------------------
+    |
+    | Enable single tenant mode to simplify tenant management.
+    | All operations will use the active tenant ID defined below.
+    |
+    */
+
+    'single_tenant_mode' => true,
+    'active_tenant_id' => 1,
+
 ];

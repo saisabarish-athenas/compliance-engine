@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ComplianceSection extends Model
 {
@@ -17,4 +18,9 @@ class ComplianceSection extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function forms(): HasMany
+    {
+        return $this->hasMany(ComplianceFormsMaster::class, 'section_id');
+    }
 }

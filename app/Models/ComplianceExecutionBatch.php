@@ -13,6 +13,8 @@ class ComplianceExecutionBatch extends Model
         'section_id',
         'period_from',
         'period_to',
+        'period_month',
+        'period_year',
         'form_ids',
         'branch_id',
         'status',
@@ -27,4 +29,9 @@ class ComplianceExecutionBatch extends Model
         'results' => 'array',
         'processed_at' => 'datetime',
     ];
+
+    public function section()
+    {
+        return $this->belongsTo(ComplianceSection::class, 'section_id');
+    }
 }

@@ -10,6 +10,9 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             ComplianceFullDummySeeder::class,
+            ProductionComplianceMasterSeeder::class,
+            MinimalRealisticDataSeeder::class,
+            FullComplianceDemoSeeder::class,
         ]);
     }
 }

@@ -176,11 +176,18 @@ class ComplianceEngine
 
     private function generatePDF(ComplianceFormsMaster $form, array $data): string
     {
-        // Placeholder for PDF generation
+        // Use FormGenerator if available
+        $generator = \App\Services\Compliance\FormGenerator\FormGeneratorFactory::make($form->form_code);
+        
+        if ($generator) {
+            // Generator will handle PDF creation
+            return $form->form_code; // Placeholder
+        }
+        
+        // Fallback to JSON snapshot
         $fileName = "compliance_{$form->form_code}_" . time() . ".pdf";
         $filePath = "compliance/{$fileName}";
         
-        // Store JSON snapshot
         file_put_contents(
             storage_path("app/{$filePath}.json"),
             json_encode($data, JSON_PRETTY_PRINT)

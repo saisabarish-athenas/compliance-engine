@@ -12,17 +12,17 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('tenant_id')->index();
             $table->unsignedBigInteger('form_id')->index();
-            $table->unsignedBigInteger('compliance_status_id')->index();
+            $table->unsignedBigInteger('compliance_status_id')->nullable()->index();
             $table->unsignedBigInteger('generated_by');
-            $table->string('file_path');
-            $table->string('checksum_hash');
+            $table->string('file_path')->nullable();
+            $table->string('checksum_hash')->nullable();
             $table->string('ip_address', 45);
             $table->text('user_agent');
-            $table->timestamp('created_at');
+            $table->timestamps();
 
             $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
             $table->foreign('form_id')->references('id')->on('compliance_forms_master')->onDelete('cascade');
-            $table->foreign('compliance_status_id')->references('id')->on('compliance_status')->onDelete('cascade');
+            $table->foreign('compliance_status_id')->references('id')->on('compliance_status')->onDelete('set null');
             $table->foreign('generated_by')->references('id')->on('users')->onDelete('cascade');
         });
     }

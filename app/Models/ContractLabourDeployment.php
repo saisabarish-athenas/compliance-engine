@@ -60,6 +60,11 @@ class ContractLabourDeployment extends Model
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(WorkforceEmployee::class);
+    }
+
+    public function contractor(): BelongsTo
+    {
+        return $this->belongsTo(Contractor::class, 'contractor_compliance_id');
     }
 }

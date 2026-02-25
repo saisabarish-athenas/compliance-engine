@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ComplianceFormsMaster extends Model
 {
     protected $table = 'compliance_forms_master';
 
     protected $fillable = [
+        'section_id',
         'form_code',
         'form_name',
         'act_type',
@@ -28,6 +30,11 @@ class ComplianceFormsMaster extends Model
         'upload_only' => 'boolean',
         'is_active' => 'boolean',
     ];
+
+    public function section(): BelongsTo
+    {
+        return $this->belongsTo(ComplianceSection::class, 'section_id');
+    }
 
     public function complianceStatuses(): HasMany
     {

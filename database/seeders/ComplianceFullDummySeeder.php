@@ -12,10 +12,8 @@ class ComplianceFullDummySeeder extends Seeder
     {
         // 1. TENANTS
         DB::table('tenants')->insert([
-            'id' => 1,
-            'name' => 'ABC Manufacturing Ltd',
-            'created_at' => now(),
-            'updated_at' => now(),
+            ['id' => 1, 'name' => 'ABC Manufacturing Ltd', 'subscription_type' => 'FULL', 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'name' => 'Minimal Tenant', 'subscription_type' => 'MINIMAL', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // 2. BRANCHES
@@ -26,8 +24,9 @@ class ComplianceFullDummySeeder extends Seeder
 
         // 3. USERS
         DB::table('users')->insert([
-            ['id' => 1, 'name' => 'Admin User', 'email' => 'admin@abc.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'name' => 'HR Manager', 'email' => 'hr@abc.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 1, 'tenant_id' => 1, 'name' => 'Admin User', 'email' => 'admin@abc.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'tenant_id' => 1, 'name' => 'HR Manager', 'email' => 'hr@abc.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 3, 'tenant_id' => 2, 'name' => 'Minimal User', 'email' => 'minimal@demo.com', 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // 4. EMPLOYEES
@@ -122,34 +121,132 @@ class ComplianceFullDummySeeder extends Seeder
         ]);
 
         // 12. COMPLIANCE SECTIONS
-        DB::table('compliance_sections')->insert([
-            ['id' => 1, 'section_name' => 'Factories Act', 'section_code' => 'FACTORIES', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'section_name' => 'CLRA', 'section_code' => 'CLRA', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+        DB::table('compliance_sections')->insertOrIgnore([
+            ['id' => 1, 'section_name' => 'Factories Act Compliance', 'section_code' => 'FACTORIES', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 2, 'section_name' => 'Contract Labour (CLRA)', 'section_code' => 'CLRA', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
             ['id' => 3, 'section_name' => 'Shops & Establishments', 'section_code' => 'SHOPS', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['id' => 4, 'section_name' => 'Social Security & Inspection', 'section_code' => 'SOCIAL', 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
 
-        // 13. COMPLIANCE FORMS MASTER
-        DB::table('compliance_forms_master')->insert([
-            // Factories Act Forms
-            ['id' => 1, 'section_id' => 1, 'form_code' => 'FORM_A', 'form_name' => 'Register of Adult Workers', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High', 'auto_generate' => true, 'upload_only' => false, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 2, 'section_id' => 1, 'form_code' => 'FORM_B', 'form_name' => 'Muster Roll', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High', 'auto_generate' => true, 'upload_only' => false, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 3, 'section_id' => 1, 'form_code' => 'FORM_C', 'form_name' => 'Overtime Register', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'Medium', 'auto_generate' => true, 'upload_only' => false, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            // CLRA Forms
-            ['id' => 4, 'section_id' => 2, 'form_code' => 'CLRA_FORM_XIII', 'form_name' => 'Register of Workmen', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High', 'auto_generate' => true, 'upload_only' => false, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 5, 'section_id' => 2, 'form_code' => 'CLRA_WAGE', 'form_name' => 'Wage Register', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High', 'auto_generate' => true, 'upload_only' => false, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 6, 'section_id' => 2, 'form_code' => 'CLRA_RETURN', 'form_name' => 'Half Yearly Return', 'act_type' => 'CLRA', 'frequency' => 'HalfYearly', 'priority' => 'Medium', 'auto_generate' => false, 'upload_only' => true, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            // Shops Forms
-            ['id' => 7, 'section_id' => 3, 'form_code' => 'SHOPS_REG', 'form_name' => 'Employee Register', 'act_type' => 'Shops', 'frequency' => 'Annual', 'priority' => 'Low', 'auto_generate' => false, 'upload_only' => true, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 8, 'section_id' => 3, 'form_code' => 'SHOPS_LEAVE', 'form_name' => 'Leave Register', 'act_type' => 'Shops', 'frequency' => 'Annual', 'priority' => 'Low', 'auto_generate' => false, 'upload_only' => true, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-            ['id' => 9, 'section_id' => 3, 'form_code' => 'SHOPS_ATTENDANCE', 'form_name' => 'Attendance Register', 'act_type' => 'Shops', 'frequency' => 'Monthly', 'priority' => 'Medium', 'auto_generate' => true, 'upload_only' => false, 'is_active' => true, 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        // 13. COMPLIANCE FORMS MASTER - ALL 36 FORMS
+        $forms = [
+            // FACTORIES ACT (13 forms)
+            ['section_id' => 1, 'form_code' => 'FORM_B', 'form_name' => 'Register of Wages', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_10', 'form_name' => 'Overtime Register', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_25', 'form_name' => 'Muster Roll', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_12', 'form_name' => 'Adult Worker Register', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_2', 'form_name' => 'Notice of Periods of Work', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['section_id' => 1, 'form_code' => 'FORM_7', 'form_name' => 'Lime Wash Register', 'act_type' => 'Factories', 'frequency' => 'HalfYearly', 'priority' => 'Low'],
+            ['section_id' => 1, 'form_code' => 'FORM_8', 'form_name' => 'Report of Accident', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_11', 'form_name' => 'Accident Register', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_17', 'form_name' => 'Health Register', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['section_id' => 1, 'form_code' => 'FORM_18', 'form_name' => 'Report of Serious Accident', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_26', 'form_name' => 'Register of Accident', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'FORM_26A', 'form_name' => 'Register of Dangerous Occurrence', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
+            ['section_id' => 1, 'form_code' => 'HAZARD_REG', 'form_name' => 'Hazardous Process Register', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
+            
+            // CLRA (13 forms)
+            ['section_id' => 2, 'form_code' => 'FORM_XII', 'form_name' => 'Register of Contractors', 'act_type' => 'CLRA', 'frequency' => 'Annual', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'CLRA_LICENSE', 'form_name' => 'CLRA Licence Register', 'act_type' => 'CLRA', 'frequency' => 'Annual', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'FORM_XIII', 'form_name' => 'Register of Workmen Employed by Contractor', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'FORM_XVI', 'form_name' => 'Muster Roll (CLRA)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'FORM_XVII', 'form_name' => 'Register of Wages (Contract Labour)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'FORM_XIX', 'form_name' => 'Wage Slip', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'FORM_XIV', 'form_name' => 'Employment Card', 'act_type' => 'CLRA', 'frequency' => 'Event', 'priority' => 'Medium'],
+            ['section_id' => 2, 'form_code' => 'FORM_XX', 'form_name' => 'Register of Deductions', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['section_id' => 2, 'form_code' => 'FORM_XXI', 'form_name' => 'Register of Fines', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['section_id' => 2, 'form_code' => 'FORM_XXII', 'form_name' => 'Register of Advances', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['section_id' => 2, 'form_code' => 'FORM_XXIII', 'form_name' => 'Register of Overtime', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'FORM_XXIV', 'form_name' => 'Half-Yearly Return', 'act_type' => 'CLRA', 'frequency' => 'HalfYearly', 'priority' => 'High'],
+            ['section_id' => 2, 'form_code' => 'FORM_XXV', 'form_name' => 'Annual Return', 'act_type' => 'CLRA', 'frequency' => 'Annual', 'priority' => 'High'],
+            
+            // SHOPS (7 forms)
+            ['section_id' => 3, 'form_code' => 'SHOPS_FORM_12', 'form_name' => 'Register of Advances', 'act_type' => 'Shops', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['section_id' => 3, 'form_code' => 'SHOPS_FORM_13', 'form_name' => 'Leave Book', 'act_type' => 'Shops', 'frequency' => 'Annual', 'priority' => 'Medium'],
+            ['section_id' => 3, 'form_code' => 'SHOPS_FORM_1', 'form_name' => 'Register of Workmen', 'act_type' => 'Shops', 'frequency' => 'Annual', 'priority' => 'High'],
+            ['section_id' => 3, 'form_code' => 'SHOPS_FINES', 'form_name' => 'Register of Fines', 'act_type' => 'Shops', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['section_id' => 3, 'form_code' => 'SHOPS_FORM_C', 'form_name' => 'Bonus Register', 'act_type' => 'Shops', 'frequency' => 'Annual', 'priority' => 'High'],
+            ['section_id' => 3, 'form_code' => 'SHOPS_UNPAID', 'form_name' => 'Unpaid Accumulation', 'act_type' => 'Shops', 'frequency' => 'Annual', 'priority' => 'Medium'],
+            ['section_id' => 3, 'form_code' => 'SHOPS_FORM_VI', 'form_name' => 'Holiday Register', 'act_type' => 'Shops', 'frequency' => 'Annual', 'priority' => 'Medium'],
+            
+            // SOCIAL SECURITY (3 forms)
+            ['section_id' => 4, 'form_code' => 'ESI_FORM_12', 'form_name' => 'ESI Form 12 – Accident Report', 'act_type' => 'ESI', 'frequency' => 'Event', 'priority' => 'High'],
+            ['section_id' => 4, 'form_code' => 'EPF_INSPECTION', 'form_name' => 'EPF Inspection Register', 'act_type' => 'EPF', 'frequency' => 'Event', 'priority' => 'High'],
+        ];
+
+        foreach ($forms as $index => $form) {
+            DB::table('compliance_forms_master')->insert([
+                'id' => $index + 1,
+                'section_id' => $form['section_id'],
+                'form_code' => $form['form_code'],
+                'form_name' => $form['form_name'],
+                'act_type' => $form['act_type'],
+                'frequency' => $form['frequency'],
+                'priority' => $form['priority'],
+                'auto_generate' => true,
+                'upload_only' => false,
+                'is_active' => true,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // 14. COMPLIANCE FORM SOURCES
-        DB::table('compliance_form_sources')->insert([
-            ['form_id' => 1, 'source_type' => 'Payroll', 'source_table' => 'workforce_payroll_entry', 'created_at' => now(), 'updated_at' => now()],
-            ['form_id' => 2, 'source_type' => 'Payroll', 'source_table' => 'workforce_payroll_entry', 'created_at' => now(), 'updated_at' => now()],
-            ['form_id' => 4, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment', 'created_at' => now(), 'updated_at' => now()],
-        ]);
+        $formSources = [
+            // Factories Act - Payroll based
+            ['form_id' => 1, 'source_type' => 'Payroll', 'source_table' => 'workforce_payroll_entry'],
+            ['form_id' => 2, 'source_type' => 'Payroll', 'source_table' => 'workforce_payroll_entry'],
+            ['form_id' => 3, 'source_type' => 'Payroll', 'source_table' => 'workforce_payroll_entry'],
+            ['form_id' => 4, 'source_type' => 'Payroll', 'source_table' => 'workforce_employee'],
+            ['form_id' => 5, 'source_type' => 'Attendance', 'source_table' => 'workforce_attendance'],
+            ['form_id' => 6, 'source_type' => 'Upload', 'source_table' => 'inspection_documents'],
+            // Accident forms
+            ['form_id' => 7, 'source_type' => 'Upload', 'source_table' => 'incident_documents'],
+            ['form_id' => 8, 'source_type' => 'Upload', 'source_table' => 'incident_documents'],
+            ['form_id' => 9, 'source_type' => 'Payroll', 'source_table' => 'workforce_employee'],
+            ['form_id' => 10, 'source_type' => 'Upload', 'source_table' => 'incident_documents'],
+            ['form_id' => 11, 'source_type' => 'Upload', 'source_table' => 'incident_documents'],
+            ['form_id' => 12, 'source_type' => 'Upload', 'source_table' => 'incident_documents'],
+            ['form_id' => 13, 'source_type' => 'Upload', 'source_table' => 'inspection_documents'],
+            
+            // CLRA - Contract labour based
+            ['form_id' => 14, 'source_type' => 'CLRA', 'source_table' => 'contractor_master'],
+            ['form_id' => 15, 'source_type' => 'CLRA', 'source_table' => 'contractor_compliance'],
+            ['form_id' => 16, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 17, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 18, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 19, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 20, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 21, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 22, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 23, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 24, 'source_type' => 'CLRA', 'source_table' => 'contract_labour_deployment'],
+            ['form_id' => 25, 'source_type' => 'CLRA', 'source_table' => 'clra_returns'],
+            ['form_id' => 26, 'source_type' => 'CLRA', 'source_table' => 'clra_returns'],
+            
+            // Shops - Payroll/Attendance based
+            ['form_id' => 27, 'source_type' => 'Payroll', 'source_table' => 'workforce_payroll_entry'],
+            ['form_id' => 28, 'source_type' => 'Attendance', 'source_table' => 'workforce_attendance'],
+            ['form_id' => 29, 'source_type' => 'Payroll', 'source_table' => 'workforce_employee'],
+            ['form_id' => 30, 'source_type' => 'Payroll', 'source_table' => 'workforce_payroll_entry'],
+            ['form_id' => 31, 'source_type' => 'Payroll', 'source_table' => 'bonus_records'],
+            ['form_id' => 32, 'source_type' => 'Payroll', 'source_table' => 'bonus_records'],
+            ['form_id' => 33, 'source_type' => 'Attendance', 'source_table' => 'workforce_attendance'],
+            
+            // Social Security
+            ['form_id' => 34, 'source_type' => 'Upload', 'source_table' => 'incident_documents'],
+            ['form_id' => 35, 'source_type' => 'Upload', 'source_table' => 'inspection_documents'],
+        ];
+
+        foreach ($formSources as $source) {
+            DB::table('compliance_form_sources')->insert([
+                'form_id' => $source['form_id'],
+                'source_type' => $source['source_type'],
+                'source_table' => $source['source_table'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
 
         // 15. COMPLIANCE EXECUTION BATCHES
         DB::table('compliance_execution_batches')->insert([
@@ -177,8 +274,8 @@ class ComplianceFullDummySeeder extends Seeder
         ];
 
         DB::table('compliance_generation_logs')->insert([
-            ['tenant_id' => 1, 'form_id' => 1, 'compliance_status_id' => 1, 'generated_by' => 1, 'file_path' => 'compliance/form_a_jan2024.pdf', 'checksum_hash' => hash('sha256', 'dummy_content_1'), 'generated_snapshot' => json_encode($snapshot), 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0', 'created_at' => now()],
-            ['tenant_id' => 1, 'form_id' => 2, 'compliance_status_id' => 2, 'generated_by' => 1, 'file_path' => 'compliance/form_b_jan2024.pdf', 'checksum_hash' => hash('sha256', 'dummy_content_2'), 'generated_snapshot' => json_encode($snapshot), 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0', 'created_at' => now()],
+            ['tenant_id' => 1, 'batch_id' => 1, 'form_code' => 'FORM_B', 'status' => 'success', 'form_id' => 1, 'compliance_status_id' => 1, 'generated_by' => 1, 'generated_file_path' => 'compliance/form_a_jan2024.pdf', 'file_path' => 'compliance/form_a_jan2024.pdf', 'checksum_hash' => hash('sha256', 'dummy_content_1'), 'generated_snapshot' => json_encode($snapshot), 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0', 'created_at' => now(), 'updated_at' => now()],
+            ['tenant_id' => 1, 'batch_id' => 1, 'form_code' => 'FORM_10', 'status' => 'success', 'form_id' => 2, 'compliance_status_id' => 2, 'generated_by' => 1, 'generated_file_path' => 'compliance/form_b_jan2024.pdf', 'file_path' => 'compliance/form_b_jan2024.pdf', 'checksum_hash' => hash('sha256', 'dummy_content_2'), 'generated_snapshot' => json_encode($snapshot), 'ip_address' => '127.0.0.1', 'user_agent' => 'Mozilla/5.0', 'created_at' => now(), 'updated_at' => now()],
         ]);
 
         // 18. COMPLIANCE REMINDERS

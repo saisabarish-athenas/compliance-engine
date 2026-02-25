@@ -7,13 +7,29 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Employee extends Model
+class WorkforceEmployee extends Model
 {
     use SoftDeletes;
 
+    protected $table = 'workforce_employee';
+
     protected $fillable = [
         'tenant_id',
-        // Add other employee fields as per your schema
+        'branch_id',
+        'employee_code',
+        'name',
+        'pf_number',
+        'esi_number',
+        'date_of_joining',
+        'designation',
+        'department',
+        'basic_salary',
+        'status',
+    ];
+
+    protected $casts = [
+        'date_of_joining' => 'date',
+        'basic_salary' => 'decimal:2',
     ];
 
     protected static function booted(): void
@@ -36,23 +52,28 @@ class Employee extends Model
         return $this->belongsTo(Tenant::class);
     }
 
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
     public function payrollEntries(): HasMany
     {
-        return $this->hasMany(WorkforcePayrollEntry::class);
+        return $this->hasMany(WorkforcePayrollEntry::class, 'employee_id');
     }
 
     public function bonusRecords(): HasMany
     {
-        return $this->hasMany(BonusRecord::class);
+        return $this->hasMany(BonusRecord::class, 'employee_id');
     }
 
     public function contractLabourDeployments(): HasMany
     {
-        return $this->hasMany(ContractLabourDeployment::class);
+        return $this->hasMany(ContractLabourDeployment::class, 'employee_id');
     }
 
     public function incidentDocuments(): HasMany
     {
-        return $this->hasMany(IncidentDocument::class);
+        return $this->hasMany(IncidentDocument::class, 'employee_id');
     }
 }
