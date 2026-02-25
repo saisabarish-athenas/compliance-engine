@@ -36,15 +36,11 @@ class ProductionComplianceMasterSeeder extends Seeder
         $shopsId = DB::table('compliance_sections')->where('section_code', 'SHOPS')->value('id');
         $socialId = DB::table('compliance_sections')->where('section_code', 'SOCIAL_SECURITY')->value('id');
 
-        // FACTORIES ACT - 13 forms
+        // FACTORIES ACT - 9 forms (CORRECTED: Removed CLRA forms)
         $factoriesForms = [
             ['form_code' => 'FORM_B', 'form_name' => 'Register of Wages (Form B)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_10', 'form_name' => 'Overtime Register (Form 10)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_25', 'form_name' => 'Muster Roll (Form 25)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
-            ['form_code' => 'FORM_XVI', 'form_name' => 'Register of Fines (Form XVI)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'Medium'],
-            ['form_code' => 'FORM_XVII', 'form_name' => 'Register of Deductions (Form XVII)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'Medium'],
-            ['form_code' => 'FORM_XIX', 'form_name' => 'Register of Advances (Form XIX)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'Medium'],
-            ['form_code' => 'FORM_XXI', 'form_name' => 'Register of Leave (Form XXI)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_8', 'form_name' => 'Accident Register (Form 8)', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
             ['form_code' => 'FORM_11', 'form_name' => 'Notice of Accident (Form 11)', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
             ['form_code' => 'FORM_12', 'form_name' => 'Register of Adult Workers (Form 12)', 'act_type' => 'Factories', 'frequency' => 'Monthly', 'priority' => 'High'],
@@ -53,11 +49,15 @@ class ProductionComplianceMasterSeeder extends Seeder
             ['form_code' => 'FORM_18', 'form_name' => 'Register of Dangerous Occurrences (Form 18)', 'act_type' => 'Factories', 'frequency' => 'Event', 'priority' => 'High'],
         ];
 
-        // CLRA - 13 forms
+        // CLRA - 17 forms (CORRECTED: Added forms from Factories section)
         $clraForms = [
             ['form_code' => 'FORM_XIII', 'form_name' => 'Register of Contractors (Form XIII)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_XIV', 'form_name' => 'Register of Workmen (Form XIV)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_XII', 'form_name' => 'Employment Card (Form XII)', 'act_type' => 'CLRA', 'frequency' => 'Event', 'priority' => 'High'],
+            ['form_code' => 'FORM_XVI', 'form_name' => 'Register of Fines (Form XVI)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['form_code' => 'FORM_XVII', 'form_name' => 'Register of Deductions (Form XVII)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['form_code' => 'FORM_XIX', 'form_name' => 'Register of Advances (Form XIX)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'Medium'],
+            ['form_code' => 'FORM_XXI', 'form_name' => 'Register of Leave (Form XXI)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_XXIII', 'form_name' => 'Contractor Wage Register (Form XXIII)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_XXIV', 'form_name' => 'Contractor Muster Roll (Form XXIV)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],
             ['form_code' => 'FORM_XXV', 'form_name' => 'Contractor Overtime Register (Form XXV)', 'act_type' => 'CLRA', 'frequency' => 'Monthly', 'priority' => 'High'],

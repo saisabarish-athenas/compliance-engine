@@ -55,13 +55,7 @@
                         <button type="submit" class="btn btn-primary w-100 py-2">Sign In</button>
                     </form>
 
-                    <div class="mt-4 text-center">
-                        <small class="text-muted">
-                            Demo Accounts:<br>
-                            <strong>FULL:</strong> full@test.com / password<br>
-                            <strong>MINIMAL:</strong> minimal@test.com / password
-                        </small>
-                    </div>
+
                 </div>
             </div>
         </div>

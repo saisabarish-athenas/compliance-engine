@@ -127,13 +127,20 @@ return [
     ],
 
     'FORM_18' => [
-        'table' => 'incident_documents',
-        'date_field' => 'incident_date',
-        'branch_filter' => false,
-        'filing_frequency' => 'event_based',
-        'due_rule' => 'same_day',
-        'fields' => []
+        'table' => 'workforce_employee',
+        'date_field' => 'created_at',
+        'branch_filter' => true,
+        'filing_frequency' => 'monthly',
+        'due_rule' => 'next_month_10',
+        'joins' => [],
+        'fields' => [
+            'employee_code' => 'employee_code',
+            'employee_name' => 'name',
+            'designation' => 'designation',
+            'date_of_joining' => 'date_of_joining',
+        ],
     ],
+
 
     'FORM_26' => [
         'table' => 'incident_documents',
@@ -346,6 +353,15 @@ return [
     ],
 
     'FORM_XXV' => [
+        'table' => 'clra_returns',
+        'date_field' => 'period_from',
+        'branch_filter' => false,
+        'filing_frequency' => 'half_yearly',
+        'due_rule' => 'next_half_year_30',
+        'fields' => []
+    ],
+
+    'CLRA_RETURN' => [
         'table' => 'clra_returns',
         'date_field' => 'period_from',
         'branch_filter' => false,

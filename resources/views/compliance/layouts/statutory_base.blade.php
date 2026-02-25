@@ -174,12 +174,27 @@
                 <div class="signature-label">Date: _______________</div>
             </div>
             <div class="signature-right">
-                <div class="signature-line"></div>
-                <div class="signature-label">
-                    <strong>@yield('signatory_title', 'Manager / Occupier')</strong><br>
-                    Name: _______________<br>
-                    Signature & Seal
-                </div>
+                @if(isset($batch_signature) && $batch_signature)
+                    <img src="{{ storage_path('app/' . $batch_signature['signature_path']) }}" style="height: 60px; margin-bottom: 10px;">
+                    <div class="signature-label">
+                        <strong>{{ $batch_signature['signatory_name'] }}</strong><br>
+                        {{ $batch_signature['signatory_designation'] }}
+                    </div>
+                @elseif(isset($company_signature) && $company_signature)
+                    <img src="{{ storage_path('app/' . $company_signature) }}" style="height: 60px; margin-bottom: 10px;">
+                    <div class="signature-label">
+                        <strong>@yield('signatory_title', 'Manager / Occupier')</strong><br>
+                        Name: _______________<br>
+                        Signature & Seal
+                    </div>
+                @else
+                    <div class="signature-line"></div>
+                    <div class="signature-label">
+                        <strong>@yield('signatory_title', 'Manager / Occupier')</strong><br>
+                        Name: _______________<br>
+                        Signature & Seal
+                    </div>
+                @endif
             </div>
         </div>
     </div>

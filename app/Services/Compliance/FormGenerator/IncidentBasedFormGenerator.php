@@ -2,6 +2,8 @@
 
 namespace App\Services\Compliance\FormGenerator;
 
+use Carbon\Carbon;
+
 class IncidentBasedFormGenerator extends BaseFormGenerator
 {
     protected string $formCode;
@@ -28,15 +30,20 @@ class IncidentBasedFormGenerator extends BaseFormGenerator
         $aggregator = app(FormDataAggregator::class);
         
         $rows = [];
-        foreach ($rawData['records'] as $record) {
-            $rows[] = [
-                'employee_name' => $record->employee_name ?? 'N/A',
-                'esi_number' => $record->esi_number ?? 'N/A',
-                'incident_date' => $record->incident_date ?? null,
-                'incident_type' => $record->incident_type ?? 'N/A',
-                'location' => $record->location ?? 'N/A',
-                'description' => $record->description ?? 'N/A',
-            ];
+        
+        if ($this->formCode === 'FORM_18') {
+            $rows = $this->prepareForm18Data($rawData);
+        } else {
+            foreach ($rawData['records'] as $record) {
+                $rows[] = [
+                    'employee_name' => $record->employee_name ?? 'N/A',
+                    'esi_number' => $record->esi_number ?? 'N/A',
+                    'incident_date' => $record->incident_date ?? null,
+                    'incident_type' => $record->incident_type ?? 'N/A',
+                    'location' => $record->location ?? 'N/A',
+                    'description' => $record->description ?? 'N/A',
+                ];
+            }
         }
 
         return [
@@ -50,5 +57,21 @@ class IncidentBasedFormGenerator extends BaseFormGenerator
             'totals' => [],
             'is_nil' => count($rows) === 0,
         ];
+    }
+    
+    private function prepareForm18Data(array $rawData): array
+    {
+        $rows = [];
+        
+        foreach ($rawData['records'] as $record) {
+            $rows[] = [
+                'employee_code' => $record->employee_code ?? 'N/A',
+                'employee_name' => $record->employee_name ?? 'N/A',
+                'designation' => $record->designation ?? 'N/A',
+                'date_of_joining' => $record->date_of_joining ?? 'N/A',
+            ];
+        }
+        
+        return $rows;
     }
 }

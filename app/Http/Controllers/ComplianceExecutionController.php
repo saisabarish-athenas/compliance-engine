@@ -360,6 +360,11 @@ class ComplianceExecutionController extends Controller
                 ], 404);
             }
 
+            // Ensure directory exists
+            if (!Storage::disk('local')->exists('compliance/manual_uploads')) {
+                Storage::disk('local')->makeDirectory('compliance/manual_uploads');
+            }
+
             $file = $request->file('file');
             $fileName = "batch_{$batchId}_{$form->form_code}_" . time() . ".pdf";
             $filePath = $file->storeAs('compliance/manual_uploads', $fileName, 'local');
@@ -379,7 +384,7 @@ class ComplianceExecutionController extends Controller
                 'message' => 'File uploaded successfully',
                 'file_path' => $filePath
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             logger()->error('Upload Error', ['error' => $e->getMessage()]);
             return response()->json([
                 'status' => 'error',

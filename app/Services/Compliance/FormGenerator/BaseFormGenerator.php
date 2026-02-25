@@ -49,6 +49,13 @@ abstract class BaseFormGenerator
         
         $data = $this->prepareData($rawData);
         
+        // Inject batch signature
+        $signatureService = app(\App\Services\Compliance\DigitalSignatureService::class);
+        $data['batch_signature'] = $signatureService->getBatchSignature($tenantId, $batchId);
+        
+        // Inject company signature (legacy)
+        $data['company_signature'] = $signatureService->getCompanySignature($tenantId);
+        
         // Strict validation - no N/A allowed
         $strictValidator = new StrictDataValidator();
         $strictValidator->validateFormData($this->formCode, $data);

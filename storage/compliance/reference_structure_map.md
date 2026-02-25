@@ -31,7 +31,7 @@ For each form, extract:
 
 ### FORM_B - Register of Wages
 
-**Reference PDF:** `Forms/Register of wages.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Register of wages.pdf`
 
 **Extracted Structure:**
 ```
@@ -81,7 +81,7 @@ SPACING:
 
 ### FORM_10 - Overtime Register
 
-**Reference PDF:** `Forms/Overtime Muster.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XXIII – Register of Overtime (CLRA).docx`
 
 **Extracted Structure:**
 ```
@@ -94,7 +94,7 @@ SPACING:
 
 ### FORM_25 - Muster Roll
 
-**Reference PDF:** `Forms/Form 25 – Muster Roll.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 25 – Muster Roll.pdf`
 
 **Extracted Structure:**
 ```
@@ -107,7 +107,7 @@ SPACING:
 
 ### FORM_12 - Register of Adult Workers
 
-**Reference PDF:** `Forms/Form 12 - Adult worker register.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 12 - Adult worker register.pdf`
 
 **Extracted Structure:**
 ```
@@ -120,7 +120,7 @@ SPACING:
 
 ### FORM_2 - Register of Leave
 
-**Reference PDF:** `Forms/Form 15 - Leave with wages.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 15 - Leave with wages.pdf`
 
 **Extracted Structure:**
 ```
@@ -133,7 +133,7 @@ SPACING:
 
 ### FORM_7 - Notice of Periods for Adult Workers
 
-**Reference PDF:** `Forms/Form 2 – Notice of Periods of Work.doc`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 2 – Notice of Periods of Work.doc`
 
 **Extracted Structure:**
 ```
@@ -146,7 +146,7 @@ SPACING:
 
 ### FORM_8 - Register of Accidents
 
-**Reference PDF:** `Forms/Form 11 - Accident register.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 11 - Accident register.pdf`
 
 **Extracted Structure:**
 ```
@@ -159,7 +159,7 @@ SPACING:
 
 ### FORM_11 - Notice of Dangerous Occurrences
 
-**Reference PDF:** `Forms/Form 18A - Report of dangerous occurrence.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 18A - Report of dangerous occurrence.pdf`
 
 **Extracted Structure:**
 ```
@@ -172,7 +172,7 @@ SPACING:
 
 ### FORM_17 - Register of Young Persons
 
-**Reference PDF:** `FORM_17_FACTORIES_ACT.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/FORM_17_FACTORIES_ACT.pdf`
 
 **Extracted Structure:**
 ```
@@ -185,7 +185,7 @@ SPACING:
 
 ### FORM_18 - Register of Child Workers
 
-**Reference PDF:** `FORM_18_FACTORIES_ACT.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/FORM_18_FACTORIES_ACT.pdf`
 
 **Extracted Structure:**
 ```
@@ -198,7 +198,7 @@ SPACING:
 
 ### FORM_26 - Notice of Accident
 
-**Reference PDF:** `Forms/Form 18 - Report of accident.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 18 - Report of accident.pdf`
 
 **Extracted Structure:**
 ```
@@ -211,7 +211,7 @@ SPACING:
 
 ### FORM_26A - Notice of Dangerous Occurrence
 
-**Reference PDF:** `Forms/Form 26A –Register of dangerous occurrences.doc`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form 26A –Register of dangerous occurrences.doc`
 
 **Extracted Structure:**
 ```
@@ -224,7 +224,7 @@ SPACING:
 
 ### HAZARD_REG - Hazardous Process Register
 
-**Reference PDF:** `HAZARD_REG_FACTORIES_ACT.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/HAZARD_REG_FACTORIES_ACT.pdf`
 
 **Extracted Structure:**
 ```
@@ -239,7 +239,7 @@ SPACING:
 
 ### FORM_XII - Register of Contractors
 
-**Reference PDF:** `Forms/Register of Contractors (Solar Site Projects).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Register of Contractors (Solar Site Projects).docx`
 
 **Extracted Structure:**
 ```
@@ -252,7 +252,7 @@ SPACING:
 
 ### CLRA_LICENSE - License Register
 
-**Reference PDF:** `Forms/Contractor License Register (CLRA).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Contractor License Register (CLRA).docx`
 
 **Extracted Structure:**
 ```
@@ -265,7 +265,7 @@ SPACING:
 
 ### FORM_XIII - Register of Contract Labour
 
-**Reference PDF:** `Forms/Form XIII – Register of Workmen Employed by Contractor.docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XIII – Register of Workmen Employed by Contractor.docx`
 
 **Extracted Structure:**
 ```
@@ -282,7 +282,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XVI - Register of Wages
 
-**Reference PDF:** `Forms/Register of wages.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Register of wages.pdf`
 
 **Extracted Structure:**
 ```
@@ -295,7 +295,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XVII - Register of Deductions
 
-**Reference PDF:** `Forms/Form XX – Register of Deductions (CLRA).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XX – Register of Deductions (CLRA).docx`
 
 **Extracted Structure:**
 ```
@@ -308,7 +308,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XIX - Muster Roll
 
-**Reference PDF:** `Forms/Form XVI – Muster Roll (CLRA Version).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XVI – Muster Roll (CLRA Version).docx`
 
 **Extracted Structure:**
 ```
@@ -321,7 +321,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XIV - Register of Workmen
 
-**Reference PDF:** `Forms/Register of Workmen.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Register of Workmen.pdf`
 
 **Extracted Structure:**
 ```
@@ -334,7 +334,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XX - Register of Advances
 
-**Reference PDF:** `Forms/Form XXII – Register of Advances (CLRA).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XXII – Register of Advances (CLRA).docx`
 
 **Extracted Structure:**
 ```
@@ -347,7 +347,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XXI - Register of Fines
 
-**Reference PDF:** `Forms/Register of fines.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Register of fines.pdf`
 
 **Extracted Structure:**
 ```
@@ -360,7 +360,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XXII - Register of Damage or Loss
 
-**Reference PDF:** `FORM_XXII_CLRA.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/FORM_XXII_CLRA.pdf`
 
 **Extracted Structure:**
 ```
@@ -373,7 +373,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XXIII - Register of Overtime
 
-**Reference PDF:** `Forms/Form XXIII – Register of Overtime (CLRA).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XXIII – Register of Overtime (CLRA).docx`
 
 **Extracted Structure:**
 ```
@@ -386,7 +386,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XXIV - Annual Return
 
-**Reference PDF:** `Forms/Form XXV – Annual Return (Principal Employer).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XXV – Annual Return (Principal Employer).docx`
 
 **Extracted Structure:**
 ```
@@ -399,7 +399,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### FORM_XXV - Half-Yearly Return
 
-**Reference PDF:** `Forms/Form XXIV – Half-Yearly Return (Contractor).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XXIV – Half-Yearly Return (Contractor).docx`
 
 **Extracted Structure:**
 ```
@@ -414,7 +414,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### SHOPS_FORM_12 - Register of Wages
 
-**Reference PDF:** `Forms/Register of wages.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Register of wages.pdf`
 
 **Extracted Structure:**
 ```
@@ -427,7 +427,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### SHOPS_FORM_13 - Attendance Register
 
-**Reference PDF:** `SHOPS_FORM_13.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/SHOPS_FORM_13.pdf`
 
 **Extracted Structure:**
 ```
@@ -440,7 +440,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### SHOPS_FORM_1 - Register of Employment
 
-**Reference PDF:** `Forms/Form XIV – Employment Card (CLRA).docx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form XIV – Employment Card (CLRA).docx`
 
 **Extracted Structure:**
 ```
@@ -453,7 +453,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### SHOPS_FINES - Register of Fines
 
-**Reference PDF:** `Forms/Register of fines.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Register of fines.pdf`
 
 **Extracted Structure:**
 ```
@@ -466,7 +466,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### SHOPS_FORM_C - Bonus Register
 
-**Reference PDF:** `Forms/Bonus & Financial Registers.xls`
+**Reference PDF:** `storage/compliance/reference_pdfs/Bonus & Financial Registers.xls`
 
 **Extracted Structure:**
 ```
@@ -479,7 +479,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### SHOPS_UNPAID - Unpaid Wages Register
 
-**Reference PDF:** `Forms/Form C - Unpaid accumulation.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form C - Unpaid accumulation.pdf`
 
 **Extracted Structure:**
 ```
@@ -492,7 +492,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### SHOPS_FORM_VI - Leave Register
 
-**Reference PDF:** `Forms/Form VI – Holidays Register.xlsx`
+**Reference PDF:** `storage/compliance/reference_pdfs/Form VI – Holidays Register.xlsx`
 
 **Extracted Structure:**
 ```
@@ -507,7 +507,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### ESI_FORM_12 - Accident Register
 
-**Reference PDF:** `Forms/ESI Accident Report Form.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/ESI Accident Report Form.pdf`
 
 **Extracted Structure:**
 ```
@@ -524,7 +524,7 @@ RULE REFERENCE: [Extract exact rule reference]
 
 ### EPF_INSPECTION - Inspection Register
 
-**Reference PDF:** `Forms/EPF inspection register.pdf`
+**Reference PDF:** `storage/compliance/reference_pdfs/EPF inspection register.pdf`
 
 **Extracted Structure:**
 ```

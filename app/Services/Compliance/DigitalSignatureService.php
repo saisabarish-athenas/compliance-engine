@@ -232,4 +232,35 @@ class DigitalSignatureService
             ->where('form_code', $formCode)
             ->first();
     }
+
+    public function getCompanySignature(int $tenantId): ?string
+    {
+        $signature = DB::table('compliance_signatures')
+            ->where('tenant_id', $tenantId)
+            ->where('form_code', 'COMPANY_MASTER')
+            ->whereNull('batch_id')
+            ->orderBy('signed_at', 'desc')
+            ->first();
+
+        return $signature ? $signature->signature_data : null;
+    }
+
+    public function getBatchSignature(int $tenantId, int $batchId): ?array
+    {
+        $signature = DB::table('compliance_signatures')
+            ->where('tenant_id', $tenantId)
+            ->where('batch_id', $batchId)
+            ->orderBy('signed_at', 'desc')
+            ->first();
+
+        if (!$signature) {
+            return null;
+        }
+
+        return [
+            'signature_path' => $signature->signature_path,
+            'signatory_name' => $signature->signatory_name,
+            'signatory_designation' => $signature->signatory_designation,
+        ];
+    }
 }
