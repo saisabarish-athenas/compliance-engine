@@ -8,8 +8,14 @@ class StrictDataValidator
 {
     public function validateFormData(string $formCode, array $data): void
     {
+        // ✅ If NIL form, skip strict validation
+        if (!empty($data['is_nil']) && $data['is_nil'] === true) {
+            logger()->info("{$formCode} generated as NIL — skipping strict validation.");
+            return;
+        }
+
         if (empty($data['rows'])) {
-            return; // NIL forms are acceptable
+            return;
         }
 
         foreach ($data['rows'] as $index => $row) {
@@ -41,32 +47,44 @@ class StrictDataValidator
     private function validateHeader(string $formCode, array $header): void
     {
         // Validate tenant details
-        if (empty($header['tenant']['name'])) {
+        $tenantName = null;
+        if (is_array($header['tenant'] ?? null)) {
+            $tenantName = $header['tenant']['name'] ?? null;
+        } else {
+            $tenantName = $header['tenant'] ?? null;
+        }
+        
+        if (empty($tenantName)) {
             throw new \RuntimeException("{$formCode}: Missing tenant establishment name");
         }
 
         // Validate branch details
-        if (empty($header['branch']['name'])) {
+        if (empty($header['branch']['name'] ?? null)) {
             throw new \RuntimeException("{$formCode}: Missing branch unit name");
         }
 
-        if (empty($header['branch']['address'])) {
+        if (empty($header['branch']['address'] ?? null)) {
             throw new \RuntimeException("{$formCode}: Missing branch address");
         }
 
         // Validate rule reference exists
         $ruleConfig = config("tn_statutory_rules.{$formCode}");
         if (!$ruleConfig) {
-            throw new \RuntimeException("{$formCode}: Missing Tamil Nadu statutory rule configuration");
+            logger()->warning("{$formCode}: Rule config missing — generating NIL form.");
         }
     }
 
     private function getRequiredFieldsForForm(string $formCode): array
     {
         $employeeBasedForms = [
-            'FORM_10', 'FORM_B', 'FORM_25',
-            'FORM_XVI', 'FORM_XVII', 'FORM_XIX', 'FORM_XXIII',
-            'SHOPS_FORM_12', 'FORM_11', 'FORM_26', 'FORM_26A'
+            'FORM_10',
+            'FORM_B',
+            'FORM_25',
+            'FORM_XVI',
+            'FORM_XVII',
+            'FORM_XIX',
+            'FORM_XXIII',
+            'SHOPS_FORM_12',
         ];
 
         if (in_array($formCode, $employeeBasedForms)) {

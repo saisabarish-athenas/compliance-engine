@@ -25,13 +25,24 @@ class ComplianceExecutionBatch extends Model
     ];
 
     protected $casts = [
-        'form_ids' => 'array',
-        'results' => 'array',
-        'processed_at' => 'datetime',
+        'form_ids'   => 'array',
+        'results'    => 'array',
+        'period_from'=> 'date',
+        'period_to'  => 'date',
     ];
 
     public function section()
     {
         return $this->belongsTo(ComplianceSection::class, 'section_id');
+    }
+
+    public function tenant()
+    {
+        return $this->belongsTo(Tenant::class, 'tenant_id');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

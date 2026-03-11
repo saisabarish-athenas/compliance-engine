@@ -9,10 +9,8 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            ComplianceFullDummySeeder::class,
-            ProductionComplianceMasterSeeder::class,
-            MinimalRealisticDataSeeder::class,
-            FullComplianceDemoSeeder::class,
+            ComprehensiveDemoDataSeeder::class,
+            DemoAttendanceSeeder::class,
         ]);
     }
 }

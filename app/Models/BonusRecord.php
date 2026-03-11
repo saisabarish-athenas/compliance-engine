@@ -12,11 +12,13 @@ class BonusRecord extends Model
 
     protected $fillable = [
         'tenant_id',
+        'branch_id',
         'employee_id',
         'financial_year',
         'bonus_percentage',
         'bonus_amount',
         'payment_date',
+        'status',
     ];
 
     protected $casts = [
@@ -45,8 +47,13 @@ class BonusRecord extends Model
         return $this->belongsTo(Tenant::class);
     }
 
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(WorkforceEmployee::class);
     }
 }

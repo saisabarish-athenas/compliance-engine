@@ -12,6 +12,7 @@ class IncidentDocument extends Model
 
     protected $fillable = [
         'tenant_id',
+        'branch_id',
         'employee_id',
         'incident_type',
         'incident_date',
@@ -47,6 +48,11 @@ class IncidentDocument extends Model
     public function tenant(): BelongsTo
     {
         return $this->belongsTo(Tenant::class);
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function employee(): BelongsTo

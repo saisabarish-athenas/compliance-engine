@@ -9,8 +9,6 @@ class EsiFormGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $aggregator = app(FormDataAggregator::class);
-        
         $rows = [];
         foreach ($rawData['records'] as $record) {
             $rows[] = [
@@ -26,8 +24,8 @@ class EsiFormGenerator extends BaseFormGenerator
             'header' => [
                 'form_title' => 'ESI FORM 12 - Accident Report',
                 'period' => $this->formatPeriod($rawData['period_month'], $rawData['period_year']),
-                'branch' => $aggregator->getBranchDetails($rawData['branch_id']),
-                'tenant' => $aggregator->getTenantDetails($rawData['tenant_id']),
+                'branch' => $rawData['branch'] ?? [],
+                'tenant' => $rawData['tenant'] ?? [],
             ],
             'rows' => $rows,
             'is_nil' => count($rows) === 0,

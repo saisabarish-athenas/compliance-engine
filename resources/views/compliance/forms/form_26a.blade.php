@@ -1,83 +1,208 @@
-﻿@extends('compliance.layouts.statutory_reference_layout')
+@extends('compliance.layouts.preview')
 
-@section('form_title')
-FORM 26A - NOTICE OF DANGEROUS OCCURRENCE
-@endsection
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>FORM 26-A - Register of Dangerous Occurrences</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 12px;
+            font-size: 9px;
+        }
+        .form-container {
+            border: 1px solid black;
+            padding: 10px;
+            margin: 0 auto;
+            width: 99%;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 10px;
+        }
+        .form-header div {
+            margin: 2px 0;
+        }
+        .header-title {
+            font-weight: bold;
+        }
+        .factory-details {
+            margin-bottom: 8px;
+            font-size: 9px;
+        }
+        .detail-row {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+        .detail-label {
+            font-weight: bold;
+            width: 10%;
+            margin-right: 5px;
+        }
+        .detail-line {
+            flex: 1;
+            border-bottom: 1px solid black;
+            height: 10px;
+            padding-left: 3px;
+        }
+        .register-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+            margin-bottom: 8px;
+            table-layout: fixed;
+        }
+        .register-table th,
+        .register-table td {
+            border: 1px solid black;
+            padding: 2px;
+            text-align: center;
+            vertical-align: middle;
+            height: 16px;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        .register-table th {
+            font-weight: bold;
+            background-color: #fff;
+            line-height: 1.1;
+        }
+        .register-table td {
+            text-align: left;
+        }
+        .col-year {
+            width: 6%;
+        }
+        .col-sl {
+            width: 8%;
+        }
+        .col-datehour {
+            width: 10%;
+        }
+        .col-report {
+            width: 10%;
+        }
+        .col-place {
+            width: 16%;
+        }
+        .col-description {
+            width: 20%;
+        }
+        .col-damage {
+            width: 20%;
+        }
+        .col-remarks {
+            width: 10%;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .footer-section {
+            margin-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+        }
+        .footer-left {
+            flex: 1;
+        }
+        .footer-right {
+            flex: 1;
+            text-align: right;
+        }
+        .signature-line {
+            margin-top: 30px;
+            border-top: 1px solid #000;
+            width: 150px;
+            margin-left: auto;
+        }
+        .signature-label {
+            margin-top: 2px;
+            font-weight: bold;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header">
+            <div>The Tamil Nadu Factories Rules</div>
+            <div class="header-title">FORM 26-A</div>
+            <div>(Prescribed under Rule 104)</div>
+            <div class="header-title">Register of dangerous occurrences</div>
+        </div>
 
-@section('act_reference')
-[Under Factories Act, 1948]
-@endsection
-
-@section('rule_reference')
-[See Rule XX]
-@endsection
-
-@section('establishment_info')
-<table>
-    <tr>
-        <td class="establishment-label">Name of Establishment:</td>
-        <td>{{ $header['tenant']['name'] }}</td>
-    </tr>
-    <tr>
-        <td class="establishment-label">Period:</td>
-        <td>{{ $header['period'] }}</td>
-    </tr>
-</table>
-@endsection
-
-@section('content')
-@if($is_nil)
-    <div class="nil-block">
-        NIL - No dangerous occurrences during this period
-    </div>
-@else
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th style="width: 5%;">S.No.</th>
-                @foreach(array_keys($rows[0] ?? []) as $column)
-                <th>{{ ucwords(str_replace('_', ' ', $column)) }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $index => $row)
-            <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                @foreach($row as $value)
-                <td>{{ is_numeric($value) ? number_format($value, 2) : ($value ?? 'N/A') }}</td>
-                @endforeach
-            </tr>
-            @endforeach
-        </tbody>
-        @if(!empty($totals))
-        <tfoot>
-            <tr class="totals-row">
-                <td colspan="{{ count($rows[0] ?? []) }}" class="text-right"><strong>TOTAL</strong></td>
-                <td class="text-right"><strong>{{ number_format(array_sum($totals), 2) }}</strong></td>
-            </tr>
-        </tfoot>
-        @endif
-    </table>
-@endif
-@endsection
-
-@section('declaration')
-I hereby certify that the above particulars are correct to the best of my knowledge and belief.
-@endsection
-
-@section('signature_block')
-<table class="signature-table">
-    <tr>
-        <td class="signature-left">
-            <div>Date: _______________</div>
-        </td>
-        <td class="signature-right">
-            <div class="signature-line"></div>
-            <div class="signature-label">
-                <strong>Signature of Manager/Authorized Person</strong>
+        <!-- Factory Details -->
+        <div class="factory-details">
+            <div class="detail-row">
+                <div class="detail-label">Name and address of the factory</div>
+                <div class="detail-line"></div>
             </div>
-        </td>
-    </tr>
-</table>
-@endsection
+
+            <div class="detail-row">
+                <div class="detail-label">Registration number of the factory</div>
+                <div class="detail-line"></div>
+            </div>
+        </div>
+
+        <!-- Dangerous Occurrences Register Table -->
+        <table class="register-table">
+            <thead>
+                <tr>
+                    <th class="col-year">Calendar year</th>
+                    <th class="col-sl">Running Sl. No. of the dangerous occurrence in the factory for the calendar year</th>
+                    <th class="col-datehour">Date and hour of dangerous occurrence</th>
+                    <th class="col-report">Date of despatch of report in Form 18-A</th>
+                    <th class="col-place">Exact place in the factory (branch, department, plant, equipment, etc.) where the dangerous occurrence took place</th>
+                    <th class="col-description">A full clear description of the dangerous occurrence, the damage caused and steps taken to arrest further damage or danger</th>
+                    <th class="col-damage">Details of ultimate damage or loss with value thereof and of repair, replacement, reconstruction, etc., with cost thereof</th>
+                    <th class="col-remarks">Remarks and initials of the Manager</th>
+                </tr>
+                <tr>
+                    <th class="col-year text-center">(1)</th>
+                    <th class="col-sl text-center">(2)</th>
+                    <th class="col-datehour text-center">(3)</th>
+                    <th class="col-report text-center">(4)</th>
+                    <th class="col-place text-center">(5)</th>
+                    <th class="col-description text-center">(6)</th>
+                    <th class="col-damage text-center">(7)</th>
+                    <th class="col-remarks text-center">(8)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for($i = 0; $i < 12; $i++)
+                <tr>
+                    <td class="col-year"></td>
+                    <td class="col-sl"></td>
+                    <td class="col-datehour"></td>
+                    <td class="col-report"></td>
+                    <td class="col-place"></td>
+                    <td class="col-description"></td>
+                    <td class="col-damage"></td>
+                    <td class="col-remarks"></td>
+                </tr>
+                @endfor
+            </tbody>
+        </table>
+
+        <!-- Footer -->
+        <div class="footer-section">
+            <div class="footer-left">
+                <div>Date: ___________________</div>
+            </div>
+            <div class="footer-right">
+                <div class="signature-line"></div>
+                <div class="signature-label"><strong>Signature of Manager</strong></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

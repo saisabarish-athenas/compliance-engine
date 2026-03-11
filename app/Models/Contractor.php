@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Contractor extends Model
 {
+    protected $table = 'contractor_master';
     use SoftDeletes;
 
     protected $fillable = [
@@ -30,14 +31,16 @@ class Contractor extends Model
     protected static function booted(): void
     {
         static::addGlobalScope('tenant', function ($query) {
-            if (auth()->check() && auth()->user()->tenant_id) {
-                $query->where('tenant_id', auth()->user()->tenant_id);
+            $user = auth('web')->user();
+            if ($user && $user->tenant_id) {
+                $query->where('tenant_id', $user->tenant_id);
             }
         });
 
         static::creating(function ($model) {
-            if (auth()->check() && !$model->tenant_id) {
-                $model->tenant_id = auth()->user()->tenant_id;
+            $user = auth('web')->user();
+            if ($user && !$model->tenant_id) {
+                $model->tenant_id = $user->tenant_id;
             }
         });
     }

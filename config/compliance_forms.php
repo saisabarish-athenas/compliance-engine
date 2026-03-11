@@ -59,7 +59,13 @@ return [
         'joins' => [
             ['table' => 'workforce_employee', 'first' => 'workforce_payroll_entry.employee_id', 'operator' => '=', 'second' => 'workforce_employee.id']
         ],
-        'fields' => ['total_days_worked' => 'total_days_worked']
+        'fields' => [
+            'employee_id' => 'workforce_payroll_entry.employee_id',
+            'employee_code' => 'workforce_employee.employee_code',
+            'employee_name' => 'workforce_employee.name',
+            'designation' => 'workforce_employee.designation',
+            'total_days_worked' => 'workforce_payroll_entry.total_days_worked'
+        ]
     ],
 
     'FORM_12' => [
@@ -415,7 +421,16 @@ return [
         'branch_filter' => false,
         'filing_frequency' => 'monthly',
         'due_rule' => 'next_month_10',
-        'fields' => ['fines' => 'fines']
+        'joins' => [
+            ['table' => 'workforce_employee', 'first' => 'workforce_payroll_entry.employee_id', 'operator' => '=', 'second' => 'workforce_employee.id']
+        ],
+        'fields' => [
+            'employee_id' => 'workforce_payroll_entry.employee_id',
+            'employee_code' => 'workforce_employee.employee_code',
+            'employee_name' => 'workforce_employee.name',
+            'designation' => 'workforce_employee.designation',
+            'fines' => 'workforce_payroll_entry.fines'
+        ]
     ],
 
     'SHOPS_FORM_C' => [
@@ -486,6 +501,78 @@ return [
             'remarks' => 'remarks',
         ]
     ],
+
+    // LABOUR WELFARE REGISTERS (5)
+    'FORM_A' => [
+        'table' => 'workforce_employee',
+            'generator_class' => \App\Services\Compliance\Generators\FormAGenerator::class,
+        'date_field' => 'created_at',
+        'branch_filter' => true,
+        'filing_frequency' => 'monthly',
+        'due_rule' => 'next_month_10',
+        'joins' => [],
+        'fields' => [
+            'employee_code' => 'employee_code',
+            'employee_name' => 'name',
+            'designation' => 'designation',
+            'date_of_joining' => 'date_of_joining',
+        ]
+    ],
+
+    'FORM_C' => [
+        'table' => 'workforce_payroll_entry',
+        'date_field' => 'created_at',
+        'branch_filter' => false,
+        'filing_frequency' => 'monthly',
+        'due_rule' => 'next_month_10',
+        'joins' => [
+            ['table' => 'workforce_employee', 'first' => 'workforce_payroll_entry.employee_id', 'operator' => '=', 'second' => 'workforce_employee.id']
+        ],
+        'fields' => [
+            'employee_code' => 'workforce_employee.employee_code',
+            'employee_name' => 'workforce_employee.name',
+            'designation' => 'workforce_employee.designation',
+            'advances' => 'workforce_payroll_entry.advances',
+            'fines' => 'workforce_payroll_entry.fines',
+            'total_deductions' => 'workforce_payroll_entry.total_deductions',
+        ]
+    ],
+
+    'FORM_D' => [
+        'table' => 'workforce_attendance',
+        'date_field' => 'attendance_date',
+        'branch_filter' => false,
+        'filing_frequency' => 'monthly',
+        'due_rule' => 'next_month_10',
+        'joins' => [
+            ['table' => 'workforce_employee', 'first' => 'workforce_attendance.employee_id', 'operator' => '=', 'second' => 'workforce_employee.id']
+        ],
+        'fields' => [
+            'employee_code' => 'workforce_employee.employee_code',
+            'employee_name' => 'workforce_employee.name',
+            'attendance_date' => 'workforce_attendance.attendance_date',
+            'status' => 'workforce_attendance.status',
+        ]
+    ],
+
+    'FORM_D_ER' => [
+        'table' => 'workforce_payroll_entry',
+        'date_field' => 'created_at',
+        'branch_filter' => false,
+        'filing_frequency' => 'monthly',
+        'due_rule' => 'next_month_10',
+        'joins' => [
+            ['table' => 'workforce_employee', 'first' => 'workforce_payroll_entry.employee_id', 'operator' => '=', 'second' => 'workforce_employee.id']
+        ],
+        'fields' => [
+            'employee_code' => 'workforce_employee.employee_code',
+            'employee_name' => 'workforce_employee.name',
+            'designation' => 'workforce_employee.designation',
+            'basic_earned' => 'workforce_payroll_entry.basic_earned',
+            'gross_salary' => 'workforce_payroll_entry.gross_salary',
+        ]
+    ],
+
 
     'CONTRACTOR_MASTER' => [
         'table' => 'contractor_master',

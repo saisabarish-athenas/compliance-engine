@@ -1,4 +1,14 @@
-﻿@extends('compliance.layouts.statutory_reference_layout')
+﻿@extends('layouts.app')
+
+@section('content')
+@php
+$header = $header ?? [];
+$rows = $rows ?? [];
+$totals = $totals ?? [];
+$is_nil = $is_nil ?? false;
+@endphp
+
+
 
 @section('form_title')
 FORM 8 - REGISTER OF ACCIDENTS
@@ -16,11 +26,11 @@ FORM 8 - REGISTER OF ACCIDENTS
 <table>
     <tr>
         <td class="establishment-label">Name of Establishment:</td>
-        <td>{{ $header['tenant']['name'] }}</td>
+        <td>{{ $header['tenant'] ?? ''['name'] }}</td>
     </tr>
     <tr>
         <td class="establishment-label">Period:</td>
-        <td>{{ $header['period'] }}</td>
+        <td>{{ $header['period'] ?? '' }}</td>
     </tr>
 </table>
 @endsection

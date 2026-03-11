@@ -1,83 +1,174 @@
-﻿@extends('compliance.layouts.statutory_reference_layout')
+@extends('compliance.layouts.preview')
 
-@section('form_title')
-REGISTER OF FINES
-@endsection
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>FORM B - Register of Fines</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 12px;
+            font-size: 9px;
+        }
+        .form-container {
+            border: 1px solid black;
+            padding: 10px;
+            margin: 0 auto;
+            width: 99%;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 10px;
+        }
+        .form-header div {
+            margin: 2px 0;
+        }
+        .header-title {
+            font-weight: bold;
+        }
+        .establishment-field {
+            margin-bottom: 8px;
+            font-size: 9px;
+            display: flex;
+            align-items: center;
+        }
+        .establishment-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .establishment-line {
+            flex: 1;
+            border-bottom: 1px solid black;
+            height: 10px;
+            padding-left: 3px;
+        }
+        .register-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+            margin-bottom: 10px;
+            table-layout: fixed;
+        }
+        .register-table th,
+        .register-table td {
+            border: 1px solid black;
+            padding: 3px;
+            text-align: center;
+            vertical-align: middle;
+            height: 16px;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        .register-table th {
+            font-weight: bold;
+            background-color: #fff;
+            line-height: 1.1;
+        }
+        .register-table td {
+            text-align: left;
+        }
+        .col-sl {
+            width: 5%;
+        }
+        .col-name {
+            width: 12%;
+        }
+        .col-father {
+            width: 14%;
+        }
+        .col-act {
+            width: 14%;
+        }
+        .col-cause {
+            width: 16%;
+        }
+        .col-wages {
+            width: 10%;
+        }
+        .col-amount {
+            width: 10%;
+        }
+        .col-date {
+            width: 7%;
+        }
+        .col-sign {
+            width: 6%;
+        }
+        .col-remarks {
+            width: 6%;
+        }
+        .text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header">
+            <div>Tamil Nadu Shops And Establishments Rules</div>
+            <div class="header-title">FORM B</div>
+            <div>See Rule 11(3)(a)</div>
+            <div class="header-title">Register of fines</div>
+        </div>
 
-@section('act_reference')
-[Under Shops & Establishments Act]
-@endsection
+        <!-- Establishment Field -->
+        <div class="establishment-field">
+            <div class="establishment-label">Establishment</div>
+            <div class="establishment-line"></div>
+        </div>
 
-@section('rule_reference')
-[See Rule XX]
-@endsection
-
-@section('establishment_info')
-<table>
-    <tr>
-        <td class="establishment-label">Name of Establishment:</td>
-        <td>{{ $header['tenant']['name'] }}</td>
-    </tr>
-    <tr>
-        <td class="establishment-label">Period:</td>
-        <td>{{ $header['period'] }}</td>
-    </tr>
-</table>
-@endsection
-
-@section('content')
-@if($is_nil)
-    <div class="nil-block">
-        NIL - No fines imposed during this period
+        <!-- Fines Register Table -->
+        <table class="register-table">
+            <thead>
+                <tr>
+                    <th class="col-sl">Sl. No.</th>
+                    <th class="col-name">Name</th>
+                    <th class="col-father">Father's name or Husband's name</th>
+                    <th class="col-act">Act or commission for which fine imposed</th>
+                    <th class="col-cause">Whether workman showed cause against fine or not and if so, date on which cause was shown</th>
+                    <th class="col-wages">Total wages for the wage-period in which fine imposed</th>
+                    <th class="col-amount">Amount of, and date on which fine imposed</th>
+                    <th class="col-date">Date on which fine realized</th>
+                    <th class="col-sign">Signature or thumb-impression of person employed</th>
+                    <th class="col-remarks">Remarks</th>
+                </tr>
+                <tr>
+                    <th class="col-sl text-center">(1)</th>
+                    <th class="col-name text-center">(2)</th>
+                    <th class="col-father text-center">(3)</th>
+                    <th class="col-act text-center">(4)</th>
+                    <th class="col-cause text-center">(5)</th>
+                    <th class="col-wages text-center">(6)</th>
+                    <th class="col-amount text-center">(7)</th>
+                    <th class="col-date text-center">(8)</th>
+                    <th class="col-sign text-center">(9)</th>
+                    <th class="col-remarks text-center">(10)</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for($i = 0; $i < 10; $i++)
+                <tr>
+                    <td class="col-sl"></td>
+                    <td class="col-name"></td>
+                    <td class="col-father"></td>
+                    <td class="col-act"></td>
+                    <td class="col-cause"></td>
+                    <td class="col-wages"></td>
+                    <td class="col-amount"></td>
+                    <td class="col-date"></td>
+                    <td class="col-sign"></td>
+                    <td class="col-remarks"></td>
+                </tr>
+                @endfor
+            </tbody>
+        </table>
     </div>
-@else
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th style="width: 5%;">S.No.</th>
-                @foreach(array_keys($rows[0] ?? []) as $column)
-                <th>{{ ucwords(str_replace('_', ' ', $column)) }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $index => $row)
-            <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                @foreach($row as $value)
-                <td>{{ is_numeric($value) ? number_format($value, 2) : ($value ?? 'N/A') }}</td>
-                @endforeach
-            </tr>
-            @endforeach
-        </tbody>
-        @if(!empty($totals))
-        <tfoot>
-            <tr class="totals-row">
-                <td colspan="{{ count($rows[0] ?? []) }}" class="text-right"><strong>TOTAL</strong></td>
-                <td class="text-right"><strong>{{ number_format(array_sum($totals), 2) }}</strong></td>
-            </tr>
-        </tfoot>
-        @endif
-    </table>
-@endif
-@endsection
-
-@section('declaration')
-I hereby certify that the above particulars are correct to the best of my knowledge and belief.
-@endsection
-
-@section('signature_block')
-<table class="signature-table">
-    <tr>
-        <td class="signature-left">
-            <div>Date: _______________</div>
-        </td>
-        <td class="signature-right">
-            <div class="signature-line"></div>
-            <div class="signature-label">
-                <strong>Signature of Manager/Authorized Person</strong>
-            </div>
-        </td>
-    </tr>
-</table>
-@endsection
+</body>
+</html>

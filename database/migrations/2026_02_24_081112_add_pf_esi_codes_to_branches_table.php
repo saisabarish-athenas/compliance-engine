@@ -9,8 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('branches', function (Blueprint $table) {
-            $table->string('pf_code')->nullable()->after('factory_license_number');
-            $table->string('esi_code')->nullable()->after('pf_code');
+
+            if (!Schema::hasColumn('branches', 'pf_code')) {
+                $table->string('pf_code')->nullable()->after('factory_license_number');
+            }
+
+            if (!Schema::hasColumn('branches', 'esi_code')) {
+                $table->string('esi_code')->nullable()->after('pf_code');
+            }
         });
     }
 

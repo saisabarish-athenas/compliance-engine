@@ -1,83 +1,155 @@
-﻿@extends('compliance.layouts.statutory_reference_layout')
+@extends('compliance.layouts.preview')
 
-@section('form_title')
-SHOPS FORM VI - LEAVE REGISTER
-@endsection
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>FORM VI - Register of National and Festival Holidays</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 12px;
+            font-size: 9px;
+        }
+        .form-container {
+            border: 1px solid black;
+            padding: 10px;
+            margin: 0 auto;
+            width: 99%;
+        }
+        .form-header {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 10px;
+        }
+        .form-header div {
+            margin: 2px 0;
+        }
+        .header-title {
+            font-weight: bold;
+        }
+        .register-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 8px;
+            margin-bottom: 10px;
+            table-layout: fixed;
+        }
+        .register-table th,
+        .register-table td {
+            border: 1px solid black;
+            padding: 3px;
+            text-align: center;
+            vertical-align: middle;
+            height: 16px;
+            word-wrap: break-word;
+            word-break: break-word;
+        }
+        .register-table th {
+            font-weight: bold;
+            background-color: #fff;
+            line-height: 1.1;
+        }
+        .register-table td {
+            text-align: left;
+        }
+        .col-sl {
+            width: 4%;
+        }
+        .col-name {
+            width: 18%;
+        }
+        .col-ticket {
+            width: 18%;
+        }
+        .col-holiday {
+            width: 4%;
+        }
+        .col-remarks {
+            width: 16%;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .legend-section {
+            margin-top: 10px;
+            font-size: 9px;
+        }
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .legend-item {
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <!-- Header -->
+        <div class="form-header">
+            <div>The Tamil Nadu Industrial Establishments</div>
+            <div>(National and Festival Holidays) Rules</div>
+            <div class="header-title">FORM VI</div>
+            <div>See sub-rule (1) of rule 7</div>
+            <div class="header-title">REGISTER OF NATIONAL AND FESTIVAL HOLIDAYS</div>
+        </div>
 
-@section('act_reference')
-[Under Shops & Establishments Act]
-@endsection
+        <!-- Holiday Register Table -->
+        <table class="register-table">
+            <thead>
+                <tr>
+                    <th class="col-sl" rowspan="2">Sl. No.</th>
+                    <th class="col-name" rowspan="2">Name of the employee</th>
+                    <th class="col-ticket" rowspan="2">Ticket number or father's name</th>
+                    <th colspan="9">Days, dates and months of the year on which National and Festival holidays are allowed under section 3 of the Tamil Nadu Industrial Establishments (National and Festival Holidays) Act, 1958 (Tamil Nadu Act XXXIII of 1958)</th>
+                    <th class="col-remarks" rowspan="2">Remarks</th>
+                </tr>
+                <tr>
+                    <th class="col-holiday text-center">1</th>
+                    <th class="col-holiday text-center">2</th>
+                    <th class="col-holiday text-center">3</th>
+                    <th class="col-holiday text-center">4</th>
+                    <th class="col-holiday text-center">5</th>
+                    <th class="col-holiday text-center">6</th>
+                    <th class="col-holiday text-center">7</th>
+                    <th class="col-holiday text-center">8</th>
+                    <th class="col-holiday text-center">9</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for($i = 0; $i < 12; $i++)
+                <tr>
+                    <td class="col-sl"></td>
+                    <td class="col-name"></td>
+                    <td class="col-ticket"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-holiday"></td>
+                    <td class="col-remarks"></td>
+                </tr>
+                @endfor
+            </tbody>
+        </table>
 
-@section('rule_reference')
-[See Rule XX]
-@endsection
-
-@section('establishment_info')
-<table>
-    <tr>
-        <td class="establishment-label">Name of Establishment:</td>
-        <td>{{ $header['tenant']['name'] }}</td>
-    </tr>
-    <tr>
-        <td class="establishment-label">Period:</td>
-        <td>{{ $header['period'] }}</td>
-    </tr>
-</table>
-@endsection
-
-@section('content')
-@if($is_nil)
-    <div class="nil-block">
-        NIL - No leave records during this period
+        <!-- Legend Section -->
+        <div class="legend-section">
+            <div class="legend-title">To be marked as follows:—</div>
+            <div class="legend-item">'H'  for holidays allowed</div>
+            <div class="legend-item">'W/D' for work on double wages</div>
+            <div class="legend-item">'W/H' for work with substituted holiday</div>
+            <div class="legend-item">'N/E' if not eligible for the wages</div>
+        </div>
     </div>
-@else
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th style="width: 5%;">S.No.</th>
-                @foreach(array_keys($rows[0] ?? []) as $column)
-                <th>{{ ucwords(str_replace('_', ' ', $column)) }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $index => $row)
-            <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                @foreach($row as $value)
-                <td>{{ is_numeric($value) ? number_format($value, 2) : ($value ?? 'N/A') }}</td>
-                @endforeach
-            </tr>
-            @endforeach
-        </tbody>
-        @if(!empty($totals))
-        <tfoot>
-            <tr class="totals-row">
-                <td colspan="{{ count($rows[0] ?? []) }}" class="text-right"><strong>TOTAL</strong></td>
-                <td class="text-right"><strong>{{ number_format(array_sum($totals), 2) }}</strong></td>
-            </tr>
-        </tfoot>
-        @endif
-    </table>
-@endif
-@endsection
-
-@section('declaration')
-I hereby certify that the above particulars are correct to the best of my knowledge and belief.
-@endsection
-
-@section('signature_block')
-<table class="signature-table">
-    <tr>
-        <td class="signature-left">
-            <div>Date: _______________</div>
-        </td>
-        <td class="signature-right">
-            <div class="signature-line"></div>
-            <div class="signature-label">
-                <strong>Signature of Manager/Authorized Person</strong>
-            </div>
-        </td>
-    </tr>
-</table>
-@endsection
+</body>
+</html>

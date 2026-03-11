@@ -35,11 +35,9 @@ class ReferenceFormGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $aggregator = app(FormDataAggregator::class);
-        
         $header = [
-            'tenant' => $aggregator->getTenantDetails($rawData['tenant_id']),
-            'branch' => $aggregator->getBranchDetails($rawData['branch_id']),
+            'tenant' => $rawData['tenant'] ?? [],
+            'branch' => $rawData['branch'] ?? [],
             'period' => $this->formatPeriod($rawData['period_month'], $rawData['period_year']),
             'form_title' => $this->getFormTitle(),
         ];
@@ -73,7 +71,6 @@ class ReferenceFormGenerator extends BaseFormGenerator
 
     protected function transformRecord($record): array
     {
-        // Default transformation - override in specific generators if needed
         return (array) $record;
     }
 
@@ -105,21 +102,5 @@ class ReferenceFormGenerator extends BaseFormGenerator
         ];
 
         return $titles[$this->formCode] ?? $this->formCode;
-    }
-
-    public function generate(int $tenantId, int $branchId, int $month, int $year, int $batchId): string
-    {
-        if (!$this->view) {
-            throw new \Exception("Reference template not found for {$this->formCode}");
-        }
-
-        Log::info("Generating reference-based form", [
-            'form_code' => $this->formCode,
-            'template' => $this->view,
-            'tenant_id' => $tenantId,
-            'batch_id' => $batchId
-        ]);
-
-        return parent::generate($tenantId, $branchId, $month, $year, $batchId);
     }
 }

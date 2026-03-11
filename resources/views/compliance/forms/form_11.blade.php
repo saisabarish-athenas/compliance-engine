@@ -1,83 +1,312 @@
-﻿@extends('compliance.layouts.statutory_reference_layout')
+﻿<!DOCTYPE html>
+<html>
 
-@section('form_title')
-FORM 11 - NOTICE OF DANGEROUS OCCURRENCES
-@endsection
+<head>
+    <meta charset="UTF-8">
+    <title>ESI FORM 11 - Accident Book</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
 
-@section('act_reference')
-[Under Factories Act, 1948]
-@endsection
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 20px;
+        }
 
-@section('rule_reference')
-[See Rule XX]
-@endsection
+        .form-container {
+            border: 2px solid black;
+            padding: 15px;
+            margin: 0 auto;
+            width: 95%;
+        }
 
-@section('establishment_info')
-<table>
-    <tr>
-        <td class="establishment-label">Name of Establishment:</td>
-        <td>{{ $header['tenant']['name'] }}</td>
-    </tr>
-    <tr>
-        <td class="establishment-label">Period:</td>
-        <td>{{ $header['period'] }}</td>
-    </tr>
-</table>
-@endsection
+        .form-header {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
 
-@section('content')
-@if($is_nil)
-    <div class="nil-block">
-        NIL - No dangerous occurrences during this period
+        .logo-container {
+            position: absolute;
+            left: 40px;
+            top: 30px;
+        }
+
+        .logo-container img {
+            width: 60px;
+            height: auto;
+        }
+
+        .form-header div {
+            margin: 3px 0;
+        }
+
+        .header-title {
+            font-weight: bold;
+        }
+
+        .establishment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            border: 1px solid black;
+        }
+
+        .establishment-table td {
+            border: 1px solid black;
+            padding: 6px 8px;
+            font-size: 11px;
+            vertical-align: top;
+        }
+
+        .establishment-table td:first-child {
+            font-weight: bold;
+            width: 30%;
+        }
+
+        .month-display {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .column-numbers {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid black;
+            margin-bottom: 0;
+        }
+
+        .column-numbers td {
+            border: 1px solid black;
+            padding: 4px 2px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            height: 18px;
+        }
+
+        .register-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid black;
+            font-size: 10px;
+        }
+
+        .register-table th,
+        .register-table td {
+            border: 1px solid black;
+            padding: 4px 3px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .register-table th {
+            font-weight: bold;
+            background-color: #fff;
+            word-wrap: break-word;
+            line-height: 1.1;
+            font-size: 9px;
+        }
+
+        .register-table td {
+            height: 25px;
+        }
+
+        .col-1 {
+            width: 3%;
+            text-align: center;
+        }
+
+        .col-2 {
+            width: 5%;
+        }
+
+        .col-3 {
+            width: 5%;
+        }
+
+        .col-4 {
+            width: 7%;
+        }
+
+        .col-5 {
+            width: 3%;
+        }
+
+        .col-6 {
+            width: 3%;
+        }
+
+        .col-7 {
+            width: 5%;
+        }
+
+        .col-8 {
+            width: 7%;
+        }
+
+        .col-9 {
+            width: 5%;
+        }
+
+        .col-10 {
+            width: 5%;
+        }
+
+        .col-11 {
+            width: 5%;
+        }
+
+        .col-12 {
+            width: 5%;
+        }
+
+        .col-13 {
+            width: 5%;
+        }
+
+        .col-14 {
+            width: 8%;
+        }
+
+        .col-15 {
+            width: 8%;
+        }
+
+        .col-16 {
+            width: 8%;
+        }
+
+        .col-17 {
+            width: 8%;
+        }
+
+        .col-18 {
+            width: 6%;
+        }
+
+        .footer-section {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 11px;
+        }
+
+        .signature-space {
+            margin-top: 40px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="esi-logo">
+            <img src="{{ asset('images/esic_logo.jpg') }}" alt="ESIC Logo" style="width:70px;">
+        </div>
+
+        <div class="form-header">
+            <div class="header-title">EMPLOYEES' STATE INSURANCE CORPORATION</div>
+            <div class="header-title">ACCIDENT BOOK</div>
+            <div>(Regulation 66)</div>
+            <div class="header-title">REG. FORM 11</div>
+        </div>
+
+        <table class="establishment-table">
+            <tr>
+                <td>Name of the Company</td>
+                <td class="text-left">{{ $company_name ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td>Name of the Contractor</td>
+                <td>{{ $contractor_name ?? '' }}</td>
+            </tr>
+            <tr>
+                <td>Total number of workers employed</td>
+                <td>{{ $total_workers ?? '' }}</td>
+            </tr>
+            <tr>
+                <td>Work location</td>
+                <td>{{ $work_location ?? '' }}</td>
+            </tr>
+            <tr>
+                <td>Name of the Principal Employer</td>
+                <td>{{ $principal_employer ?? '' }}</td>
+            </tr>
+        </table>
+        <div class="month-display">{{ $month_year ?? '' }}</div>
+
+        <table class="register-table">
+            <thead>
+                <tr>
+                    <th class="col-1" rowspan="2">Sl. No</th>
+                    <th class="col-2" rowspan="2">Date of Notice</th>
+                    <th class="col-3" rowspan="2">Time of Notice</th>
+                    <th class="col-4" rowspan="2">Name & Address of injured person</th>
+                    <th class="col-5" rowspan="2">Sex</th>
+                    <th class="col-6" rowspan="2">Age</th>
+                    <th class="col-7" rowspan="2">Insurance No</th>
+                    <th class="col-8" rowspan="2">Shift, department and occupation of the employee</th>
+                    <th colspan="5" style="text-align: center;">Details of Injury</th>
+                    <th class="col-14" rowspan="2">What exactly injured person was doing at the time of accident</th>
+                    <th class="col-15" rowspan="2">Name, occupation & address of the person giving first aid</th>
+                    <th class="col-16" rowspan="2">Signature and thumb impression of the injured person</th>
+                    <th class="col-17" rowspan="2">Name, address & occupation of witnesses</th>
+                    <th class="col-18" rowspan="2">Remarks</th>
+                </tr>
+                <tr>
+                    <th class="col-9">Cause</th>
+                    <th class="col-10">Nature</th>
+                    <th class="col-11">Date</th>
+                    <th class="col-12">Time</th>
+                    <th class="col-13">Place</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (isset($entries) && count($entries) > 0)
+
+                    @foreach ($entries as $index => $row)
+                        <tr>
+                            <td class="col-1">{{ $index + 1 }}</td>
+                            <td class="col-2">{{ $row['date_of_notice'] ?? '' }}</td>
+                            <td class="col-3">{{ $row['time_of_notice'] ?? '' }}</td>
+                            <td class="col-4">{{ $row['injured_person'] ?? '' }}</td>
+                            <td class="col-5">{{ $row['sex'] ?? '' }}</td>
+                            <td class="col-6">{{ $row['age'] ?? '' }}</td>
+                            <td class="col-7">{{ $row['insurance_no'] ?? '' }}</td>
+                            <td class="col-8">{{ $row['occupation'] ?? '' }}</td>
+                            <td class="col-9">{{ $row['cause'] ?? '' }}</td>
+                            <td class="col-10">{{ $row['nature'] ?? '' }}</td>
+                            <td class="col-11">{{ $row['injury_date'] ?? '' }}</td>
+                            <td class="col-12">{{ $row['injury_time'] ?? '' }}</td>
+                            <td class="col-13">{{ $row['place'] ?? '' }}</td>
+                            <td class="col-14">{{ $row['activity'] ?? '' }}</td>
+                            <td class="col-15">{{ $row['first_aid_person'] ?? '' }}</td>
+                            <td class="col-16">{{ $row['signature'] ?? '' }}</td>
+                            <td class="col-17">{{ $row['witnesses'] ?? '' }}</td>
+                            <td class="col-18">{{ $row['remarks'] ?? '' }}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    @for ($i = 0; $i < 9; $i++)
+                        <tr>
+                            <td class="col-1">{{ $i + 1 }}</td>
+                            <td colspan="17">NIL</td>
+                        </tr>
+                    @endfor
+
+                @endif
+            </tbody>
+        </table>
+
+        <div class="footer-section">
+            <div class="signature-space"></div>
+            <div>Authorized Signatory</div>
+        </div>
     </div>
-@else
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th style="width: 5%;">S.No.</th>
-                @foreach(array_keys($rows[0] ?? []) as $column)
-                <th>{{ ucwords(str_replace('_', ' ', $column)) }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $index => $row)
-            <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                @foreach($row as $value)
-                <td>{{ is_numeric($value) ? number_format($value, 2) : ($value ?? 'N/A') }}</td>
-                @endforeach
-            </tr>
-            @endforeach
-        </tbody>
-        @if(!empty($totals))
-        <tfoot>
-            <tr class="totals-row">
-                <td colspan="{{ count($rows[0] ?? []) }}" class="text-right"><strong>TOTAL</strong></td>
-                <td class="text-right"><strong>{{ number_format(array_sum($totals), 2) }}</strong></td>
-            </tr>
-        </tfoot>
-        @endif
-    </table>
-@endif
-@endsection
+</body>
 
-@section('declaration')
-I hereby certify that the above particulars are correct to the best of my knowledge and belief.
-@endsection
-
-@section('signature_block')
-<table class="signature-table">
-    <tr>
-        <td class="signature-left">
-            <div>Date: _______________</div>
-        </td>
-        <td class="signature-right">
-            <div class="signature-line"></div>
-            <div class="signature-label">
-                <strong>Signature of Manager/Authorized Person</strong>
-            </div>
-        </td>
-    </tr>
-</table>
-@endsection
+</html>

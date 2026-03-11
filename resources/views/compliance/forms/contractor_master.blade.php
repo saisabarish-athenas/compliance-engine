@@ -16,16 +16,19 @@ CONTRACTOR MASTER REGISTER
 <table>
     <tr>
         <td class="establishment-label">Name of Establishment:</td>
-        <td>{{ $header['tenant']['name'] }}</td>
+        <td>{{ $header['tenant'] ?? ''['name'] }}</td>
     </tr>
     <tr>
         <td class="establishment-label">Period:</td>
-        <td>{{ $header['period'] }}</td>
+        <td>{{ $header['period'] ?? '' }}</td>
     </tr>
 </table>
 @endsection
 
 @section('content')
+@php
+$totals = $totals ?? [];
+@endphp
 @if($is_nil)
     <div class="nil-block">
         NIL - No contractors registered during this period

@@ -136,4 +136,16 @@ return [
     'single_tenant_mode' => true,
     'active_tenant_id' => 1,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Demo Mode
+    |--------------------------------------------------------------------------
+    |
+    | Enable demo mode to automatically populate forms with realistic sample
+    | data when actual records are not available. Used for demonstrations.
+    |
+    */
+
+    'demo_mode' => env('DEMO_MODE', false),
+
 ];

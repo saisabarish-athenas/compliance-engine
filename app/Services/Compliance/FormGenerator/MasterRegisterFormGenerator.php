@@ -14,6 +14,7 @@ class MasterRegisterFormGenerator extends BaseFormGenerator
         'SHOPS_FORM_C' => 'SHOPS FORM C - Bonus Register',
         'SHOPS_FORM_VI' => 'SHOPS FORM VI - Leave Register',
         'CONTRACTOR_MASTER' => 'Contractor Master Register',
+        'CLRA_RETURN' => 'CLRA Return - Half-Yearly Return',
     ];
 
     public function __construct(string $formCode)
@@ -25,12 +26,10 @@ class MasterRegisterFormGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $aggregator = app(FormDataAggregator::class);
-        
         $rows = [];
         foreach ($rawData['records'] as $record) {
             $rows[] = [
-                'employee_code' => $record->employee_code ?? 'N/A',
+                'employee_code' => $record->employee_code ?? $record->employee_id ?? 'N/A',
                 'name' => $record->name ?? 'N/A',
                 'designation' => $record->designation ?? 'N/A',
             ];
@@ -40,8 +39,8 @@ class MasterRegisterFormGenerator extends BaseFormGenerator
             'header' => [
                 'form_title' => $this->formTitles[$this->formCode] ?? $this->formCode,
                 'period' => $this->formatPeriod($rawData['period_month'], $rawData['period_year']),
-                'branch' => $aggregator->getBranchDetails($rawData['branch_id']),
-                'tenant' => $aggregator->getTenantDetails($rawData['tenant_id']),
+                'branch' => $rawData['branch'] ?? [],
+                'tenant' => $rawData['tenant'] ?? [],
             ],
             'rows' => $rows,
             'totals' => [],

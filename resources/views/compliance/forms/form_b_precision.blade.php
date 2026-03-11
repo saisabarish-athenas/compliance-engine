@@ -30,7 +30,7 @@
 @if($is_nil)
     <div class="nil-declaration">
         NIL RETURN<br>
-        No entries for the period {{ $header['period'] }}
+        No entries for the period {{ $header['period'] ?? '' }}
     </div>
 @else
     <table>
@@ -65,14 +65,14 @@
                 $otherCash = 0;
                 $total = ($row['basic_earned'] ?? 0) + ($row['da_earned'] ?? 0) + ($row['overtime_wages'] ?? 0) + $others + $otherCash;
                 $deductions = 'PF: ' . number_format($row['pf_employee'] ?? 0, 2) . ', ESI: ' . number_format($row['esi_employee'] ?? 0, 2);
-                if (($row['advances'] ?? 0) > 0) $deductions .= ', Adv: ' . number_format($row['advances'], 2);
-                if (($row['fines'] ?? 0) > 0) $deductions .= ', Fine: ' . number_format($row['fines'], 2);
+                if (($row['advances'] ?? 0) > 0) $deductions .= ', Adv: ' . number_format($row['advances'] ?? '', 2);
+                if (($row['fines'] ?? 0) > 0) $deductions .= ', Fine: ' . number_format($row['fines'] ?? '', 2);
             @endphp
             <tr>
                 <td class="col-sno">{{ $index + 1 }}</td>
                 <td class="col-name">{{ $row['employee_name'] ?? '-' }}</td>
                 <td class="col-desig">{{ $row['designation'] ?? '-' }}</td>
-                <td class="col-days">{{ $daysWorked }}</td>
+                <td class="col-days">{{ $daysWorked ?? '' }}</td>
                 <td class="col-rate">{{ number_format($dailyRate, 2) }}</td>
                 <td class="col-basic">{{ number_format($row['basic_earned'] ?? 0, 2) }}</td>
                 <td class="col-da">{{ number_format($row['da_earned'] ?? 0, 2) }}</td>
@@ -80,7 +80,7 @@
                 <td class="col-others">{{ number_format($others, 2) }}</td>
                 <td class="col-cash">{{ number_format($otherCash, 2) }}</td>
                 <td class="col-total">{{ number_format($total, 2) }}</td>
-                <td class="col-deduct">{{ $deductions }}</td>
+                <td class="col-deduct">{{ $deductions ?? '' }}</td>
                 <td class="col-net">{{ number_format($row['net_salary'] ?? 0, 2) }}</td>
                 <td class="col-sign"></td>
                 <td class="col-initial"></td>

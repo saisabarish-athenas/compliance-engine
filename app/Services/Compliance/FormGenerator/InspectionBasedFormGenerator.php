@@ -23,8 +23,6 @@ class InspectionBasedFormGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $aggregator = app(FormDataAggregator::class);
-        
         $rows = [];
         foreach ($rawData['records'] as $record) {
             $rows[] = [
@@ -39,8 +37,8 @@ class InspectionBasedFormGenerator extends BaseFormGenerator
             'header' => [
                 'form_title' => $this->formTitles[$this->formCode] ?? $this->formCode,
                 'period' => $this->formatPeriod($rawData['period_month'], $rawData['period_year']),
-                'branch' => $aggregator->getBranchDetails($rawData['branch_id'], $rawData['tenant_id']),
-                'tenant' => $aggregator->getTenantDetails($rawData['tenant_id']),
+                'branch' => $rawData['branch'] ?? [],
+                'tenant' => $rawData['tenant'] ?? [],
             ],
             'rows' => $rows,
             'totals' => [],

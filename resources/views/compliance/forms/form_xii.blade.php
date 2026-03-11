@@ -1,83 +1,248 @@
-﻿@extends('compliance.layouts.statutory_reference_layout')
+<!DOCTYPE html>
+<html>
 
-@section('form_title')
-FORM XII - REGISTER OF CONTRACTORS
-@endsection
+<head>
+    <meta charset="UTF-8">
+    <title>FORM XII - Register of Contractors</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
 
-@section('act_reference')
-[Under Contract Labour Act, 1970]
-@endsection
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 15px;
+        }
 
-@section('rule_reference')
-[See Rule XX]
-@endsection
+        .form-container {
+            border: 2px solid black;
+            padding: 12px;
+            margin: 0 auto;
+            width: 99%;
+        }
 
-@section('establishment_info')
-<table>
-    <tr>
-        <td class="establishment-label">Name of Establishment:</td>
-        <td>{{ $header['tenant']['name'] }}</td>
-    </tr>
-    <tr>
-        <td class="establishment-label">Period:</td>
-        <td>{{ $header['period'] }}</td>
-    </tr>
-</table>
-@endsection
+        .form-header {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
 
-@section('content')
-@if($is_nil)
-    <div class="nil-block">
-        NIL - No contractors registered during this period
-    </div>
-@else
-    <table class="data-table">
-        <thead>
-            <tr>
-                <th style="width: 5%;">S.No.</th>
-                @foreach(array_keys($rows[0] ?? []) as $column)
-                <th>{{ ucwords(str_replace('_', ' ', $column)) }}</th>
-                @endforeach
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($rows as $index => $row)
-            <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                @foreach($row as $value)
-                <td>{{ is_numeric($value) ? number_format($value, 2) : ($value ?? 'N/A') }}</td>
-                @endforeach
-            </tr>
-            @endforeach
-        </tbody>
-        @if(!empty($totals))
-        <tfoot>
-            <tr class="totals-row">
-                <td colspan="{{ count($rows[0] ?? []) }}" class="text-right"><strong>TOTAL</strong></td>
-                <td class="text-right"><strong>{{ number_format(array_sum($totals), 2) }}</strong></td>
-            </tr>
-        </tfoot>
-        @endif
-    </table>
-@endif
-@endsection
+        .form-header div {
+            margin: 2px 0;
+        }
 
-@section('declaration')
-I hereby certify that the above particulars are correct to the best of my knowledge and belief.
-@endsection
+        .header-title {
+            font-weight: bold;
+            font-size: 12px;
+        }
 
-@section('signature_block')
-<table class="signature-table">
-    <tr>
-        <td class="signature-left">
-            <div>Date: _______________</div>
-        </td>
-        <td class="signature-right">
-            <div class="signature-line"></div>
-            <div class="signature-label">
-                <strong>Signature of Manager/Authorized Person</strong>
+        .header-rule {
+            font-size: 10px;
+        }
+
+        .info-section {
+            margin-bottom: 12px;
+            font-size: 10px;
+        }
+
+        .info-row {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .info-label {
+            font-weight: bold;
+            width: 40%;
+            margin-right: 5px;
+        }
+
+        .dot-line {
+            flex: 1;
+            border-bottom: 1px dotted #000;
+            height: 10px;
+        }
+
+        .register-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid black;
+            font-size: 9px;
+            margin-bottom: 10px;
+        }
+
+        .register-table th,
+        .register-table td {
+            border: 1px solid black;
+            padding: 2px 2px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .register-table th {
+            font-weight: bold;
+            background-color: #fff;
+            word-wrap: break-word;
+            line-height: 1.1;
+            height: 20px;
+        }
+
+        .register-table td {
+            height: 18px;
+            font-size: 8px;
+        }
+
+        .col-1 {
+            width: 5%;
+        }
+
+        .col-2 {
+            width: 20%;
+            text-align: left;
+        }
+
+        .col-3 {
+            width: 15%;
+            text-align: left;
+        }
+
+        .col-4 {
+            width: 15%;
+            text-align: left;
+        }
+
+        .col-5 {
+            width: 10%;
+        }
+
+        .col-6 {
+            width: 10%;
+        }
+
+        .col-7 {
+            width: 10%;
+            text-align: center;
+        }
+
+        .footer-section {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 10px;
+        }
+
+        .footer-left {
+            flex: 1;
+        }
+
+        .footer-right {
+            flex: 1;
+            text-align: right;
+        }
+
+        .signature-line {
+            margin-top: 40px;
+            border-top: 1px solid #000;
+            width: 200px;
+            margin-left: auto;
+        }
+
+        .signature-label {
+            margin-top: 14px;
+            font-weight: bold;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <div class="header-title">FORM XII</div>
+            <div class="header-rule">[See Rule 74]</div>
+            <div class="header-title">Register of Contractors</div>
+        </div>
+
+        <div class="info-section">
+            <div class="info-row">
+                <div class="info-label">Name and address of the Principal Employer</div>
+                <div class="dot-line"></div>
             </div>
-        </td>
-    </tr>
-</table>
-@endsection
+            <div style="margin-left: 40%; margin-bottom: 8px; font-size: 9px;">
+                {{ data_get($header, 'tenant.name', 'NIL') }}</div>
+
+            <div class="info-row">
+                <div class="info-label">Name and address of the Establishment</div>
+                <div class="dot-line"></div>
+            </div>
+            <div style="margin-left: 40%; margin-bottom: 8px; font-size: 9px;">
+                {{ data_get($header, 'branch.address', 'NIL') }}</div>
+        </div>
+
+        <table class="register-table">
+            <thead>
+                <tr>
+                    <th class="col-1">SL. No.</th>
+                    <th class="col-2">Name and address of contractor</th>
+                    <th class="col-3">Nature of work on contract</th>
+                    <th class="col-4">Location of contract work</th>
+                    <th colspan="2" style="text-align: center;">Period of contract</th>
+                    <th class="col-7">Maximum No. of workmen employed by contractor</th>
+                </tr>
+                <tr>
+                    <th class="col-1">1</th>
+                    <th class="col-2">2</th>
+                    <th class="col-3">3</th>
+                    <th class="col-4">4</th>
+                    <th class="col-5">5<br>(From)</th>
+                    <th class="col-6">6<br>(To)</th>
+                    <th class="col-7">7</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (isset($rows) && count($rows) > 0)
+                    @foreach ($rows as $index => $row)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+
+                            <td>
+                                {{ $row['contractor_name'] ?? '' }}
+                                <br>
+                                {{ $row['contractor_address'] ?? '' }}
+                            </td>
+
+                            <td>{{ $row['nature_of_work'] ?? '' }}</td>
+
+                            <td>{{ $row['work_location'] ?? '' }}</td>
+
+                            <td>{{ $row['contract_from'] ?? '' }}</td>
+
+                            <td>{{ $row['contract_to'] ?? '' }}</td>
+
+                            <td>{{ $row['max_workers'] ?? '' }}</td>
+
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="7" style="text-align:center;">No records found</td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
+
+        <div class="footer-section">
+            <div class="footer-left">
+                <div>Place: __________</div>
+                <div>Date: __________</div>
+            </div>
+            <div class="footer-right">
+                <div class="signature-line"></div>
+                <div class="signature-label">Signature of the Licensing Officer</div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

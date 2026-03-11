@@ -154,13 +154,13 @@
     </div>
     
     <div class="establishment-info">
-        <p><strong>Name of Establishment:</strong> {{ $header['tenant']['name'] }}</p>
+        <p><strong>Name of Establishment:</strong> {{ is_array($header['tenant'] ?? null) ? $header['tenant']['name'] : $header['tenant'] }}</p>
         @if(isset($header['branch']))
-        <p><strong>Branch/Unit:</strong> {{ $header['branch']['name'] }}</p>
-        <p><strong>Address:</strong> {{ $header['branch']['address'] }}</p>
-        <p><strong>Factory License No:</strong> {{ $header['branch']['license'] }}</p>
+        <p><strong>Branch/Unit:</strong> {{ $header['branch']['name'] ?? 'N/A' }}</p>
+        <p><strong>Address:</strong> {{ $header['branch']['address'] ?? 'N/A' }}</p>
+        <p><strong>Factory License No:</strong> {{ $header['branch']['license'] ?? 'N/A' }}</p>
         @endif
-        <p><strong>Period:</strong> {{ $header['period'] }}</p>
+        <p><strong>Period:</strong> {{ $header['period'] ?? 'N/A' }}</p>
     </div>
     
     @yield('content')

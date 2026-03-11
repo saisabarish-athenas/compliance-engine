@@ -9,8 +9,6 @@ class FactoriesFormGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $aggregator = app(FormDataAggregator::class);
-        
         $rows = [];
         foreach ($rawData['records'] as $record) {
             $rows[] = [
@@ -38,8 +36,8 @@ class FactoriesFormGenerator extends BaseFormGenerator
             'header' => [
                 'form_title' => 'FORM B - Register of Wages',
                 'period' => $this->formatPeriod($rawData['period_month'], $rawData['period_year']),
-                'branch' => $aggregator->getBranchDetails($rawData['branch_id']),
-                'tenant' => $aggregator->getTenantDetails($rawData['tenant_id']),
+                'branch' => $rawData['branch'] ?? [],
+                'tenant' => $rawData['tenant'] ?? [],
             ],
             'rows' => $rows,
             'totals' => $totals,

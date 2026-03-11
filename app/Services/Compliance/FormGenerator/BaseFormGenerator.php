@@ -3,13 +3,16 @@
 namespace App\Services\Compliance\FormGenerator;
 
 use Barryvdh\DomPDF\Facade\Pdf;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use App\Services\Compliance\PayrollValidationGuard;
-use App\Services\Compliance\ProductionValidationGuard;
-use App\Services\Compliance\StrictDataValidator;
 
+/**
+ * BaseFormGenerator - Data Transformation Layer
+ *
+ * Responsibility: Transform API data into form structure
+ * Does NOT: Query database, validate data, or orchestrate execution
+ *
+ * Pipeline: API Service → Generator → Blade Template
+ */
 abstract class BaseFormGenerator
 {
     protected string $formCode;
@@ -21,131 +24,65 @@ abstract class BaseFormGenerator
         $this->config = config("compliance_forms.{$this->formCode}", []);
     }
 
+    /**
+     * Public interface for data transformation
+     * Transforms API data into form structure
+     *
+     * @param array $rawData Data from API service
+     * @return array Formatted data: ['header' => [...], 'rows' => [...], 'totals' => [...], 'is_nil' => bool]
+     */
+    final public function generate(array $rawData): array
+    {
+        if (isset($rawData['records'])) {
+            $rawData['records'] = $this->normalizeRecords($rawData['records']);
+        }
+
+        return $this->prepareData($rawData);
+    }
+
+    /**
+     * Transform API data into form structure (implementation)
+     *
+     * @param array $rawData Data from API service
+     * @return array Formatted data: ['header' => [...], 'rows' => [...], 'totals' => [...], 'is_nil' => bool]
+     */
     abstract protected function prepareData(array $rawData): array;
 
-    public function generate(int $tenantId, int $branchId, int $month, int $year, int $batchId): string
+    /**
+     * Generate PDF from prepared form data
+     *
+     * @param array $formData Formatted data from generate()
+     * @return string PDF binary content
+     */
+    public function generatePdf(array $formData): string
     {
-        // Validate context first
-        \App\Services\Compliance\ComplianceContextValidator::validate($tenantId, $branchId, $month, $year);
-        
-        $guard = new ProductionValidationGuard();
-        $guard->validateBeforeGeneration($tenantId, $branchId, $month, $year);
-        
-        $this->validateStatutorySettings($tenantId, $branchId);
-        
-        $validator = app(FormValidationService::class);
-        $validation = $validator->validate($this->formCode, $tenantId, $branchId, $month, $year);
-        
-        if (!$validation['valid']) {
-            Log::warning("Form validation failed for {$this->formCode}", [
-                'errors' => $validation['errors'],
-                'tenant_id' => $tenantId,
-                'batch_id' => $batchId
-            ]);
-        }
-        
-        $aggregator = app(FormDataAggregator::class);
-        $rawData = $aggregator->aggregate($this->formCode, $tenantId, $branchId, $month, $year);
-        
-        $data = $this->prepareData($rawData);
-        
-        // Inject batch signature
-        $signatureService = app(\App\Services\Compliance\DigitalSignatureService::class);
-        $data['batch_signature'] = $signatureService->getBatchSignature($tenantId, $batchId);
-        
-        // Inject company signature (legacy)
-        $data['company_signature'] = $signatureService->getCompanySignature($tenantId);
-        
-        // Strict validation - no N/A allowed
-        $strictValidator = new StrictDataValidator();
-        $strictValidator->validateFormData($this->formCode, $data);
-        
-        $this->validateTotals($data);
-        
-        if (in_array($this->formCode, ['FORM_B', 'FORM_XVI', 'SHOPS_FORM_12'])) {
-            $payrollGuard = new PayrollValidationGuard();
-            $payrollGuard->validateBeforeRender($data);
-        }
-        
-        $memoryBefore = memory_get_usage(true) / 1024 / 1024;
-        
-        $pdf = Pdf::loadView($this->view, $data)
-            ->setPaper('A4', 'portrait')
-            ->setOption('isHtml5ParserEnabled', false)
-            ->setOption('isRemoteEnabled', false)
-            ->setOption('dpi', 72)
-            ->setOption('defaultFont', 'DejaVu Sans')
-            ->setOption('chroot', [public_path()]);
-        
-        $memoryAfter = memory_get_usage(true) / 1024 / 1024;
-        $memoryUsed = $memoryAfter - $memoryBefore;
-        
-        if ($memoryUsed > 150) {
-            throw new \RuntimeException(
-                "Memory threshold exceeded: {$memoryUsed}MB > 150MB for form {$this->formCode}"
-            );
-        }
-        
-        $fileName = "{$this->formCode}_{$batchId}_" . time() . ".pdf";
-        $filePath = "compliance/generated/{$batchId}/{$fileName}";
-        
-        Storage::disk('local')->put($filePath, $pdf->output());
-        
-        // Log generation
-        Log::info("Form generated successfully", [
-            'form_code' => $this->formCode,
-            'tenant_id' => $tenantId,
-            'branch_id' => $branchId,
-            'batch_id' => $batchId,
-            'file_path' => $filePath
-        ]);
-        
-        // Clear memory
-        unset($pdf, $data, $rawData);
-        
-        return $filePath;
-    }
+        try {
+            $pdf = Pdf::loadView($this->view, $formData)
+                ->setPaper('A4', 'portrait')
+                ->setOption('isHtml5ParserEnabled', false)
+                ->setOption('isRemoteEnabled', false)
+                ->setOption('dpi', 72)
+                ->setOption('defaultFont', 'DejaVu Sans')
+                ->setOption('chroot', [public_path()]);
 
-    protected function validateStatutorySettings(int $tenantId, int $branchId): void
-    {
-        $tenant = DB::table('tenants')->where('id', $tenantId)->first();
-        if (!$tenant) {
-            throw new \RuntimeException("Tenant {$tenantId} not found");
-        }
-
-        $branch = DB::table('branches')
-            ->where('id', $branchId)
-            ->where('tenant_id', $tenantId)
-            ->first();
-            
-        if (!$branch) {
-            throw new \RuntimeException("Branch {$branchId} not found or does not belong to tenant {$tenantId}");
-        }
-
-        if (empty($tenant->establishment_name) && empty($tenant->name)) {
-            throw new \RuntimeException(
-                "Statutory settings incomplete. Please configure establishment details in Settings before generating forms."
-            );
-        }
-
-        if (empty($branch->unit_name) && empty($branch->branch_name)) {
-            throw new \RuntimeException(
-                "Branch details incomplete. Please configure branch/unit details in Settings before generating forms."
-            );
-        }
-
-        if (empty($branch->address)) {
-            throw new \RuntimeException(
-                "Branch address missing. Please configure branch address in Settings before generating forms."
-            );
+            return $pdf->output();
+        } catch (\Exception $e) {
+            Log::error("PDF generation failed: " . $e->getMessage());
+            throw $e;
         }
     }
 
+    /**
+     * Format period for display
+     */
     protected function formatPeriod(int $month, int $year): string
     {
         return \Carbon\Carbon::create($year, $month, 1)->format('F Y');
     }
 
+    /**
+     * Calculate totals from rows
+     */
     protected function calculateTotals(array $rows, array $fields): array
     {
         $totals = [];
@@ -154,7 +91,50 @@ abstract class BaseFormGenerator
         }
         return $totals;
     }
-    
+    /**
+     * Normalize records from API service
+     * Converts stdClass objects to arrays, preserves arrays unchanged
+     *
+     * @param array $records Records from API service (may contain stdClass objects)
+     * @return array Normalized records as arrays
+     */
+    protected function normalizeRecords($records): array
+    {
+        if (!is_array($records)) {
+            Log::warning("Compliance record normalization issue", [
+                'form_code' => $this->formCode,
+                'issue' => 'records is not an array',
+                'type' => gettype($records)
+            ]);
+            return [];
+        }
+
+        $normalized = [];
+        foreach ($records as $record) {
+            if (is_object($record)) {
+                $normalized[] = (array) $record;
+            } elseif (is_array($record)) {
+                $normalized[] = $record;
+            } else {
+                Log::warning("Compliance record normalization issue", [
+                    'form_code' => $this->formCode,
+                    'issue' => 'invalid record type',
+                    'type' => gettype($record)
+                ]);
+            }
+        }
+
+        return $normalized;
+    }
+
+    protected function normalizeRecord($record): array
+    {
+        return is_object($record) ? (array) $record : $record;
+    }
+
+    /**
+     * Validate totals match calculated values
+     */
     protected function validateTotals(array $data): void
     {
         if (isset($data['totals']) && isset($data['rows'])) {

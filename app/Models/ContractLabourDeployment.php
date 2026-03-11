@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Auth;
 
 class ContractLabourDeployment extends Model
 {
     use SoftDeletes;
 
     protected $table = 'contract_labour_deployment';
+
 
     protected $fillable = [
         'tenant_id',
@@ -32,18 +34,22 @@ class ContractLabourDeployment extends Model
         'deployment_end' => 'date',
         'work_order_date' => 'date',
     ];
+    public function employee(): BelongsTo
+    {
+        return $this->belongsTo(WorkforceEmployee::class, 'employee_id');
+    }
 
     protected static function booted(): void
     {
         static::addGlobalScope('tenant', function ($query) {
-            if (auth()->check() && auth()->user()->tenant_id) {
-                $query->where('tenant_id', auth()->user()->tenant_id);
+            if (Auth::check() && Auth::user()->tenant_id) {
+                $query->where('tenant_id', Auth::user()->tenant_id);
             }
         });
 
         static::creating(function ($model) {
-            if (auth()->check() && !$model->tenant_id) {
-                $model->tenant_id = auth()->user()->tenant_id;
+            if (Auth::check() && !$model->tenant_id) {
+                $model->tenant_id = Auth::user()->tenant_id;
             }
         });
     }
@@ -53,18 +59,13 @@ class ContractLabourDeployment extends Model
         return $this->belongsTo(Tenant::class);
     }
 
+    public function contractor(): BelongsTo
+    {
+        return $this->belongsTo(ContractorMaster::class, 'contractor_id');
+    }
+
     public function contractorCompliance(): BelongsTo
     {
         return $this->belongsTo(ContractorCompliance::class, 'contractor_compliance_id');
-    }
-
-    public function employee(): BelongsTo
-    {
-        return $this->belongsTo(WorkforceEmployee::class);
-    }
-
-    public function contractor(): BelongsTo
-    {
-        return $this->belongsTo(Contractor::class, 'contractor_compliance_id');
     }
 }

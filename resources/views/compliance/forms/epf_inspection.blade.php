@@ -16,6 +16,9 @@
 @endsection
 
 @section('content')
+@php
+$totals = $totals ?? [];
+@endphp
 @if($is_nil)
     <div class="nil-declaration">
         NIL – No records during this period

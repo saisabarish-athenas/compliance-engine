@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\WorkforceEmployee;
+use Illuminate\Support\Facades\Auth;
 
 class WorkforcePayrollEntry extends Model
 {
@@ -14,6 +16,7 @@ class WorkforcePayrollEntry extends Model
 
     protected $fillable = [
         'tenant_id',
+        'branch_id',
         'payroll_cycle_id',
         'employee_id',
         'total_days_worked',
@@ -61,16 +64,21 @@ class WorkforcePayrollEntry extends Model
     protected static function booted(): void
     {
         static::addGlobalScope('tenant', function ($query) {
-            if (auth()->check() && auth()->user()->tenant_id) {
-                $query->where('tenant_id', auth()->user()->tenant_id);
+            if (Auth::check() && Auth::user()->tenant_id) {
+                $query->where('tenant_id', Auth::user()->tenant_id);
             }
         });
 
         static::creating(function ($model) {
-            if (auth()->check() && !$model->tenant_id) {
-                $model->tenant_id = auth()->user()->tenant_id;
+            if (Auth::check() && !$model->tenant_id) {
+                $model->tenant_id = Auth::user()->tenant_id;
             }
         });
+    }
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
     }
 
     public function tenant(): BelongsTo
@@ -85,6 +93,6 @@ class WorkforcePayrollEntry extends Model
 
     public function employee(): BelongsTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(WorkforceEmployee::class, 'employee_id');
     }
 }

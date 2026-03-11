@@ -9,8 +9,6 @@ class EpfFormGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $aggregator = app(FormDataAggregator::class);
-        
         $rows = [];
         foreach ($rawData['records'] as $record) {
             $rows[] = [
@@ -25,8 +23,8 @@ class EpfFormGenerator extends BaseFormGenerator
             'header' => [
                 'form_title' => 'EPF Inspection Register',
                 'period' => $this->formatPeriod($rawData['period_month'], $rawData['period_year']),
-                'branch' => $aggregator->getBranchDetails($rawData['branch_id']),
-                'tenant' => $aggregator->getTenantDetails($rawData['tenant_id']),
+                'branch' => $rawData['branch'] ?? [],
+                'tenant' => $rawData['tenant'] ?? [],
             ],
             'rows' => $rows,
             'is_nil' => count($rows) === 0,

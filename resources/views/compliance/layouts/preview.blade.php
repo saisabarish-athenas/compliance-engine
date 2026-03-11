@@ -12,26 +12,4 @@
         @media print { .preview-header, .no-print { display: none !important; } }
     </style>
 </head>
-<body>
-    <div class="preview-header no-print">
-        <div class="container-fluid d-flex justify-content-between align-items-center">
-            <div>
-                <h5 class="mb-0">👁️ Preview: {{ $form_title ?? $form_code }}</h5>
-                <small>Batch #{{ $batch_id }} | {{ \Carbon\Carbon::create($period_year, $period_month, 1)->format('F Y') }}</small>
-            </div>
-            <div class="d-flex gap-2">
-                <button onclick="window.print()" class="btn btn-light btn-sm">🖨️ Print</button>
-                <button onclick="window.close()" class="btn btn-outline-light btn-sm">✖️ Close</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="preview-content">
-        @yield('content')
-    </div>
-
-    <div class="text-center py-4 no-print">
-        <p class="text-muted"><small>This is a preview. Data is not saved to database.</small></p>
-    </div>
-</body>
 </html>

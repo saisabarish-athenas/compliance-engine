@@ -2,64 +2,72 @@
 
 namespace App\Services\Compliance\FormGenerator;
 
+/**
+ * FormGeneratorFactory - Maps form codes to dedicated generators
+ *
+ * Aligned with official compliance form catalog.
+ * Each form has its own generator for better maintainability and debugging.
+ */
 class FormGeneratorFactory
 {
-    protected static array $payrollForms = [
-        'FORM_B', 'FORM_10', 'FORM_25', 'FORM_XVI', 'FORM_XVII', 'FORM_XIX',
-        'FORM_XXI', 'FORM_XXIII', 'SHOPS_FORM_12', 'SHOPS_FINES', 'FORM_XX',
-        'FORM_XXII', 'SHOPS_UNPAID'
-    ];
+    protected static array $generatorMap = [
+        // Contractor Forms
+        'FORM_XII' => FormXIIGenerator::class,
+        'FORM_XIII' => FormXIIIGenerator::class,
+        'FORM_XIV' => FormXIVGenerator::class,
+        'FORM_XVI' => FormXVIGenerator::class,
+        'FORM_XVII' => FormXVIIGenerator::class,
+        'FORM_XIX' => FormXIXGenerator::class,
+        'FORM_XX' => FormXXGenerator::class,
+        'FORM_XXI' => FormXXIGenerator::class,
+        'FORM_XXII' => FormXXIIGenerator::class,
+        'FORM_XXIII' => FormXXIIIGenerator::class,
 
-    protected static array $contractorForms = [
-        'FORM_XIII', 'FORM_XIV', 'FORM_XII', 'CLRA_LICENSE', 'FORM_XXIV',
-        'FORM_XXV', 'SHOPS_FORM_1', 'CONTRACTOR_MASTER'
-    ];
+        // Master Register Forms
+        'FORM_A' => FormAGenerator::class,
+        'FORM_C' => FormCGenerator::class,
+        'FORM_D' => FormDGenerator::class,
+        'FORM_D_ER' => FormDERGenerator::class,
 
-    protected static array $incidentForms = [
-        'FORM_8', 'FORM_11', 'FORM_26', 'FORM_26A', 'ESI_FORM_12', 'FORM_18'
-    ];
+        // Incident Forms
+        'FORM_11' => Form11Generator::class,
+        'ESI_FORM_12' => ESIForm12Generator::class,
+        'EPF_INSPECTION' => EPFInspectionGenerator::class,
 
-    protected static array $inspectionForms = [
-        'HAZARD_REG', 'EPF_INSPECTION', 'SHOPS_FORM_13'
-    ];
+        // Payroll Forms
+        'FORM_B' => FormBGenerator::class,
+        'FORM_2' => Form2Generator::class,
+        'FORM_10' => Form10Generator::class,
+        'FORM_12' => Form12Generator::class,
+        'FORM_17' => Form17Generator::class,
+        'FORM_18' => Form18Generator::class,
+        'FORM_25' => Form25Generator::class,
+        'FORM_8' => Form8Generator::class,
+        'FORM_26' => Form26Generator::class,
+        'FORM_26A' => Form26AGenerator::class,
+        'HAZARD_REG' => HazardRegisterGenerator::class,
 
-    protected static array $masterRegisterForms = [
-        'FORM_12', 'FORM_17', 'FORM_2', 'SHOPS_FORM_C', 'SHOPS_FORM_VI', 'CLRA_RETURN'
+        // Shops Forms
+        'SHOPS_FORM_C' => ShopsFormCGenerator::class,
+        'SHOPS_UNPAID' => ShopsUnpaidGenerator::class,
+        'SHOPS_FORM_12' => ShopsForm12Generator::class,
+        'SHOPS_FORM_13' => ShopsForm13Generator::class,
+        'SHOPS_FINES' => ShopsFinesGenerator::class,
+        'SHOPS_FORM_VI' => ShopsFormVIGenerator::class,
     ];
 
     public static function make(string $formCode): ?BaseFormGenerator
     {
-        if (in_array($formCode, self::$payrollForms)) {
-            return new PayrollBasedFormGenerator($formCode);
-        }
-        
-        if (in_array($formCode, self::$contractorForms)) {
-            return new ContractorBasedFormGenerator($formCode);
-        }
-        
-        if (in_array($formCode, self::$incidentForms)) {
-            return new IncidentBasedFormGenerator($formCode);
-        }
-        
-        if (in_array($formCode, self::$inspectionForms)) {
-            return new InspectionBasedFormGenerator($formCode);
-        }
-        
-        if (in_array($formCode, self::$masterRegisterForms)) {
-            return new MasterRegisterFormGenerator($formCode);
+        if (!isset(self::$generatorMap[$formCode])) {
+            return null;
         }
 
-        return null;
+        $generatorClass = self::$generatorMap[$formCode];
+        return new $generatorClass();
     }
 
     public static function getSupportedForms(): array
     {
-        return array_merge(
-            self::$payrollForms,
-            self::$contractorForms,
-            self::$incidentForms,
-            self::$inspectionForms,
-            self::$masterRegisterForms
-        );
+        return array_keys(self::$generatorMap);
     }
 }

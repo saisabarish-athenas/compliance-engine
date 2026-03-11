@@ -10,7 +10,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('workforce_attendance')) {
             Schema::table('workforce_attendance', function (Blueprint $table) {
-                $table->index(['employee_id', 'date'], 'idx_employee_date');
+                $table->index(['employee_id', 'attendance_date'], 'idx_employee_date');
             });
         }
 

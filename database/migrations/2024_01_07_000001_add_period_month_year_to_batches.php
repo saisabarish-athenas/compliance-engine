@@ -9,8 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('compliance_execution_batches', function (Blueprint $table) {
-            $table->integer('period_month')->nullable()->after('section_id');
-            $table->integer('period_year')->nullable()->after('period_month');
+
+            if (!Schema::hasColumn('compliance_execution_batches', 'period_month')) {
+                $table->integer('period_month')->nullable()->after('section_id');
+            }
+
+            if (!Schema::hasColumn('compliance_execution_batches', 'period_year')) {
+                $table->integer('period_year')->nullable()->after('period_month');
+            }
         });
     }
 
