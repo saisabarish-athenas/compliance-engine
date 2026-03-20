@@ -9,16 +9,50 @@ class ShopsFormVIGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
+        $records = $rawData['records'] ?? [];
         $rows = [];
-        foreach ($rawData['records'] ?? [] as $record) {
-            $record = $this->normalizeRecord($record);
-            $rows[] = [
-                'employee_code' => $record['employee_code'] ?? '',
-                'employee_name' => $record['employee_name'] ?? 'N/A',
-                'designation' => $record['designation'] ?? 'N/A',
-                'leave_type' => $record['leave_type'] ?? 'N/A',
-                'leave_days' => $record['leave_days'] ?? 0,
+        $employeeMap = [];
+
+        // Group records by employee
+        foreach ($records as $record) {
+            $code = $record['employee_code'] ?? '';
+            if (!isset($employeeMap[$code])) {
+                $employeeMap[$code] = [
+                    'employee_name' => $record['name'] ?? 'N/A',
+                    'ticket' => $code,
+                    'holidays' => [],
+                ];
+            }
+            $employeeMap[$code]['holidays'][] = [
+                'date' => $record['attendance_date'] ?? '',
+                'status' => $record['status'] ?? '',
             ];
+        }
+
+        // Convert to rows with holiday columns
+        foreach ($employeeMap as $employee) {
+            $row = [
+                'employee_name' => $employee['employee_name'],
+                'ticket' => $employee['ticket'],
+                'holiday1' => '',
+                'holiday2' => '',
+                'holiday3' => '',
+                'holiday4' => '',
+                'holiday5' => '',
+                'holiday6' => '',
+                'holiday7' => '',
+                'holiday8' => '',
+                'holiday9' => '',
+                'remarks' => '',
+            ];
+
+            // Map holidays to columns (max 9)
+            foreach ($employee['holidays'] as $idx => $holiday) {
+                if ($idx >= 9) break;
+                $row['holiday' . ($idx + 1)] = $holiday['status'] ?? '';
+            }
+
+            $rows[] = $row;
         }
 
         $month = $rawData['meta']['month'] ?? 1;
@@ -28,7 +62,7 @@ class ShopsFormVIGenerator extends BaseFormGenerator
 
         return [
             'header' => [
-                'form_title' => 'SHOPS FORM VI - Leave Register',
+                'form_title' => 'SHOPS FORM VI - Register of National and Festival Holidays',
                 'period' => $this->formatPeriod($month, $year),
                 'branch' => $branch,
                 'tenant' => is_array($tenant) ? ($tenant['name'] ?? 'N/A') : $tenant,

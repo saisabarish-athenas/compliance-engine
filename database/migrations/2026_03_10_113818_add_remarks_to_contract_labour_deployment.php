@@ -8,17 +8,23 @@ class AddRemarksToContractLabourDeployment extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasColumn('contract_labour_deployment', 'remarks')) {
-            Schema::table('contract_labour_deployment', function (Blueprint $table) {
-                $table->text('remarks')->nullable();
-            });
+        if (Schema::hasTable('contract_labour_deployment')) {
+            if (!Schema::hasColumn('contract_labour_deployment', 'remarks')) {
+                Schema::table('contract_labour_deployment', function (Blueprint $table) {
+                    $table->text('remarks')->nullable();
+                });
+            }
         }
     }
 
     public function down(): void
     {
-        Schema::table('contract_labour_deployment', function (Blueprint $table) {
-            $table->dropColumn('remarks');
-        });
+        if (Schema::hasTable('contract_labour_deployment')) {
+            if (Schema::hasColumn('contract_labour_deployment', 'remarks')) {
+                Schema::table('contract_labour_deployment', function (Blueprint $table) {
+                    $table->dropColumn('remarks');
+                });
+            }
+        }
     }
 }

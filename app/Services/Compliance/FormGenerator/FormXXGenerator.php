@@ -19,30 +19,31 @@ class FormXXGenerator extends BaseFormGenerator
         foreach ($records as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
-                'workmen_name' => $record['workmen_name'] ?? $record['name'] ?? '',
-                'father_husband_name' => $record['father_husband_name'] ?? '',
+                'employee_name' => $record['employee_name'] ?? '',
+                'father_name' => $record['father_name'] ?? '',
                 'designation' => $record['designation'] ?? '',
-                'act_omission' => $record['act_omission'] ?? '',
-                'date_of_offence' => $record['date_of_offence'] ?? '',
-                'showed_cause' => $record['showed_cause'] ?? '',
-                'person_present' => $record['person_present'] ?? '',
-                'wage_period' => $record['wage_period'] ?? '',
-                'amount_fine' => (float)($record['amount_fine'] ?? 0),
-                'date_realised' => $record['date_realised'] ?? '',
+                'damage_particulars' => $record['damage_particulars'] ?? '',
+                'damage_date' => $record['damage_date'] ?? '',
+                'showed_cause' => $record['showed_cause'] ?? false,
+                'witness_name' => $record['witness_name'] ?? '',
+                'deduction_amount' => (float)($record['deduction_amount'] ?? 0),
+                'instalments' => $record['instalments'] ?? '',
+                'first_month' => $record['first_month'] ?? '',
+                'last_month' => $record['last_month'] ?? '',
                 'remarks' => $record['remarks'] ?? '',
             ];
         }
 
-        $totals = ['amount_fine' => array_sum(array_column($rows, 'amount_fine'))];
+        $totals = ['deduction_amount' => array_sum(array_column($rows, 'deduction_amount'))];
 
         return [
             'header' => [
-                'form_title' => 'FORM XX - Register of Fines',
+                'form_title' => 'FORM XX - Register of Deductions for Damage or Loss',
                 'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'contractor_name' => $rawData['contractor_name'] ?? '',
-                'nature_of_work' => $rawData['nature_of_work'] ?? '',
-                'establishment_name' => $rawData['establishment_name'] ?? '',
-                'principal_employer' => $rawData['principal_employer'] ?? '',
+                'contractor_name' => $rawData['tenant']['name'] ?? '',
+                'work_nature' => 'Manufacturing',
+                'establishment_name' => $rawData['branch']['name'] ?? '',
+                'principal_employer' => $rawData['tenant']['name'] ?? '',
                 'tenant' => $rawData['tenant'] ?? [],
                 'branch' => $rawData['branch'] ?? [],
             ],

@@ -4,8 +4,8 @@ namespace App\Services\Compliance\FormGenerator;
 
 class HazardRegisterGenerator extends BaseFormGenerator
 {
-    protected string $formCode = 'HAZARD_REG';
-    protected string $view = 'compliance.forms.hazard_register';
+    protected string $formCode = 'HazardReg';
+    protected string $view = 'compliance.forms.hazard_reg';
 
     protected function prepareData(array $rawData): array
     {

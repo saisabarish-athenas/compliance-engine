@@ -20,11 +20,17 @@ class FormXXIIApiService extends BaseFormApiService
             ->whereMonth('pc.period_from', $month)
             ->where('pe.advances', '>', 0)
             ->select([
-                'e.employee_code',
-                'e.name',
-                'pe.advances',
+                'e.name as employee_name',
+                'e.father_name',
+                'e.designation',
+                'pc.period_from as advance_date',
+                'pe.advances as advance_amount',
+                DB::raw('"Salary Advance" as purpose'),
+                DB::raw('1 as installments'),
+                'pc.period_from as installment_repaid',
+                'pc.period_from as last_installment_date',
             ])
-            ->orderBy('e.employee_code')
+            ->orderBy('e.name')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();

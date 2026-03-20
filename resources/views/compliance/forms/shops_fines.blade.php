@@ -153,20 +153,26 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 10; $i++)
+                @if($is_nil)
                 <tr>
-                    <td class="col-sl"></td>
-                    <td class="col-name"></td>
-                    <td class="col-father"></td>
-                    <td class="col-act"></td>
-                    <td class="col-cause"></td>
-                    <td class="col-wages"></td>
-                    <td class="col-amount"></td>
-                    <td class="col-date"></td>
-                    <td class="col-sign"></td>
-                    <td class="col-remarks"></td>
+                    <td colspan="10" class="text-center">Nil</td>
                 </tr>
-                @endfor
+                @else
+                @foreach($rows as $index => $row)
+                <tr>
+                    <td class="col-sl text-center">{{ $index + 1 }}</td>
+                    <td class="col-name">{{ $row['employee_name'] }}</td>
+                    <td class="col-father">{{ $row['father_name'] }}</td>
+                    <td class="col-act">{{ $row['reason'] }}</td>
+                    <td class="col-cause">{{ $row['cause'] }}</td>
+                    <td class="col-wages text-center">{{ number_format($row['wages'], 2) }}</td>
+                    <td class="col-amount text-center">{{ number_format($row['fine_amount'], 2) }}<br>{{ $row['fine_date'] }}</td>
+                    <td class="col-date text-center">{{ $row['realized_date'] }}</td>
+                    <td class="col-sign"></td>
+                    <td class="col-remarks">{{ $row['remarks'] }}</td>
+                </tr>
+                @endforeach
+                @endif
             </tbody>
         </table>
     </div>

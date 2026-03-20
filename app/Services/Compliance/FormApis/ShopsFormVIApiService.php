@@ -17,7 +17,6 @@ class ShopsFormVIApiService extends BaseFormApiService
             ->where('we.branch_id', $branchId)
             ->whereYear('wa.attendance_date', $year)
             ->whereMonth('wa.attendance_date', $month)
-            ->where('wa.status', 'HOLIDAY')
             ->select([
                 'we.employee_code',
                 'we.name',

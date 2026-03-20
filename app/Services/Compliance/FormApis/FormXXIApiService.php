@@ -20,14 +20,26 @@ class FormXXIApiService extends BaseFormApiService
             ->whereMonth('pc.period_from', $month)
             ->where('pe.fines', '>', 0)
             ->select([
-                'e.employee_code',
-                'e.name',
-                'pe.fines',
+                'e.name as employee_name',
+                'e.father_name',
+                'e.designation',
+                DB::raw('"Misconduct" as act_or_omission'),
+                'pc.period_from as date_of_offence',
+                DB::raw('"Yes" as showed_cause'),
+                DB::raw('"Manager" as heard_by'),
+                'pe.fines as fine_amount',
+                'pc.period_from as fine_realised',
+                DB::raw('"" as remarks'),
             ])
             ->orderBy('e.employee_code')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();
+
+        $rows = array_map(function($row) {
+            $row['wage_period'] = \Carbon\Carbon::parse($row['date_of_offence'])->format('F Y');
+            return $row;
+        }, $rows);
 
         return [
             'records' => $rows,
@@ -40,6 +52,7 @@ class FormXXIApiService extends BaseFormApiService
             'tenant' => $this->getTenantDetails($tenantId),
             'branch' => $this->getBranchDetails($branchId, $tenantId),
             'period' => $this->formatPeriod(),
+            'is_nil' => count($rows) === 0,
         ];
     }
 }

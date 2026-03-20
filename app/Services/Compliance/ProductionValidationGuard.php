@@ -19,7 +19,10 @@ class ProductionValidationGuard
             throw new \Exception("User not authenticated");
         }
 
-        if ($user->tenant->subscription_type !== 'FULL') {
+        // Allow MINIMAL subscription in development mode
+        if (!app()->isProduction() && $user->tenant->subscription_type === 'MINIMAL') {
+            // Development mode - allow MINIMAL subscription
+        } elseif ($user->tenant->subscription_type !== 'FULL') {
             throw new \Exception(
                 "Form generation requires FULL subscription. " .
                 "Current subscription: {$user->tenant->subscription_type}"

@@ -18,12 +18,17 @@ class Form10ApiService extends BaseFormApiService
             ->where('e.branch_id', $branchId)
             ->whereYear('pc.period_from', $year)
             ->whereMonth('pc.period_from', $month)
-            ->where('pe.overtime_wages', '>', 0)
             ->select([
                 'e.employee_code',
                 'e.name',
                 'e.designation',
+                'pe.overtime_hours',
                 'pe.overtime_wages',
+                'pe.basic_earned',
+                'pe.da_earned',
+                'pe.hra_earned',
+                'pe.other_allowances',
+                'pe.total_days_worked',
             ])
             ->orderBy('e.employee_code')
             ->get()

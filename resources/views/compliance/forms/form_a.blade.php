@@ -171,65 +171,41 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($rows ?? $entries ?? [] as $index => $row)
-                    <tr>
-                        <td class="col-1">{{ $index + 1 }}</td>
-                        <td class="col-2">{{ $row['employee_code'] ?? 'NIL' }}</td>
-                        <td class="col-3">{{ $row['employee_name'] ?? 'NIL' }}</td>
-                        <td class="col-4">{{ $row['father_name'] ?? 'NIL' }}</td>
-                        <td class="col-5">{{ $row['gender'] ?? 'NIL' }}</td>
-                        <td class="col-6">{{ $row['permanent_address'] ?? 'NIL' }}</td>
-                        <td class="col-7">{{ $row['nationality'] ?? 'NIL' }}</td>
-                        <td class="col-8">{{ $row['dob'] ?? 'NIL' }}</td>
-                        <td class="col-9">{{ $row['education_level'] ?? 'NIL' }}</td>
-                        <td class="col-10">{{ $row['aadhaar'] ?? 'NIL' }}</td>
-                        <td class="col-11">{{ $row['date_of_joining'] ?? 'NIL' }}</td>
-                        <td class="col-12">{{ $row['designation'] ?? 'NIL' }}</td>
-                        <td class="col-13">{{ $row['employment_type'] ?? 'NIL' }}</td>
-                        <td class="col-14">{{ $row['mobile'] ?? 'NIL' }}</td>
-                        <td class="col-15">{{ $row['bank_account'] ?? 'NIL' }}</td>
-                        <td class="col-16">{{ $row['ifsc_code'] ?? 'NIL' }}</td>
-                        <td class="col-17">{{ $row['uan'] ?? 'NIL' }}</td>
-                        <td class="col-18">{{ $row['esic_number'] ?? 'NIL' }}</td>
-                        <td class="col-19">{{ $row['aadhaar_linked'] ?? 'NIL' }}</td>
-                        <td class="col-20">{{ $row['pan'] ?? 'NIL' }}</td>
-                        <td class="col-21">{{ $row['category'] ?? 'NIL' }}</td>
-                        <td class="col-22">{{ $row['present_address'] ?? 'NIL' }}</td>
-                        <td class="col-23">{{ $row['identification_mark'] ?? 'NIL' }}</td>
-                        <td class="col-24"></td>
-                        <td class="col-25"></td>
-                    </tr>
-                @empty
-                    @for($i = 0; $i < 9; $i++)
+                @if(!empty($rows) && count($rows) > 0)
+                    @foreach($rows as $index => $row)
                         <tr>
-                            <td class="col-1">{{ $i + 1 }}</td>
-                            <td class="col-2">NIL</td>
-                            <td class="col-3">NIL</td>
-                            <td class="col-4">NIL</td>
-                            <td class="col-5">NIL</td>
-                            <td class="col-6">NIL</td>
-                            <td class="col-7">NIL</td>
-                            <td class="col-8">NIL</td>
-                            <td class="col-9">NIL</td>
-                            <td class="col-10">NIL</td>
-                            <td class="col-11">NIL</td>
-                            <td class="col-12">NIL</td>
-                            <td class="col-13">NIL</td>
-                            <td class="col-14">NIL</td>
-                            <td class="col-15">NIL</td>
-                            <td class="col-16">NIL</td>
-                            <td class="col-17">NIL</td>
-                            <td class="col-18">NIL</td>
-                            <td class="col-19">NIL</td>
-                            <td class="col-20">NIL</td>
-                            <td class="col-21">NIL</td>
-                            <td class="col-22">NIL</td>
-                            <td class="col-23">NIL</td>
+                            <td class="col-1">{{ $index + 1 }}</td>
+                            <td class="col-2">{{ $row['employee_code'] ?? '' }}</td>
+                            <td class="col-3">{{ $row['employee_name'] ?? '' }}</td>
+                            <td class="col-4">{{ $row['father_name'] ?? '' }}</td>
+                            <td class="col-5">{{ $row['gender'] ?? '' }}</td>
+                            <td class="col-6">{{ $row['permanent_address'] ?? '' }}</td>
+                            <td class="col-7">{{ $row['nationality'] ?? '' }}</td>
+                            <td class="col-8">{{ $row['dob'] ?? '' }}</td>
+                            <td class="col-9">{{ $row['education_level'] ?? '' }}</td>
+                            <td class="col-10">{{ $row['aadhaar'] ?? '' }}</td>
+                            <td class="col-11">{{ $row['date_of_joining'] ?? '' }}</td>
+                            <td class="col-12">{{ $row['designation'] ?? '' }}</td>
+                            <td class="col-13">{{ $row['employment_type'] ?? '' }}</td>
+                            <td class="col-14">{{ $row['mobile'] ?? '' }}</td>
+                            <td class="col-15">{{ $row['bank_account'] ?? '' }}</td>
+                            <td class="col-16">{{ $row['ifsc_code'] ?? '' }}</td>
+                            <td class="col-17">{{ $row['uan'] ?? '' }}</td>
+                            <td class="col-18">{{ $row['esic_number'] ?? '' }}</td>
+                            <td class="col-19">{{ $row['aadhaar_linked'] ?? '' }}</td>
+                            <td class="col-20">{{ $row['pan'] ?? '' }}</td>
+                            <td class="col-21">{{ $row['category'] ?? '' }}</td>
+                            <td class="col-22">{{ $row['present_address'] ?? '' }}</td>
+                            <td class="col-23">{{ $row['identification_mark'] ?? '' }}</td>
                             <td class="col-24"></td>
                             <td class="col-25"></td>
                         </tr>
-                    @endfor
-                @endforelse
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="25" style="text-align:center;">No records found</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
 

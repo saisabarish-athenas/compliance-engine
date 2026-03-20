@@ -32,14 +32,31 @@ class FixMissingComplianceColumns extends Migration
             });
         }
     }
+
     public function down(): void
     {
-        Schema::table('contract_labour_deployment', function (Blueprint $table) {
-            $table->dropColumn(['nature_of_work', 'work_location', 'termination_reason']);
-        });
+        if (Schema::hasTable('workforce_advances')) {
+            Schema::table('workforce_advances', function (Blueprint $table) {
+                if (Schema::hasColumn('workforce_advances', 'last_month')) {
+                    $table->dropColumn('last_month');
+                }
+            });
+        }
 
-        Schema::table('workforce_advances', function (Blueprint $table) {
-            $table->dropColumn('last_month');
-        });
+        if (Schema::hasTable('workforce_deductions')) {
+            Schema::table('workforce_deductions', function (Blueprint $table) {
+                if (Schema::hasColumn('workforce_deductions', 'deduction_month')) {
+                    $table->dropColumn('deduction_month');
+                }
+            });
+        }
+
+        if (Schema::hasTable('workforce_fines')) {
+            Schema::table('workforce_fines', function (Blueprint $table) {
+                if (Schema::hasColumn('workforce_fines', 'fine_month')) {
+                    $table->dropColumn('fine_month');
+                }
+            });
+        }
     }
 }

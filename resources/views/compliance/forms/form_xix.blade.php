@@ -1,6 +1,6 @@
 @extends('compliance.layouts.preview')
 
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -115,9 +115,13 @@
         .signature-space {
             margin-top: 20px;
         }
+        .page-break {
+            page-break-after: always;
+        }
     </style>
 </head>
 <body>
+    @foreach($rows as $slip)
     <div class="form-container">
         <div class="form-header">
             <div class="header-title">FORM XIX</div>
@@ -128,23 +132,23 @@
         <div class="header-fields">
             <div class="header-row">
                 <div class="header-label">Name and Address of Contractor</div>
-                <div class="header-value">{{ $contractor_name ?? 'NIL' }}</div>
+                <div class="header-value">{{ $slip['contractor_name'] ?? '' }}</div>
             </div>
             <div class="header-row">
                 <div class="header-label">Name and Father's/Husband's name</div>
-                <div class="header-value">{{ $workman_name ?? 'NIL' }} / {{ $father_name ?? 'NIL' }}</div>
+                <div class="header-value">{{ $slip['workman_name'] ?? '' }}{{ !empty($slip['father_name']) ? ' / ' . $slip['father_name'] : '' }}</div>
             </div>
             <div class="header-row">
                 <div class="header-label">Name of the workman</div>
-                <div class="header-value">{{ $workman_name ?? 'NIL' }}</div>
+                <div class="header-value">{{ $slip['workman_name'] ?? '' }}</div>
             </div>
             <div class="header-row">
                 <div class="header-label">Nature and location of work</div>
-                <div class="header-value">{{ $work_nature ?? 'NIL' }} - {{ $work_location ?? 'NIL' }}</div>
+                <div class="header-value">{{ $slip['work_nature'] ?? '' }}{{ !empty($slip['work_location']) ? ' - ' . $slip['work_location'] : '' }}</div>
             </div>
             <div class="header-row">
                 <div class="header-label">For the Week/Fortnight/Month ending</div>
-                <div class="header-value">{{ $period_ending ?? 'NIL' }}</div>
+                <div class="header-value">{{ $slip['period_ending'] ?? '' }}</div>
             </div>
         </div>
 
@@ -174,13 +178,13 @@
             </thead>
             <tbody>
                 <tr>
-                    <td class="col-1">{{ $days_worked ?? 'NIL' }}</td>
-                    <td class="col-2">{{ $piece_units ?? 'NIL' }}</td>
-                    <td class="col-3">{{ isset($daily_rate) ? number_format($daily_rate, 2) : 'NIL' }}</td>
-                    <td class="col-4">{{ isset($overtime_wages) ? number_format($overtime_wages, 2) : 'NIL' }}</td>
-                    <td class="col-5">{{ isset($gross_salary) ? number_format($gross_salary, 2) : 'NIL' }}</td>
-                    <td class="col-6">{{ isset($total_deductions) ? number_format($total_deductions, 2) : 'NIL' }}</td>
-                    <td class="col-7">{{ isset($net_salary) ? number_format($net_salary, 2) : 'NIL' }}</td>
+                    <td class="col-1">{{ $slip['days_worked'] ?? '' }}</td>
+                    <td class="col-2">{{ $slip['piece_units'] ?? '' }}</td>
+                    <td class="col-3">{{ isset($slip['daily_rate']) ? number_format($slip['daily_rate'], 2) : '' }}</td>
+                    <td class="col-4">{{ isset($slip['overtime_wages']) ? number_format($slip['overtime_wages'], 2) : '' }}</td>
+                    <td class="col-5">{{ isset($slip['gross_salary']) ? number_format($slip['gross_salary'], 2) : '' }}</td>
+                    <td class="col-6">{{ isset($slip['total_deductions']) ? number_format($slip['total_deductions'], 2) : '' }}</td>
+                    <td class="col-7">{{ isset($slip['net_salary']) ? number_format($slip['net_salary'], 2) : '' }}</td>
                 </tr>
             </tbody>
         </table>
@@ -195,5 +199,7 @@
 
         <div class="signature-space"></div>
     </div>
+    <div class="page-break"></div>
+    @endforeach
 </body>
 </html>

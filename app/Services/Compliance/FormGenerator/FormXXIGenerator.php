@@ -10,29 +10,39 @@ class FormXXIGenerator extends BaseFormGenerator
     protected function prepareData(array $rawData): array
     {
         $rows = [];
-        foreach ($rawData['records'] as $record) {
+        $tenant = $rawData['tenant'] ?? [];
+        $branch = $rawData['branch'] ?? [];
+        $month = $rawData['meta']['month'] ?? 1;
+        $year = $rawData['meta']['year'] ?? 2024;
+
+        foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
-                'employee_code' => $record['employee_code'] ?? 'N/A',
-                'employee_name' => $record['employee_name'] ?? 'N/A',
+                'name' => $record['employee_name'] ?? 'N/A',
+                'father_name' => $record['father_name'] ?? 'N/A',
                 'designation' => $record['designation'] ?? 'N/A',
+                'act_or_omission' => $record['act_or_omission'] ?? 'N/A',
+                'date_of_offence' => $record['date_of_offence'] ?? 'N/A',
+                'showed_cause' => $record['showed_cause'] ?? 'N/A',
+                'heard_by' => $record['heard_by'] ?? 'N/A',
+                'wage_period' => $record['wage_period'] ?? 'N/A',
                 'fine_amount' => round($record['fine_amount'] ?? 0, 2),
-                'fine_date' => $record['fine_date'] ?? 'N/A',
-                'reason' => $record['reason'] ?? 'N/A',
+                'fine_realised' => $record['fine_realised'] ?? 'N/A',
+                'remarks' => $record['remarks'] ?? '',
             ];
         }
 
-        $totals = $this->calculateTotals($rows, ['fine_amount']);
-
         return [
             'header' => [
-                'form_title' => 'FORM XXI - Register of Fines',
-                'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'branch' => $rawData['branch'] ?? [],
-                'tenant' => $rawData['tenant'] ?? [],
+                'contractor_name' => $tenant['name'] ?? 'N/A',
+                'work_nature' => 'Manufacturing',
+                'establishment_name' => $branch['name'] ?? 'N/A',
+                'principal_employer' => $tenant['name'] ?? 'N/A',
+                'month_year' => $this->formatPeriod($month, $year),
+                'tenant' => $tenant,
+                'branch' => $branch,
             ],
             'rows' => $rows,
-            'totals' => $totals,
             'is_nil' => count($rows) === 0,
         ];
     }

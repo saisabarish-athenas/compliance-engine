@@ -170,14 +170,14 @@
                 <div class="dot-line"></div>
             </div>
             <div style="margin-left: 40%; margin-bottom: 8px; font-size: 9px;">
-                {{ data_get($header, 'tenant.name', 'NIL') }}</div>
+                {{ data_get($header, 'tenant.name') ?? '' }}</div>
 
             <div class="info-row">
                 <div class="info-label">Name and address of the Establishment</div>
                 <div class="dot-line"></div>
             </div>
             <div style="margin-left: 40%; margin-bottom: 8px; font-size: 9px;">
-                {{ data_get($header, 'branch.address', 'NIL') }}</div>
+                {{ data_get($header, 'branch.address') ?? '' }}</div>
         </div>
 
         <table class="register-table">
@@ -205,23 +205,15 @@
                     @foreach ($rows as $index => $row)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-
                             <td>
                                 {{ $row['contractor_name'] ?? '' }}
-                                <br>
-                                {{ $row['contractor_address'] ?? '' }}
+                                @if(!empty($row['contractor_address']))<br>{{ $row['contractor_address'] }}@endif
                             </td>
-
                             <td>{{ $row['nature_of_work'] ?? '' }}</td>
-
                             <td>{{ $row['work_location'] ?? '' }}</td>
-
                             <td>{{ $row['contract_from'] ?? '' }}</td>
-
                             <td>{{ $row['contract_to'] ?? '' }}</td>
-
                             <td>{{ $row['max_workers'] ?? '' }}</td>
-
                         </tr>
                     @endforeach
                 @else

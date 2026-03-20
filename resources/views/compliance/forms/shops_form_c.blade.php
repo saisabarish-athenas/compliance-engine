@@ -198,27 +198,33 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 10; $i++)
+                @if($is_nil)
                 <tr>
-                    <td class="col-sl"></td>
-                    <td class="col-name"></td>
-                    <td class="col-father"></td>
-                    <td class="col-age"></td>
-                    <td class="col-designation"></td>
-                    <td class="col-days"></td>
-                    <td class="col-wages"></td>
-                    <td class="col-bonus"></td>
-                    <td class="col-puja"></td>
-                    <td class="col-interim"></td>
-                    <td class="col-tax"></td>
-                    <td class="col-deduction"></td>
-                    <td class="col-total"></td>
-                    <td class="col-net"></td>
-                    <td class="col-paid"></td>
-                    <td class="col-date"></td>
+                    <td colspan="17" class="text-center">Nil</td>
+                </tr>
+                @else
+                @foreach($rows as $index => $row)
+                <tr>
+                    <td class="col-sl text-center">{{ $index + 1 }}</td>
+                    <td class="col-name">{{ $row['employee_name'] }}</td>
+                    <td class="col-father">{{ $row['father_name'] }}</td>
+                    <td class="col-age text-center">{{ $row['age_eligible'] }}</td>
+                    <td class="col-designation">{{ $row['designation'] }}</td>
+                    <td class="col-days text-center">{{ $row['days_worked'] }}</td>
+                    <td class="col-wages text-center">{{ number_format($row['total_wages'], 2) }}</td>
+                    <td class="col-bonus text-center">{{ number_format($row['bonus_payable'], 2) }}</td>
+                    <td class="col-puja text-center">{{ number_format($row['puja_bonus'], 2) }}</td>
+                    <td class="col-interim text-center">{{ number_format($row['interim_bonus'], 2) }}</td>
+                    <td class="col-tax text-center">{{ number_format($row['tax_deducted'], 2) }}</td>
+                    <td class="col-deduction text-center">{{ number_format($row['loss_deduction'], 2) }}</td>
+                    <td class="col-total text-center">{{ number_format($row['total_deduction'], 2) }}</td>
+                    <td class="col-net text-center">{{ number_format($row['net_payable'], 2) }}</td>
+                    <td class="col-paid text-center">{{ number_format($row['amount_paid'], 2) }}</td>
+                    <td class="col-date text-center">{{ $row['payment_date'] }}</td>
                     <td class="col-sign"></td>
                 </tr>
-                @endfor
+                @endforeach
+                @endif
             </tbody>
         </table>
     </div>

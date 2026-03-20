@@ -2,6 +2,8 @@
 
 namespace App\Services\Compliance\FormGenerator;
 
+use Carbon\Carbon;
+
 class Form26Generator extends BaseFormGenerator
 {
     protected string $formCode = 'FORM_26';
@@ -10,17 +12,32 @@ class Form26Generator extends BaseFormGenerator
     protected function prepareData(array $rawData): array
     {
         $rows = [];
+        $slNo = 1;
+
         foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
+            
             $rows[] = [
-                'sl_no' => count($rows) + 1,
-                'incident_date' => $record['incident_date'] ?? null,
-                'employee_name' => $record['employee_name'] ?? 'N/A',
-                'location' => $record['location'] ?? 'N/A',
-                'description' => $record['description'] ?? 'N/A',
-                'nature_of_injury' => $record['nature_of_injury'] ?? 'N/A',
-                'severity' => $record['severity'] ?? 'N/A',
+                'running_sl_no' => (string)$slNo,
+                'date_and_hour_of_accident' => $this->formatDate($record['incident_date'] ?? null),
+                'name_and_designation_of_person_injured' => $this->formatNameAndDesignation(
+                    $record['employee_name'] ?? '',
+                    $record['designation'] ?? ''
+                ),
+                'exact_place_of_accident' => $record['location'] ?? '',
+                'full_description_of_accident' => $record['description'] ?? '',
+                'nature_extent_location_of_injury' => '',
+                'date_of_despatch_of_report_form_18' => '',
+                'date_of_return_to_work' => '',
+                'date_of_despatch_of_return_to_work_report' => '',
+                'date_of_despatch_of_subsequent_reports_form_18b' => '',
+                'number_of_days_away_from_work' => '',
+                'number_of_man_days_lost' => '',
+                'details_of_disablement_and_loss_of_earning_capacity' => '',
+                'remarks_and_initials_of_manager' => '',
             ];
+            
+            $slNo++;
         }
 
         $month = $rawData['meta']['month'] ?? 1;
@@ -31,22 +48,42 @@ class Form26Generator extends BaseFormGenerator
         return [
             'header' => [
                 'form_title' => 'FORM 26 - Register of Accidents',
+                'factory_name' => $branch['name'] ?? '',
+                'factory_address' => $branch['address'] ?? '',
+                'calendar_year' => (string)$year,
+                'registration_number' => $branch['registration_number'] ?? '',
                 'period' => $this->formatPeriod($month, $year),
                 'branch' => $branch,
-                'tenant' => is_array($tenant) ? ($tenant['name'] ?? 'N/A') : $tenant,
-                'tenant_details' => $tenant,
-                'factory_name' => $branch['name'] ?? 'N/A',
-                'address' => $branch['address'] ?? 'N/A',
-                'registration_number' => $branch['registration_number'] ?? 'N/A',
-                'calendar_year' => $year,
-                'establishment_name' => $tenant['establishment_name'] ?? 'N/A',
-                'owner_name' => $tenant['name'] ?? 'N/A',
-                'place' => $branch['address'] ?? 'N/A',
-                'district' => $branch['district'] ?? 'N/A',
+                'tenant' => is_array($tenant) ? ($tenant['name'] ?? '') : $tenant,
             ],
             'rows' => $rows,
             'totals' => [],
             'is_nil' => count($rows) === 0,
         ];
+    }
+
+    /**
+     * Format date to DD-MM-YYYY
+     */
+    private function formatDate(?string $date): string
+    {
+        if (!$date) {
+            return '';
+        }
+        
+        try {
+            return Carbon::parse($date)->format('d-m-Y');
+        } catch (\Exception $e) {
+            return '';
+        }
+    }
+
+    /**
+     * Format name and designation together
+     */
+    private function formatNameAndDesignation(string $name, string $designation): string
+    {
+        $parts = array_filter([$name, $designation]);
+        return implode(' / ', $parts);
     }
 }

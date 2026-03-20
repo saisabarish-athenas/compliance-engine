@@ -6,50 +6,48 @@ class FormApiServiceFactory
 {
     protected static array $apiServices = [
         // CLRA Forms
-        'FORM_XII' => FormXIIApiService::class,
-        'FORM_XIII' => FormXIIIApiService::class,
-        'FORM_XIV' => FormXIVApiService::class,
-        'FORM_XVI' => FormXVIApiService::class,
-        'FORM_XVII' => FormXVIIApiService::class,
-        'FORM_XIX' => FormXIXApiService::class,
-        'FORM_XX' => FormXXApiService::class,
-        'FORM_XXI' => FormXXIApiService::class,
-        'FORM_XXII' => FormXXIIApiService::class,
-        'FORM_XXIII' => FormXXIIIApiService::class,
+        'FormXII' => FormXIIApiService::class,
+        'FormXIII' => FormXIIIApiService::class,
+        'FormXIV' => FormXIVApiService::class,
+        'FormXVI' => FormXVIApiService::class,
+        'FormXVII' => FormXVIIApiService::class,
+        'FormXIX' => FormXIXApiService::class,
+        'FormXX' => FormXXApiService::class,
+        'FormXXI' => FormXXIApiService::class,
+        'FormXXII' => FormXXIIApiService::class,
+        'FormXXIII' => FormXXIIIApiService::class,
 
         // Labour Welfare Forms
-        'FORM_A' => FormAApiService::class,
-        'FORM_C' => FormCApiService::class,
-        'FORM_D' => FormDApiService::class,
-        'FORM_D_ER' => FormDERApiService::class,
+        'FormA' => FormAApiService::class,
+        'FormC' => FormCApiService::class,
+        'FormD' => FormDApiService::class,
+        'FormDER' => FormDERApiService::class,
 
         // Social Security
-        'FORM_11' => Form11ApiService::class,
-        'ESI_FORM_12' => ESIForm12ApiService::class,
-        'EPF_INSPECTION' => EPFInspectionApiService::class,
+        'Form11' => Form11ApiService::class,
+        'ESIForm12' => ESIForm12ApiService::class,
+        'EPFInspection' => EPFInspectionApiService::class,
 
         // Factories Act
-        'FORM_B' => FormBApiService::class,
-        'FORM_2' => Form2ApiService::class,
-        'FORM_8' => Form8ApiService::class,
-        'FORM_10' => Form10ApiService::class,
-        'FORM_12' => Form12ApiService::class,
-        'FORM_17' => Form17ApiService::class,
-        'FORM_18' => Form18ApiService::class,
-        'FORM_25' => Form25ApiService::class,
-        'FORM_26' => Form26ApiService::class,
-        'FORM_26A' => Form26AApiService::class,
-        'HAZARD_REG' => HazardRegApiService::class,
-
-        // Bonus
-        'SHOPS_FORM_C' => ShopsFormCApiService::class,
-        'SHOPS_UNPAID' => ShopsUnpaidApiService::class,
+        'FormB' => FormBApiService::class,
+        'Form2' => Form2ApiService::class,
+        'Form8' => Form8ApiService::class,
+        'Form10' => Form10ApiService::class,
+        'Form12' => Form12ApiService::class,
+        'Form17' => Form17ApiService::class,
+        'Form18' => Form18ApiService::class,
+        'Form25' => Form25ApiService::class,
+        'Form26' => Form26ApiService::class,
+        'Form26A' => Form26AApiService::class,
+        'HazardReg' => HazardRegApiService::class,
 
         // Shops & Establishment
-        'SHOPS_FORM_12' => ShopsForm12ApiService::class,
-        'SHOPS_FORM_13' => ShopsForm13ApiService::class,
-        'SHOPS_FINES' => ShopsFinesApiService::class,
-        'SHOPS_FORM_VI' => ShopsFormVIApiService::class,
+        'ShopsFormC' => ShopsFormCApiService::class,
+        'ShopsUnpaid' => ShopsUnpaidApiService::class,
+        'ShopsForm12' => ShopsForm12ApiService::class,
+        'ShopsForm13' => ShopsForm13ApiService::class,
+        'ShopsFines' => ShopsFinesApiService::class,
+        'ShopsFormVI' => ShopsFormVIApiService::class,
     ];
 
     public static function make(string $formCode): ?BaseFormApiService

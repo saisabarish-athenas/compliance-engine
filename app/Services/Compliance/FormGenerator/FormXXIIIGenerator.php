@@ -10,29 +10,39 @@ class FormXXIIIGenerator extends BaseFormGenerator
     protected function prepareData(array $rawData): array
     {
         $rows = [];
-        foreach ($rawData['records'] as $record) {
+        foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
-                'employee_code' => $record['employee_code'] ?? '',
-                'employee_name' => $record['name'] ?? '',
+                'name' => $record['employee_name'] ?? '',
+                'father_name' => $record['father_name'] ?? '',
+                'sex' => $record['sex'] ?? '',
                 'designation' => $record['designation'] ?? '',
-                'overtime_hours' => $record['overtime_hours'] ?? 0,
-                'overtime_wages' => $record['overtime_wages'] ?? 0,
-                'overtime_date' => $record['overtime_date'] ?? '',
+                'overtime_dates' => $record['overtime_dates'] ?? '',
+                'total_overtime' => $record['total_overtime'] ?? 0,
+                'normal_rate' => $record['normal_rate'] ?? 0,
+                'overtime_rate' => $record['overtime_rate'] ?? 0,
+                'overtime_earnings' => $record['overtime_earnings'] ?? 0,
+                'payment_date' => $record['payment_date'] ?? '',
+                'remarks' => $record['remarks'] ?? '',
             ];
         }
 
-        $totals = $this->calculateTotals($rows, ['overtime_hours', 'overtime_wages']);
+        $tenant = $rawData['tenant'] ?? [];
+        $branch = $rawData['branch'] ?? [];
+        $month = $rawData['meta']['month'] ?? 1;
+        $year = $rawData['meta']['year'] ?? 2024;
 
         return [
             'header' => [
-                'form_title' => 'FORM XXIII - Register of Overtime',
-                'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'branch' => $rawData['branch'] ?? [],
-                'tenant' => $rawData['tenant'] ?? [],
+                'contractor_name' => $tenant['name'] ?? 'N/A',
+                'work_location' => $branch['address'] ?? 'N/A',
+                'establishment_name' => $branch['name'] ?? 'N/A',
+                'principal_employer' => $tenant['name'] ?? 'N/A',
+                'month_year' => $this->formatPeriod($month, $year),
+                'tenant' => $tenant,
+                'branch' => $branch,
             ],
             'rows' => $rows,
-            'totals' => $totals,
             'is_nil' => count($rows) === 0,
         ];
     }

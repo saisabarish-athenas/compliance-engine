@@ -179,17 +179,17 @@
         <div class="factory-details">
             <div class="detail-row">
                 <div class="detail-label">Name and address of the factory</div>
-                <div class="detail-line"></div>
+                <div class="detail-line">{{ $header['factory_name'] ?? '' }} {{ $header['factory_address'] ?? '' }}</div>
             </div>
 
             <div class="detail-row-two-col">
                 <div class="detail-col">
                     <div class="detail-label">Calendar year</div>
-                    <div class="detail-line"></div>
+                    <div class="detail-line">{{ $header['calendar_year'] ?? '' }}</div>
                 </div>
                 <div class="detail-col">
                     <div class="detail-label">Registration number of the factory</div>
-                    <div class="detail-line"></div>
+                    <div class="detail-line">{{ $header['registration_number'] ?? '' }}</div>
                 </div>
             </div>
         </div>
@@ -231,24 +231,26 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 10; $i++)
-                <tr>
-                    <td class="col-1"></td>
-                    <td class="col-2"></td>
-                    <td class="col-3"></td>
-                    <td class="col-4"></td>
-                    <td class="col-5"></td>
-                    <td class="col-6"></td>
-                    <td class="col-7"></td>
-                    <td class="col-8"></td>
-                    <td class="col-9"></td>
-                    <td class="col-10"></td>
-                    <td class="col-11"></td>
-                    <td class="col-12"></td>
-                    <td class="col-13"></td>
-                    <td class="col-14"></td>
-                </tr>
-                @endfor
+                @if(!empty($rows) && count($rows) > 0)
+                    @foreach($rows as $row)
+                    <tr>
+                        <td class="col-1">{{ $row['running_sl_no'] ?? '' }}</td>
+                        <td class="col-2">{{ $row['date_and_hour_of_accident'] ?? '' }}</td>
+                        <td class="col-3">{{ $row['name_and_designation_of_person_injured'] ?? '' }}</td>
+                        <td class="col-4">{{ $row['exact_place_of_accident'] ?? '' }}</td>
+                        <td class="col-5">{{ $row['full_description_of_accident'] ?? '' }}</td>
+                        <td class="col-6">{{ $row['nature_extent_location_of_injury'] ?? '' }}</td>
+                        <td class="col-7">{{ $row['date_of_despatch_of_report_form_18'] ?? '' }}</td>
+                        <td class="col-8">{{ $row['date_of_return_to_work'] ?? '' }}</td>
+                        <td class="col-9">{{ $row['date_of_despatch_of_return_to_work_report'] ?? '' }}</td>
+                        <td class="col-10">{{ $row['date_of_despatch_of_subsequent_reports_form_18b'] ?? '' }}</td>
+                        <td class="col-11">{{ $row['number_of_days_away_from_work'] ?? '' }}</td>
+                        <td class="col-12">{{ $row['number_of_man_days_lost'] ?? '' }}</td>
+                        <td class="col-13">{{ $row['details_of_disablement_and_loss_of_earning_capacity'] ?? '' }}</td>
+                        <td class="col-14">{{ $row['remarks_and_initials_of_manager'] ?? '' }}</td>
+                    </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 

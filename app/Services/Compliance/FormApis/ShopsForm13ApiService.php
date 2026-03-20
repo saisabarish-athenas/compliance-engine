@@ -15,14 +15,13 @@ class ShopsForm13ApiService extends BaseFormApiService
             ->join('workforce_employee as we', 'we.id', '=', 'wa.employee_id')
             ->where('we.tenant_id', $tenantId)
             ->where('we.branch_id', $branchId)
-            ->whereYear('wa.attendance_date', $year)
-            ->whereMonth('wa.attendance_date', $month)
             ->where('wa.status', 'LEAVE')
             ->select([
                 'we.employee_code',
-                'we.name',
-                'wa.attendance_date',
-                'wa.status',
+                'we.name as employee_name',
+                'we.designation',
+                'we.date_of_joining as joining_date',
+                'wa.attendance_date as leave_date',
             ])
             ->orderBy('we.employee_code')
             ->orderBy('wa.attendance_date')

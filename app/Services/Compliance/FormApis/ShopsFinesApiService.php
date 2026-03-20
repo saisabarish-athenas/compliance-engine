@@ -21,8 +21,13 @@ class ShopsFinesApiService extends BaseFormApiService
             ->where('pe.fines', '>', 0)
             ->select([
                 'e.employee_code',
-                'e.name',
-                'pe.fines',
+                'e.name as employee_name',
+                'e.father_name',
+                'pe.fines as fine_amount',
+                DB::raw('"" as reason'),
+                DB::raw('NULL as fine_date'),
+                'pe.gross_salary as wages',
+                'pc.period_to as realized_date',
             ])
             ->orderBy('e.employee_code')
             ->get()

@@ -10,29 +10,38 @@ class FormXXIIGenerator extends BaseFormGenerator
     protected function prepareData(array $rawData): array
     {
         $rows = [];
-        foreach ($rawData['records'] as $record) {
+        foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
-                'employee_code' => $record['employee_code'] ?? 'N/A',
-                'employee_name' => $record['employee_name'] ?? 'N/A',
+                'name' => $record['employee_name'] ?? 'N/A',
+                'father_name' => $record['father_name'] ?? 'N/A',
                 'designation' => $record['designation'] ?? 'N/A',
-                'damage_amount' => round($record['damage_amount'] ?? 0, 2),
-                'damage_date' => $record['damage_date'] ?? 'N/A',
-                'description' => $record['description'] ?? 'N/A',
+                'advance_date_amount_1' => ($record['advance_date'] ?? 'N/A') . ' - ' . ($record['advance_amount'] ?? 0),
+                'advance_date_amount_2' => '',
+                'purpose' => $record['purpose'] ?? 'N/A',
+                'installments' => $record['installments'] ?? 1,
+                'installment_repaid' => $record['installment_repaid'] ?? 'N/A',
+                'last_installment_date' => $record['last_installment_date'] ?? 'N/A',
+                'signature' => '',
             ];
         }
 
-        $totals = $this->calculateTotals($rows, ['damage_amount']);
+        $tenant = $rawData['tenant'] ?? [];
+        $branch = $rawData['branch'] ?? [];
+        $month = $rawData['meta']['month'] ?? 1;
+        $year = $rawData['meta']['year'] ?? 2024;
 
         return [
             'header' => [
-                'form_title' => 'FORM XXII - Register of Damage or Loss',
-                'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'branch' => $rawData['branch'] ?? [],
-                'tenant' => $rawData['tenant'] ?? [],
+                'contractor_name' => $tenant['name'] ?? 'N/A',
+                'work_nature' => 'Manufacturing',
+                'establishment_name' => $branch['name'] ?? 'N/A',
+                'principal_employer' => $tenant['name'] ?? 'N/A',
+                'month_year' => $this->formatPeriod($month, $year),
+                'tenant' => $tenant,
+                'branch' => $branch,
             ],
             'rows' => $rows,
-            'totals' => $totals,
             'is_nil' => count($rows) === 0,
         ];
     }

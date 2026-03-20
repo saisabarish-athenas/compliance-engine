@@ -11,12 +11,14 @@ class FormXIIGenerator extends BaseFormGenerator
     {
         $rows = [];
         foreach ($rawData['records'] ?? [] as $record) {
-            $record = $this->normalizeRecord($record);
             $rows[] = [
-                'contractor_name' => $record['contractor_name'] ?? 'N/A',
-                'license_number' => $record['license_number'] ?? 'N/A',
-                'registration_date' => $record['registration_date'] ?? 'N/A',
-                'address' => $record['address'] ?? 'N/A',
+                'contractor_name' => $record['contractor_name'] ?? '',
+                'contractor_address' => $record['address'] ?? '',
+                'nature_of_work' => 'Contract Labour Work',
+                'work_location' => $rawData['branch']['address'] ?? '',
+                'contract_from' => $record['license_no'] ?? '',
+                'contract_to' => $record['license_expiry'] ?? '',
+                'max_workers' => 0,
             ];
         }
 

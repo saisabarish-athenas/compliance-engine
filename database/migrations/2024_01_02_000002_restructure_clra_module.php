@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -20,7 +21,9 @@ return new class extends Migration
                     $table->string('company_type')->nullable()->after('tenant_id');
                 }
                 if (!Schema::hasColumn('contractor_master', 'company_name')) {
-                    $table->renameColumn('contractor_name', 'company_name');
+                    if (Schema::hasColumn('contractor_master', 'contractor_name')) {
+                        $table->renameColumn('contractor_name', 'company_name');
+                    }
                 }
                 if (!Schema::hasColumn('contractor_master', 'company_address')) {
                     $table->text('company_address')->nullable()->after('company_name');
@@ -91,10 +94,14 @@ return new class extends Migration
                     $table->unsignedBigInteger('branch_id')->nullable()->after('project_id');
                 }
                 if (!Schema::hasColumn('contract_labour_deployment', 'deployment_start')) {
-                    $table->renameColumn('employment_start', 'deployment_start');
+                    if (Schema::hasColumn('contract_labour_deployment', 'employment_start')) {
+                        $table->renameColumn('employment_start', 'deployment_start');
+                    }
                 }
                 if (!Schema::hasColumn('contract_labour_deployment', 'deployment_end')) {
-                    $table->renameColumn('employment_end', 'deployment_end');
+                    if (Schema::hasColumn('contract_labour_deployment', 'employment_end')) {
+                        $table->renameColumn('employment_end', 'deployment_end');
+                    }
                 }
                 if (!Schema::hasColumn('contract_labour_deployment', 'work_order_number')) {
                     $table->string('work_order_number')->nullable()->after('deployment_end');
@@ -107,31 +114,42 @@ return new class extends Migration
                 }
             });
 
-            Schema::table('contract_labour_deployment', function (Blueprint $table) {
-                $table->foreign('tenant_id')->references('id')->on('tenants')->onDelete('cascade');
-                $table->foreign('contractor_compliance_id')->references('id')->on('contractor_compliance')->onDelete('cascade');
-                $table->index(['tenant_id', 'project_id']);
-            });
+            // Add foreign keys using raw SQL to avoid conflicts
+            try {
+                DB::statement('ALTER TABLE contract_labour_deployment ADD CONSTRAINT contract_labour_deployment_tenant_id_foreign FOREIGN KEY (tenant_id) REFERENCES tenants(id) ON DELETE CASCADE');
+            } catch (\Exception $e) {}
+            
+            try {
+                DB::statement('ALTER TABLE contract_labour_deployment ADD CONSTRAINT contract_labour_deployment_contractor_compliance_id_foreign FOREIGN KEY (contractor_compliance_id) REFERENCES contractor_compliance(id) ON DELETE CASCADE');
+            } catch (\Exception $e) {}
         }
     }
 
     public function down(): void
     {
         if (Schema::hasTable('contract_labour_deployment')) {
-            Schema::table('contract_labour_deployment', function (Blueprint $table) {
-                $table->dropForeign(['tenant_id']);
-                $table->dropForeign(['contractor_compliance_id']);
-                $table->dropIndex(['tenant_id', 'project_id']);
-            });
+            // Drop foreign keys using raw SQL
+            try {
+                DB::statement('ALTER TABLE contract_labour_deployment DROP FOREIGN KEY contract_labour_deployment_tenant_id_foreign');
+            } catch (\Exception $e) {}
+            
+            try {
+                DB::statement('ALTER TABLE contract_labour_deployment DROP FOREIGN KEY contract_labour_deployment_contractor_compliance_id_foreign');
+            } catch (\Exception $e) {}
+            
+            // Drop index
+            try {
+                DB::statement('ALTER TABLE contract_labour_deployment DROP INDEX tenant_id_project_id');
+            } catch (\Exception $e) {}
         }
 
         Schema::dropIfExists('contractor_compliance');
 
-        if (Schema::hasTable('contract_labour_deployment')) {
+        if (Schema::hasTable('contract_labour_deployment') && !Schema::hasTable('contract_labour')) {
             Schema::rename('contract_labour_deployment', 'contract_labour');
         }
 
-        if (Schema::hasTable('contractor_master')) {
+        if (Schema::hasTable('contractor_master') && !Schema::hasTable('contractors')) {
             Schema::rename('contractor_master', 'contractors');
         }
     }

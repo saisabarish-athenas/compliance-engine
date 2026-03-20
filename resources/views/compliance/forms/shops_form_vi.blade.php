@@ -122,23 +122,29 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 12; $i++)
+                @if($is_nil)
                 <tr>
-                    <td class="col-sl"></td>
-                    <td class="col-name"></td>
-                    <td class="col-ticket"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-holiday"></td>
-                    <td class="col-remarks"></td>
+                    <td colspan="13" class="text-center">Nil</td>
                 </tr>
-                @endfor
+                @else
+                @foreach($rows as $index => $row)
+                <tr>
+                    <td class="col-sl text-center">{{ $index + 1 }}</td>
+                    <td class="col-name">{{ $row['employee_name'] }}</td>
+                    <td class="col-ticket">{{ $row['ticket'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday1'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday2'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday3'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday4'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday5'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday6'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday7'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday8'] }}</td>
+                    <td class="col-holiday text-center">{{ $row['holiday9'] }}</td>
+                    <td class="col-remarks">{{ $row['remarks'] }}</td>
+                </tr>
+                @endforeach
+                @endif
             </tbody>
         </table>
 

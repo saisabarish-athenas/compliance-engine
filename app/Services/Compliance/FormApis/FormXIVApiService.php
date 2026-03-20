@@ -12,18 +12,21 @@ class FormXIVApiService extends BaseFormApiService
         $this->validateTenantAndBranch($tenantId, $branchId);
 
         $rows = DB::table('contract_labour_deployment as cld')
+            ->join('workforce_employee as we', 'we.id', '=', 'cld.employee_id')
             ->join('contractor_master as cm', 'cm.id', '=', 'cld.contractor_id')
-            ->where('cld.tenant_id', $tenantId)
-            ->where('cld.branch_id', $branchId)
-            ->whereBetween('cld.deployment_date', [$this->periodStart, $this->periodEnd])
+            ->where('we.tenant_id', $tenantId)
+            ->where('we.branch_id', $branchId)
+            ->whereBetween('cld.deployment_start', [$this->periodStart, $this->periodEnd])
             ->select([
-                'cld.id',
+                'we.id',
+                DB::raw("COALESCE(we.name, '') as employee_name"),
+                DB::raw("COALESCE(we.gender, '') as gender"),
+                DB::raw("COALESCE(we.designation, '') as designation"),
+                DB::raw("COALESCE(cld.deployment_start, '') as date_of_joining"),
                 DB::raw("COALESCE(cm.contractor_name, cm.company_name, 'N/A') as contractor_name"),
-                DB::raw("COALESCE(cld.workmen_count, 0) as workmen_count"),
-                DB::raw("COALESCE(cld.deployment_date, cld.deployment_start) as deployment_date"),
                 DB::raw("COALESCE(cld.work_description, '') as work_description"),
             ])
-            ->orderBy('cld.deployment_date')
+            ->orderBy('cld.deployment_start')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();
@@ -39,6 +42,7 @@ class FormXIVApiService extends BaseFormApiService
             'tenant' => $this->getTenantDetails($tenantId),
             'branch' => $this->getBranchDetails($branchId, $tenantId),
             'period' => $this->formatPeriod(),
+            'record_count' => count($rows),
         ];
     }
 }

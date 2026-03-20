@@ -10,9 +10,9 @@ return new class extends Migration
     {
         if (Schema::hasTable('contract_labour_deployment')) {
             Schema::table('contract_labour_deployment', function (Blueprint $table) {
-                if (!Schema::hasColumn('contract_labour_deployment', 'contractor_id')) {
-                    $table->unsignedBigInteger('contractor_id')->nullable()->after('tenant_id')->index();
-                    $table->foreign('contractor_id')->references('id')->on('contractor_master')->onDelete('set null');
+                // Only add if not already present
+                if (!Schema::hasColumn('contract_labour_deployment', 'contractor_compliance_id')) {
+                    $table->unsignedBigInteger('contractor_compliance_id')->nullable()->after('contractor_id')->index();
                 }
             });
         }
@@ -22,9 +22,14 @@ return new class extends Migration
     {
         if (Schema::hasTable('contract_labour_deployment')) {
             Schema::table('contract_labour_deployment', function (Blueprint $table) {
-                if (Schema::hasColumn('contract_labour_deployment', 'contractor_id')) {
-                    $table->dropForeign(['contractor_id']);
-                    $table->dropColumn('contractor_id');
+                if (Schema::hasColumn('contract_labour_deployment', 'contractor_compliance_id')) {
+                    // Drop foreign key if it exists
+                    try {
+                        $table->dropForeign(['contractor_compliance_id']);
+                    } catch (\Exception $e) {
+                        // Foreign key doesn't exist, continue
+                    }
+                    $table->dropColumn('contractor_compliance_id');
                 }
             });
         }

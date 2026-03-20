@@ -153,20 +153,30 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 12; $i++)
+                @if($is_nil)
                 <tr>
-                    <td class="col-sl"></td>
-                    <td class="col-name"></td>
-                    <td class="col-father"></td>
-                    <td class="col-amount"></td>
-                    <td class="col-purpose"></td>
-                    <td class="col-install"></td>
-                    <td class="col-postpone"></td>
-                    <td class="col-repaid"></td>
-                    <td class="col-sign"></td>
-                    <td class="col-remarks"></td>
+                    <td colspan="10" class="text-center">Nil</td>
                 </tr>
-                @endfor
+                @else
+                @foreach($rows as $index => $row)
+                <tr>
+                    <td class="col-sl text-center">{{ $index + 1 }}</td>
+                    <td class="col-name">{{ $row['employee_name'] }}</td>
+                    <td class="col-father">{{ $row['father_name'] }}</td>
+                    <td class="col-amount text-center">
+                        {{ number_format($row['advance_amount'], 2) }}
+                        <br>
+                        {{ $row['advance_date'] }}
+                    </td>
+                    <td class="col-purpose">{{ $row['purpose'] }}</td>
+                    <td class="col-install text-center">{{ $row['installments'] }}</td>
+                    <td class="col-postpone text-center">{{ $row['postponements'] }}</td>
+                    <td class="col-repaid text-center">{{ $row['repaid_date'] }}</td>
+                    <td class="col-sign"></td>
+                    <td class="col-remarks">{{ $row['remarks'] }}</td>
+                </tr>
+                @endforeach
+                @endif
             </tbody>
         </table>
     </div>

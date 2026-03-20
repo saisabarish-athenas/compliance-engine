@@ -99,15 +99,15 @@
         <div class="establishment-info">
             <div class="info-row">
                 <div class="info-label">Name of the Establishment</div>
-                <div class="info-value">{{ $establishment_name ?? '' }}</div>
+                <div class="info-value">{{ $header['establishment_name'] ?? '' }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">Name of Owner</div>
-                <div class="info-value">{{ $owner_name ?? '' }}</div>
+                <div class="info-value">{{ $header['owner_name'] ?? '' }}</div>
             </div>
             <div class="info-row">
                 <div class="info-label">For the Period From</div>
-                <div class="info-value">{{ $month_name ?? '' }} {{ $year ?? '' }}</div>
+                <div class="info-value">{{ $header['month_name'] ?? '' }} {{ $header['year'] ?? '' }}</div>
             </div>
         </div>
 
@@ -130,41 +130,29 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($rows ?? $entries ?? [] as $index => $row)
-                    <tr>
-                        <td class="col-sno">{{ $index + 1 }}</td>
-                        <td class="col-name">{{ $row['employee_name'] ?? 'NIL' }}</td>
-                        <td class="col-designation">{{ $row['designation'] ?? 'NIL' }}</td>
-                        @for($day = 1; $day <= 31; $day++)
-                            <td class="col-day">{{ $row['day_' . $day] ?? '' }}</td>
-                        @endfor
-                        <td class="col-summary">{{ $row['total_present'] ?? '0' }}</td>
-                        <td class="col-summary">{{ $row['paid_holidays'] ?? '0' }}</td>
-                        <td class="col-summary">{{ $row['paid_leave'] ?? '0' }}</td>
-                        <td class="col-summary">{{ $row['weekly_off'] ?? '0' }}</td>
-                        <td class="col-summary">{{ $row['absent_days'] ?? '0' }}</td>
-                        <td class="col-summary">{{ $row['total_days'] ?? '0' }}</td>
-                        <td class="col-remarks">{{ $row['remarks'] ?? '' }}</td>
-                    </tr>
-                @empty
-                    @for($i = 0; $i < 9; $i++)
+                @if(!empty($rows) && count($rows) > 0)
+                    @foreach($rows as $index => $row)
                         <tr>
-                            <td class="col-sno">{{ $i + 1 }}</td>
-                            <td class="col-name">NIL</td>
-                            <td class="col-designation">NIL</td>
+                            <td class="col-sno">{{ $index + 1 }}</td>
+                            <td class="col-name">{{ $row['employee_name'] ?? '' }}</td>
+                            <td class="col-designation">{{ $row['designation'] ?? '' }}</td>
                             @for($day = 1; $day <= 31; $day++)
-                                <td class="col-day"></td>
+                                <td class="col-day">{{ $row['day_' . $day] ?? '' }}</td>
                             @endfor
-                            <td class="col-summary">0</td>
-                            <td class="col-summary">0</td>
-                            <td class="col-summary">0</td>
-                            <td class="col-summary">0</td>
-                            <td class="col-summary">0</td>
-                            <td class="col-summary">0</td>
-                            <td class="col-remarks"></td>
+                            <td class="col-summary">{{ $row['total_present'] ?? '0' }}</td>
+                            <td class="col-summary">{{ $row['paid_holidays'] ?? '0' }}</td>
+                            <td class="col-summary">{{ $row['paid_leave'] ?? '0' }}</td>
+                            <td class="col-summary">{{ $row['weekly_off'] ?? '0' }}</td>
+                            <td class="col-summary">{{ $row['absent_days'] ?? '0' }}</td>
+                            <td class="col-summary">{{ $row['total_days'] ?? '0' }}</td>
+                            <td class="col-remarks">{{ $row['remarks'] ?? '' }}</td>
                         </tr>
-                    @endfor
-                @endforelse
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="42" style="text-align:center;">No records found</td>
+                    </tr>
+                @endif
                 <tr class="total-row">
                     <td colspan="3">TOTAL</td>
                     @for($day = 1; $day <= 31; $day++)

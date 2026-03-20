@@ -4,6 +4,14 @@ namespace App\Services\Compliance\FormApis;
 
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Form17ApiService - Health Register API
+ * 
+ * Fetches worker health register data for FORM 17
+ * (Health Register for persons employed in dangerous operations)
+ * 
+ * Returns worker employment details with all required statutory fields
+ */
 class Form17ApiService extends BaseFormApiService
 {
     public function fetch(int $tenantId, int $branchId, int $month, int $year): array
@@ -11,18 +19,22 @@ class Form17ApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('incidents as i')
-            ->where('i.tenant_id', $tenantId)
-            ->where('i.branch_id', $branchId)
-            ->whereYear('i.incident_date', $year)
-            ->whereMonth('i.incident_date', $month)
+        // Fetch worker health register data
+        $rows = DB::table('workforce_employee as e')
+            ->where('e.tenant_id', $tenantId)
+            ->where('e.branch_id', $branchId)
+            ->where('e.status', 'active')
             ->select([
-                'i.id',
-                'i.incident_date',
-                'i.description',
-                'i.severity',
+                'e.id',
+                'e.employee_code as works_no',
+                'e.name as name_of_worker',
+                'e.gender as sex',
+                'e.date_of_birth',
+                'e.date_of_joining',
+                'e.designation',
+                'e.department',
             ])
-            ->orderBy('i.incident_date')
+            ->orderBy('e.employee_code')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();

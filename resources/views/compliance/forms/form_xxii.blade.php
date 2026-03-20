@@ -142,25 +142,25 @@
         <table class="establishment-table">
             <tr>
                 <td>NAME AND ADDRESS OF CONTRACTOR :</td>
-                <td>{{ $contractor_name ?? '' }}</td>
+                <td>{{ $header['contractor_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NATURE AND LOCATION OF WORK :</td>
-                <td>{{ $work_nature ?? '' }}</td>
+                <td>{{ $header['work_nature'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
-                <td>{{ $establishment_name ?? '' }}</td>
+                <td>{{ $header['establishment_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
-                <td>{{ $principal_employer ?? '' }}</td>
+                <td>{{ $header['principal_employer'] ?? '' }}</td>
             </tr>
         </table>
 
         <div class="month-year-row">
             <span>Month & Year:</span>
-            <span>{{ $month_year ?? '' }}</span>
+            <span>{{ $header['month_year'] ?? '' }}</span>
         </div>
 
         <table class="column-numbers">
@@ -200,41 +200,29 @@
                     @foreach($rows as $index => $row)
                         <tr>
                             <td class="col-1">{{ $index + 1 }}</td>
-                            <td class="col-2">{{ $row['name'] ?? 'NIL' }}</td>
-                            <td class="col-3">{{ $row['father_name'] ?? 'NIL' }}</td>
-                            <td class="col-4">{{ $row['designation'] ?? 'NIL' }}</td>
-                            <td class="col-5">{{ $row['advance_date_amount_1'] ?? 'NIL' }}</td>
-                            <td class="col-6">{{ $row['advance_date_amount_2'] ?? 'NIL' }}</td>
-                            <td class="col-7">{{ $row['purpose'] ?? 'NIL' }}</td>
-                            <td class="col-8">{{ $row['installments'] ?? 'NIL' }}</td>
-                            <td class="col-9">{{ $row['installment_repaid'] ?? 'NIL' }}</td>
-                            <td class="col-10">{{ $row['last_installment_date'] ?? 'NIL' }}</td>
-                            <td class="col-11">{{ $row['signature'] ?? 'NIL' }}</td>
+                            <td class="col-2">{{ $row['name'] ?? '' }}</td>
+                            <td class="col-3">{{ $row['father_name'] ?? '' }}</td>
+                            <td class="col-4">{{ $row['designation'] ?? '' }}</td>
+                            <td class="col-5">{{ $row['advance_date_amount_1'] ?? '' }}</td>
+                            <td class="col-6">{{ $row['advance_date_amount_2'] ?? '' }}</td>
+                            <td class="col-7">{{ $row['purpose'] ?? '' }}</td>
+                            <td class="col-8">{{ $row['installments'] ?? '' }}</td>
+                            <td class="col-9">{{ $row['installment_repaid'] ?? '' }}</td>
+                            <td class="col-10">{{ $row['last_installment_date'] ?? '' }}</td>
+                            <td class="col-11"></td>
                         </tr>
                     @endforeach
                 @else
-                    @for($i = 0; $i < 9; $i++)
-                        <tr>
-                            <td class="col-1">{{ $i + 1 }}</td>
-                            <td class="col-2">NIL</td>
-                            <td class="col-3">NIL</td>
-                            <td class="col-4">NIL</td>
-                            <td class="col-5">NIL</td>
-                            <td class="col-6">NIL</td>
-                            <td class="col-7">NIL</td>
-                            <td class="col-8">NIL</td>
-                            <td class="col-9">NIL</td>
-                            <td class="col-10">NIL</td>
-                            <td class="col-11">NIL</td>
-                        </tr>
-                    @endfor
+                    <tr>
+                        <td colspan="11" style="text-align:center;">No records found</td>
+                    </tr>
                 @endif
             </tbody>
         </table>
 
         <div class="footer-section">
             <div class="footer-left">*Applicable only in case of damage/loss/fine</div>
-            <div class="footer-center">Nil for the month of {{ $month_year ?? '' }}</div>
+
             <div class="footer-right">Seal Signature of The Contractor</div>
         </div>
 

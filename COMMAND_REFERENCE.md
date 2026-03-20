@@ -1,246 +1,463 @@
-# Compliance Engine - Command Reference
+# 🔧 COMPLIANCE ENGINE - COMMAND REFERENCE
 
-## 🎯 Quick Command Guide
+## 🚀 SETUP COMMANDS
 
-### System Health & Validation
-
-#### System Integrity Check
+### Fresh Start (Complete Reset)
 ```bash
-php artisan compliance:system-check
-```
-**Purpose:** Comprehensive system validation (6 checks)  
-**Checks:** Forms, Database, Config, Routes, Security, Isolation  
-**Exit Code:** 0 = Pass, 1 = Fail  
-**Duration:** ~5-10 seconds
+# Option 1: One-liner
+php artisan migrate:fresh && php artisan db:seed --class=ComplianceFormsMasterSeeder && php artisan db:seed --class=FreshComplianceSeeder && php test_system_health.php
 
-#### Form Generation Test
+# Option 2: Step by step
+php artisan migrate:fresh
+php artisan db:seed --class=ComplianceFormsMasterSeeder
+php artisan db:seed --class=FreshComplianceSeeder
+php test_system_health.php
+```
+
+### Seed Only (Keep Existing Data)
 ```bash
-php artisan compliance:test-generation --all
-```
-**Purpose:** Test all 36 forms generation  
-**Output:** Success/Fail count per form  
-**Exit Code:** 0 = All pass, 1 = Any fail  
-**Duration:** ~2-3 seconds
+# Seed forms only
+php artisan db:seed --class=ComplianceFormsMasterSeeder
 
-#### Timeline Due Date Check
+# Seed demo data only
+php artisan db:seed --class=FreshComplianceSeeder
+
+# Seed both
+php artisan db:seed --class=ComplianceFormsMasterSeeder && php artisan db:seed --class=FreshComplianceSeeder
+```
+
+### Database Operations
 ```bash
-php artisan compliance:check-due
-```
-**Purpose:** Update overdue compliance timelines  
-**Schedule:** Daily (automated)  
-**Output:** Count of updated timelines  
-**Duration:** <1 second
-
----
-
-## 📋 System Check Details
-
-### What Gets Validated
-
-| Check | Description | Pass Criteria |
-|-------|-------------|---------------|
-| **Forms** | All 36 forms generate | 36/36 success |
-| **Timeline Table** | compliance_timelines exists | Table + columns present |
-| **Attendance Table** | workforce_attendance exists | Table present |
-| **Config** | All forms configured | 36/36 with table + date_field |
-| **Routes** | Middleware protection | All routes protected |
-| **Subscription** | MINIMAL blocked | Exception thrown |
-| **Isolation** | Tenant filtering | tenant_id filtering detected |
-
-### Expected Output (All Pass)
-```
------------------------------------------
-COMPLIANCE SYSTEM INTEGRITY REPORT
------------------------------------------
-
-Forms: 36/36 ✅ PASS
-Timeline Table: ✅ OK
-Attendance Table: ✅ OK
-Config Mapping: ✅ OK (36/36 forms)
-Route Protection: ✅ OK
-Subscription Enforcement: ✅ OK
-Tenant Isolation: ✅ OK
-
------------------------------------------
-OVERALL STATUS: ✅ PASS
------------------------------------------
-```
-
----
-
-## 🚀 Common Workflows
-
-### Pre-Deployment Check
-```bash
-# Run full system check
-php artisan compliance:system-check
-
-# If pass, deploy
-git push origin main
-```
-
-### Development Workflow
-```bash
-# After code changes
-php artisan compliance:system-check
-
-# Test specific forms
-php artisan compliance:test-generation
-
-# Check timeline status
-php artisan compliance:check-due
-```
-
-### CI/CD Integration
-```yaml
-# .github/workflows/test.yml
-- name: System Integrity Check
-  run: php artisan compliance:system-check
-  
-- name: Form Generation Test
-  run: php artisan compliance:test-generation --all
-```
-
-### Production Monitoring
-```bash
-# Daily cron job
-0 2 * * * cd /var/www/app && php artisan compliance:system-check
-```
-
----
-
-## 🔧 Troubleshooting
-
-### Issue: "Forms: SKIP (No test data)"
-**Solution:**
-```bash
-php artisan db:seed
-```
-
-### Issue: "Timeline Table: FAIL"
-**Solution:**
-```bash
+# Run all migrations
 php artisan migrate
+
+# Fresh migrations (WARNING: Deletes all data)
+php artisan migrate:fresh
+
+# Rollback last migration
+php artisan migrate:rollback
+
+# Rollback all migrations
+php artisan migrate:reset
+
+# Refresh migrations (rollback + migrate)
+php artisan migrate:refresh
 ```
 
-### Issue: "Config Mapping: FAIL"
-**Solution:**
+---
+
+## 🧪 TESTING COMMANDS
+
+### System Health Check
 ```bash
+# Full system health check
+php test_system_health.php
+
+# Expected output: ✅ ALL TESTS PASSED
+```
+
+### Database Verification
+```bash
+# Check tenants
+php artisan tinker
+>>> App\Models\Tenant::count()
+
+# Check employees
+>>> App\Models\WorkforceEmployee::where('tenant_id', 1)->count()
+
+# Check forms
+>>> App\Models\ComplianceFormsMaster::where('is_active', true)->count()
+
+# Check payroll
+>>> App\Models\WorkforcePayrollEntry::where('tenant_id', 1)->count()
+
+# Exit tinker
+>>> exit
+```
+
+### SQL Queries
+```bash
+# Connect to MySQL
+mysql -u root -p compliance_engine
+
+# Check data
+SELECT COUNT(*) FROM tenants;
+SELECT COUNT(*) FROM workforce_employee WHERE tenant_id = 1;
+SELECT COUNT(*) FROM compliance_forms_master WHERE is_active = 1;
+SELECT COUNT(*) FROM workforce_payroll_entry WHERE tenant_id = 1;
+SELECT COUNT(*) FROM incident_documents WHERE tenant_id = 1;
+```
+
+---
+
+## 📋 FORM GENERATION COMMANDS
+
+### Generate Form Preview
+```bash
+php artisan tinker
+
+# Generate FORM_B preview
+$orchestrator = app(\App\Services\Compliance\ComplianceOrchestrator::class);
+$result = $orchestrator->execute(1, 1, 1, 2025, 'FORM_B', 'preview');
+echo $result['status'];  // Should be 'success'
+
+# Generate FORM_25 preview
+$result = $orchestrator->execute(1, 1, 1, 2025, 'FORM_25', 'preview');
+echo $result['status'];
+
+exit
+```
+
+### Generate PDF
+```bash
+php artisan tinker
+
+$orchestrator = app(\App\Services\Compliance\ComplianceOrchestrator::class);
+$result = $orchestrator->execute(1, 1, 1, 2025, 'FORM_B', 'pdf');
+
+if ($result['status'] === 'success') {
+    echo "PDF generated successfully";
+    echo "Size: " . $result['result']['size'] . " bytes";
+}
+
+exit
+```
+
+### Create Batch
+```bash
+php artisan tinker
+
+$batchOrchestrator = app(\App\Services\Compliance\BatchOrchestrator::class);
+$batch = $batchOrchestrator->createBatch(1, 1, 2025);
+
+echo "Batch ID: " . $batch->id;
+echo "Status: " . $batch->status;
+echo "Forms: " . count(json_decode($batch->form_ids));
+
+exit
+```
+
+---
+
+## 🔍 DEBUGGING COMMANDS
+
+### Check Logs
+```bash
+# View latest logs
+tail -f storage/logs/laravel.log
+
+# View specific number of lines
+tail -n 100 storage/logs/laravel.log
+
+# Search for errors
+grep -i error storage/logs/laravel.log
+
+# Search for specific form
+grep FORM_B storage/logs/laravel.log
+```
+
+### Database Debugging
+```bash
+php artisan tinker
+
+# Check if forms are registered
+$forms = App\Models\ComplianceFormsMaster::where('is_active', true)->get();
+echo "Total forms: " . $forms->count();
+$forms->each(fn($f) => echo $f->form_code . "\n");
+
+# Check tenant setup
+$tenant = App\Models\Tenant::find(1);
+echo "Tenant: " . $tenant->name;
+echo "Subscription: " . $tenant->subscription_type;
+
+# Check branch setup
+$branch = App\Models\Branch::find(1);
+echo "Branch: " . $branch->branch_name;
+echo "Address: " . $branch->address;
+
+# Check employees
+$employees = App\Models\WorkforceEmployee::where('tenant_id', 1)->get();
+echo "Total employees: " . $employees->count();
+
+# Check payroll
+$payroll = App\Models\WorkforcePayrollEntry::where('tenant_id', 1)->first();
+echo "Sample payroll - Gross: " . $payroll->gross_salary;
+
+exit
+```
+
+### Service Debugging
+```bash
+php artisan tinker
+
+# Check if orchestrator is available
+$orchestrator = app(\App\Services\Compliance\ComplianceOrchestrator::class);
+echo "Orchestrator available: " . ($orchestrator ? "Yes" : "No");
+
+# Check if factories are available
+$apiFactory = \App\Services\Compliance\FormApis\FormApiServiceFactory::class;
+echo "API Factory available: " . ($apiFactory ? "Yes" : "No");
+
+$genFactory = \App\Services\Compliance\FormGenerator\FormGeneratorFactory::class;
+echo "Generator Factory available: " . ($genFactory ? "Yes" : "No");
+
+# Check frequency engine
+$frequencyEngine = app(\App\Services\Compliance\FrequencyEngine::class);
+$forms = $frequencyEngine->getApplicableForms(1);
+echo "Forms for January: " . $forms->count();
+
+exit
+```
+
+---
+
+## 🧹 CLEANUP COMMANDS
+
+### Clear Cache
+```bash
+# Clear all cache
+php artisan cache:clear
+
+# Clear config cache
 php artisan config:clear
-php artisan config:cache
-```
 
-### Issue: "Route Protection: FAIL"
-**Solution:**
-```bash
+# Clear route cache
 php artisan route:clear
-php artisan route:cache
+
+# Clear view cache
+php artisan view:clear
+
+# Clear all caches
+php artisan cache:clear && php artisan config:clear && php artisan route:clear && php artisan view:clear
 ```
 
----
-
-## 📊 Command Comparison
-
-| Command | Purpose | Duration | Safety | Automation |
-|---------|---------|----------|--------|------------|
-| `system-check` | Full validation | 5-10s | ✅ Safe | Manual |
-| `test-generation` | Form testing | 2-3s | ✅ Safe | Manual |
-| `check-due` | Timeline update | <1s | ✅ Safe | Daily |
-
----
-
-## 🎓 Best Practices
-
-### 1. Run Before Every Deployment
+### Clean Storage
 ```bash
-php artisan compliance:system-check && deploy.sh
+# Remove generated forms
+rm -rf storage/app/generated_forms/*
+
+# Remove inspection packs
+rm -rf storage/app/compliance_inspection_packs/*
+
+# Remove temp files
+rm -rf storage/app/temp/*
+
+# Clear logs (WARNING: Deletes all logs)
+rm storage/logs/laravel.log
 ```
 
-### 2. Add to Git Pre-Commit Hook
+### Reset Database
 ```bash
-#!/bin/bash
-php artisan compliance:system-check || exit 1
-```
+# WARNING: This deletes all data!
+php artisan migrate:fresh
 
-### 3. Schedule Weekly Health Checks
-```php
-// routes/console.php
-Schedule::command('compliance:system-check')
-    ->weekly()
-    ->emailOutputOnFailure('admin@example.com');
-```
-
-### 4. Monitor in Production
-```bash
-# Cron: Every day at 2 AM
-0 2 * * * cd /app && php artisan compliance:system-check >> /var/log/compliance-check.log 2>&1
+# Then reseed
+php artisan db:seed --class=ComplianceFormsMasterSeeder
+php artisan db:seed --class=FreshComplianceSeeder
 ```
 
 ---
 
-## 📈 Success Metrics
+## 📊 MONITORING COMMANDS
 
-### Healthy System
-- ✅ All 6 checks pass
-- ✅ 36/36 forms generate
-- ✅ Exit code 0
-- ✅ No errors in output
-
-### Unhealthy System
-- ❌ Any check fails
-- ❌ Forms < 36/36
-- ❌ Exit code 1
-- ❌ Error messages present
-
----
-
-## 🔗 Related Documentation
-
-- **COMPREHENSIVE_AUDIT_REPORT.md** - Full system audit
-- **SYSTEM_CHECK_COMMAND.md** - Detailed command docs
-- **COMPLIANCE_TIMELINE_ENGINE_IMPLEMENTATION.md** - Timeline features
-- **SUBSCRIPTION_ENFORCEMENT_SECURITY.md** - Security details
-
----
-
-## 📞 Quick Help
-
+### Check System Status
 ```bash
-# List all compliance commands
-php artisan list compliance
+# Run health check
+php test_system_health.php
 
-# Get command help
-php artisan help compliance:system-check
-
-# Run with verbose output
-php artisan compliance:system-check -v
+# Check database connection
+php artisan tinker
+>>> DB::connection()->getPdo()
+>>> exit
 
 # Check Laravel version
 php artisan --version
 
-# Check database connection
-php artisan db:show
+# Check PHP version
+php --version
+```
+
+### Performance Monitoring
+```bash
+# Check execution logs
+php artisan tinker
+
+$logs = DB::table('compliance_execution_logs')
+    ->orderBy('created_at', 'desc')
+    ->limit(10)
+    ->get();
+
+$logs->each(fn($log) => echo 
+    $log->form_code . " - " . 
+    $log->status . " - " . 
+    $log->execution_time . "ms\n"
+);
+
+exit
+```
+
+### Data Statistics
+```bash
+php artisan tinker
+
+# Count records by type
+echo "Tenants: " . App\Models\Tenant::count() . "\n";
+echo "Branches: " . App\Models\Branch::count() . "\n";
+echo "Employees: " . App\Models\WorkforceEmployee::count() . "\n";
+echo "Payroll Entries: " . App\Models\WorkforcePayrollEntry::count() . "\n";
+echo "Bonus Records: " . App\Models\BonusRecord::count() . "\n";
+echo "Incidents: " . App\Models\IncidentDocument::count() . "\n";
+echo "Forms: " . App\Models\ComplianceFormsMaster::where('is_active', true)->count() . "\n";
+
+exit
 ```
 
 ---
 
-## ✅ Pre-Flight Checklist
+## 🚀 PRODUCTION COMMANDS
 
-Before running system check:
-- [ ] Database connection working
-- [ ] Migrations run
-- [ ] Config cached (optional)
-- [ ] Routes cached (optional)
-- [ ] Storage writable
+### Pre-Deployment
+```bash
+# Run migrations
+php artisan migrate
 
-After system check passes:
-- [ ] All 6 checks green
-- [ ] Exit code 0
-- [ ] No error messages
-- [ ] Ready for deployment
+# Seed forms
+php artisan db:seed --class=ComplianceFormsMasterSeeder
+
+# Clear cache
+php artisan cache:clear && php artisan config:clear
+
+# Verify system
+php test_system_health.php
+```
+
+### Deployment
+```bash
+# Start application
+php artisan serve
+
+# Or with specific host/port
+php artisan serve --host=0.0.0.0 --port=8000
+
+# Or use production server (nginx/apache)
+# Configure web server to point to public/ directory
+```
+
+### Post-Deployment
+```bash
+# Monitor logs
+tail -f storage/logs/laravel.log
+
+# Check system status
+php test_system_health.php
+
+# Monitor performance
+# Check database queries
+# Monitor memory usage
+# Check response times
+```
 
 ---
 
-**Last Updated:** 2024-01-XX  
-**Version:** 1.0.0  
-**Status:** ✅ Production Ready
+## 🔐 Security Commands
+
+### User Management
+```bash
+php artisan tinker
+
+# Create new user
+$user = App\Models\User::create([
+    'name' => 'New User',
+    'email' => 'user@example.com',
+    'password' => Hash::make('password'),
+    'tenant_id' => 1
+]);
+
+# List users
+App\Models\User::all();
+
+# Update user
+$user = App\Models\User::find(1);
+$user->update(['name' => 'Updated Name']);
+
+# Delete user
+App\Models\User::find(1)->delete();
+
+exit
+```
+
+### Audit Trail
+```bash
+php artisan tinker
+
+# Check execution logs
+$logs = DB::table('compliance_execution_logs')
+    ->where('tenant_id', 1)
+    ->orderBy('created_at', 'desc')
+    ->get();
+
+$logs->each(fn($log) => echo 
+    $log->created_at . " - " . 
+    $log->form_code . " - " . 
+    $log->status . "\n"
+);
+
+exit
+```
+
+---
+
+## 📚 REFERENCE
+
+### Form Codes
+```
+CLRA: FORM_XII, FORM_XIII, FORM_XIV, FORM_XVI, FORM_XVII, 
+      FORM_XIX, FORM_XX, FORM_XXI, FORM_XXII, FORM_XXIII
+
+Labour Welfare: FORM_A, FORM_C, FORM_D, FORM_D_ER
+
+Social Security: FORM_11, ESI_FORM_12, EPF_INSPECTION
+
+Factories: FORM_B, FORM_2, FORM_8, FORM_10, FORM_12, 
+           FORM_17, FORM_18, FORM_25, FORM_26, FORM_26A, HAZARD_REG
+
+Shops: SHOPS_FORM_12, SHOPS_FORM_13, SHOPS_FORM_C, 
+       SHOPS_FORM_VI, SHOPS_UNPAID, SHOPS_FINES
+```
+
+### Execution Modes
+```
+preview - HTML preview
+pdf - PDF generation
+batch - Batch processing
+inspection_pack - Inspection pack generation
+```
+
+### Frequencies
+```
+Monthly - Every month
+Quarterly - Months 3, 6, 9, 12
+HalfYearly - Months 6, 12
+Annual - Month 12 only
+Event - Manual trigger
+```
+
+---
+
+## ✅ QUICK REFERENCE
+
+| Command | Purpose |
+|---------|---------|
+| `php artisan migrate:fresh` | Fresh database |
+| `php artisan db:seed --class=ComplianceFormsMasterSeeder` | Seed forms |
+| `php artisan db:seed --class=FreshComplianceSeeder` | Seed demo data |
+| `php test_system_health.php` | System health check |
+| `php artisan serve` | Start application |
+| `php artisan tinker` | Interactive shell |
+| `tail -f storage/logs/laravel.log` | View logs |
+| `php artisan cache:clear` | Clear cache |
+
+---
+
+**Last Updated:** 2026-03-11  
+**Version:** 1.0

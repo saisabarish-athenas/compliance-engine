@@ -10,21 +10,64 @@ class ESIForm12Generator extends BaseFormGenerator
     protected function prepareData(array $rawData): array
     {
         $rows = [];
+        $tenant = $rawData['tenant'] ?? [];
+        $branch = $rawData['branch'] ?? [];
+
         foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
+            
             $rows[] = [
-                'employee_name' => $record['employee_name'] ?? 'N/A',
-                'incident_date' => $record['incident_date'] ?? 'N/A',
-                'incident_type' => $record['incident_type'] ?? 'N/A',
-                'location' => $record['location'] ?? 'N/A',
-                'description' => $record['description'] ?? 'N/A',
+                'employer_name' => $tenant['name'] ?? 'NIL',
+                'code_no' => $branch['esi_code'] ?? 'NIL',
+                'branch_office' => $branch['name'] ?? 'NIL',
+                'industry_nature' => 'NIL',
+                
+                'insured_name' => $record['employee_name'] ?? 'NIL',
+                'insurance_no' => $record['insurance_no'] ?? 'NIL',
+                'sex' => $record['gender'] ?? 'NIL',
+                'age' => 'NIL',
+                'occupation' => $record['occupation'] ?? 'NIL',
+                
+                'accident_address' => $branch['address'] ?? 'NIL',
+                'department' => $record['department'] ?? 'NIL',
+                'shift_hour' => 'NIL',
+                
+                'exact_place' => 'NIL',
+                
+                'injury_nature' => $record['severity'] ?? 'NIL',
+                'injury_location' => 'NIL',
+                'hospital_info' => 'NIL',
+                
+                'accident_description' => $record['description'] ?? 'NIL',
+                
+                'death' => 'no',
+                'death_date' => 'NIL',
+                
+                'wages_payable' => 'yes',
+                'contravention' => 'no',
+                
+                'witness_1' => 'NIL',
+                'witness_2' => 'NIL',
+                
+                'machine_involved' => 'NIL',
+                'machinery_fenced' => 'no',
+                
+                'person_doing' => 'NIL',
+                
+                'employer_vehicle' => 'no',
+                'employer_permission' => 'no',
+                'transport_operated' => 'no',
+                
+                'despatch_date' => now()->format('d-m-Y'),
+                
+                'designation' => 'Manager',
+                'diary_no' => 'AUTO',
+                'branch_manager' => 'Manager',
             ];
         }
 
         $month = $rawData['meta']['month'] ?? 1;
         $year = $rawData['meta']['year'] ?? 2024;
-        $tenant = $rawData['tenant'] ?? [];
-        $branch = $rawData['branch'] ?? [];
 
         return [
             'header' => [

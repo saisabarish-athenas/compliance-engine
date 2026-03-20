@@ -11,22 +11,24 @@ class Form26ApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('incidents as i')
-            ->where('i.tenant_id', $tenantId)
-            ->where('i.branch_id', $branchId)
-            ->whereYear('i.incident_date', $year)
-            ->whereMonth('i.incident_date', $month)
+        // Fetch accident records from incident_documents with employee details
+        $rows = DB::table('incident_documents as id')
+            ->leftJoin('workforce_employee as we', 'id.employee_id', '=', 'we.id')
+            ->where('id.tenant_id', $tenantId)
+            ->where('id.branch_id', $branchId)
+            ->where('id.incident_type', 'accident')
+            ->whereYear('id.incident_date', $year)
+            ->whereMonth('id.incident_date', $month)
             ->select([
-                'i.id',
-                'i.incident_date',
-                'i.description',
-                'i.severity',
-                'i.status',
-                DB::raw("'N/A' as employee_name"),
-                DB::raw("'Workplace' as location"),
-                DB::raw("i.severity as nature_of_injury"),
+                'id.id',
+                'id.incident_date',
+                'id.location',
+                'id.description',
+                'we.name as employee_name',
+                'we.designation',
+                'we.employee_code',
             ])
-            ->orderBy('i.incident_date')
+            ->orderBy('id.incident_date')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();

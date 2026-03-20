@@ -10,36 +10,46 @@ class FormXVIIGenerator extends BaseFormGenerator
     protected function prepareData(array $rawData): array
     {
         $rows = [];
-        foreach ($rawData['records'] as $record) {
+        foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
+                'name' => $record['name'] ?? '',
                 'employee_code' => $record['employee_code'] ?? '',
-                'employee_name' => $record['name'] ?? '',
                 'designation' => $record['designation'] ?? '',
-                'basic' => $record['basic_earned'] ?? 0,
+                'days_worked' => $record['days_worked'] ?? 0,
+                'unit_work' => '',
+                'daily_rate' => $record['daily_rate'] ?? 0,
+                'basic_wages' => $record['basic_earned'] ?? 0,
                 'da' => $record['da_earned'] ?? 0,
-                'hra' => $record['hra_earned'] ?? 0,
-                'pf_deduction' => round($record['pf_deduction'] ?? 0, 2),
-                'esi_deduction' => round($record['esi_deduction'] ?? 0, 2),
-                'advances' => round($record['advances'] ?? 0, 2),
-                'fines' => round($record['fines'] ?? 0, 2),
-                'total_deductions' => round($record['total_deductions'] ?? 0, 2),
+                'overtime' => 0,
+                'other_cash' => $record['hra_earned'] ?? 0,
+                'gross_salary' => $record['gross_salary'] ?? 0,
+                'esi' => $record['esi_employee'] ?? 0,
+                'pf' => $record['pf_employee'] ?? 0,
+                'pt' => 0,
+                'total_deductions' => ($record['pf_employee'] ?? 0) + ($record['esi_employee'] ?? 0),
+                'net_amount' => $record['net_salary'] ?? 0,
             ];
         }
 
-        $totals = $this->calculateTotals($rows, [
-            'pf_deduction', 'esi_deduction', 'advances', 'fines', 'total_deductions'
-        ]);
+        $tenant = $rawData['tenant'] ?? [];
+        $branch = $rawData['branch'] ?? [];
+        $month = $rawData['meta']['month'] ?? 1;
+        $year = $rawData['meta']['year'] ?? 2024;
 
         return [
             'header' => [
-                'form_title' => 'FORM XVII - Register of Deductions',
-                'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'branch' => $rawData['branch'] ?? [],
-                'tenant' => $rawData['tenant'] ?? [],
+                'contractor_name' => $tenant['name'] ?? 'N/A',
+                'establishment_name' => $branch['name'] ?? 'N/A',
+                'principal_employer' => $tenant['name'] ?? 'N/A',
+                'work_nature' => 'Manufacturing',
+                'work_location' => $branch['address'] ?? 'N/A',
+                'wage_period' => $this->formatPeriod($month, $year),
+                'tenant' => $tenant,
+                'branch' => $branch,
             ],
             'rows' => $rows,
-            'totals' => $totals,
+            'entries' => $rows,
             'is_nil' => count($rows) === 0,
         ];
     }

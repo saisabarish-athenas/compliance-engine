@@ -141,25 +141,25 @@
         <table class="establishment-table">
             <tr>
                 <td>NAME AND ADDRESS OF CONTRACTOR :</td>
-                <td>{{ $contractor_name ?? '' }}</td>
+                <td>{{ $header['contractor_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NAME AND LOCATION OF WORK :</td>
-                <td>{{ $work_location ?? '' }}</td>
+                <td>{{ $header['work_location'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
-                <td>{{ $establishment_name ?? '' }}</td>
+                <td>{{ $header['establishment_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
-                <td>{{ $principal_employer ?? '' }}</td>
+                <td>{{ $header['principal_employer'] ?? '' }}</td>
             </tr>
         </table>
 
         <div class="month-year-row">
             <span>Month & Year:</span>
-            <span>{{ $month_year ?? '' }}</span>
+            <span>{{ $header['month_year'] ?? '' }}</span>
         </div>
 
         <table class="column-numbers">
@@ -201,43 +201,30 @@
                     @foreach($rows as $index => $row)
                         <tr>
                             <td class="col-1">{{ $index + 1 }}</td>
-                            <td class="col-2">{{ $row['name'] ?? 'NIL' }}</td>
-                            <td class="col-3">{{ $row['father_name'] ?? 'NIL' }}</td>
-                            <td class="col-4">{{ $row['sex'] ?? 'NIL' }}</td>
-                            <td class="col-5">{{ $row['designation'] ?? 'NIL' }}</td>
-                            <td class="col-6">{{ $row['overtime_dates'] ?? 'NIL' }}</td>
-                            <td class="col-7">{{ $row['total_overtime'] ?? 'NIL' }}</td>
-                            <td class="col-8">{{ $row['normal_rate'] ?? 'NIL' }}</td>
-                            <td class="col-9">{{ $row['overtime_rate'] ?? 'NIL' }}</td>
-                            <td class="col-10">{{ $row['overtime_earnings'] ?? 'NIL' }}</td>
-                            <td class="col-11">{{ $row['payment_date'] ?? 'NIL' }}</td>
-                            <td class="col-12">{{ $row['remarks'] ?? 'NIL' }}</td>
+                            <td class="col-2">{{ $row['name'] ?? '' }}</td>
+                            <td class="col-3">{{ $row['father_name'] ?? '' }}</td>
+                            <td class="col-4">{{ $row['sex'] ?? '' }}</td>
+                            <td class="col-5">{{ $row['designation'] ?? '' }}</td>
+                            <td class="col-6">{{ $row['overtime_dates'] ?? '' }}</td>
+                            <td class="col-7">{{ $row['total_overtime'] ?? '' }}</td>
+                            <td class="col-8">{{ $row['normal_rate'] ?? '' }}</td>
+                            <td class="col-9">{{ $row['overtime_rate'] ?? '' }}</td>
+                            <td class="col-10">{{ $row['overtime_earnings'] ?? '' }}</td>
+                            <td class="col-11">{{ $row['payment_date'] ?? '' }}</td>
+                            <td class="col-12"></td>
                         </tr>
                     @endforeach
                 @else
-                    @for($i = 0; $i < 9; $i++)
-                        <tr>
-                            <td class="col-1">{{ $i + 1 }}</td>
-                            <td class="col-2">NIL</td>
-                            <td class="col-3">NIL</td>
-                            <td class="col-4">NIL</td>
-                            <td class="col-5">NIL</td>
-                            <td class="col-6">NIL</td>
-                            <td class="col-7">NIL</td>
-                            <td class="col-8">NIL</td>
-                            <td class="col-9">NIL</td>
-                            <td class="col-10">NIL</td>
-                            <td class="col-11">NIL</td>
-                            <td class="col-12">NIL</td>
-                        </tr>
-                    @endfor
+                    <tr>
+                        <td colspan="12" style="text-align:center;">No records found</td>
+                    </tr>
                 @endif
             </tbody>
         </table>
 
         <div class="footer-section">
             <div class="footer-left">*Applicable only in case of damage/loss/fine</div>
-            <div class="footer-center">Nil for the month of {{ $month_year ?? '' }}</div>
+
             <div class="footer-right">Seal Signature of The Contractor</div>
         </div>
 

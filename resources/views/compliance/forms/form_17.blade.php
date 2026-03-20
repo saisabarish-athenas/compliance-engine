@@ -143,43 +143,43 @@
             <div style="font-weight: bold; margin-bottom: 6px;">Name of Certifying Surgeon:</div>
             <div class="surgeon-line">
                 <div class="surgeon-label">(a)</div>
-                <div class="surgeon-name"></div>
+                <div class="surgeon-name">{{ $certifying_surgeons[0]['name'] ?? '' }}</div>
                 <div class="surgeon-period">
                     <div class="period-item">
                         <div class="period-label">From</div>
-                        <div class="period-line"></div>
+                        <div class="period-line">{{ $certifying_surgeons[0]['from_date'] ?? '' }}</div>
                     </div>
                     <div class="period-item">
                         <div class="period-label">To</div>
-                        <div class="period-line"></div>
+                        <div class="period-line">{{ $certifying_surgeons[0]['to_date'] ?? '' }}</div>
                     </div>
                 </div>
             </div>
             <div class="surgeon-line">
                 <div class="surgeon-label">(b)</div>
-                <div class="surgeon-name"></div>
+                <div class="surgeon-name">{{ $certifying_surgeons[1]['name'] ?? '' }}</div>
                 <div class="surgeon-period">
                     <div class="period-item">
                         <div class="period-label">From</div>
-                        <div class="period-line"></div>
+                        <div class="period-line">{{ $certifying_surgeons[1]['from_date'] ?? '' }}</div>
                     </div>
                     <div class="period-item">
                         <div class="period-label">To</div>
-                        <div class="period-line"></div>
+                        <div class="period-line">{{ $certifying_surgeons[1]['to_date'] ?? '' }}</div>
                     </div>
                 </div>
             </div>
             <div class="surgeon-line">
                 <div class="surgeon-label">(c)</div>
-                <div class="surgeon-name"></div>
+                <div class="surgeon-name">{{ $certifying_surgeons[2]['name'] ?? '' }}</div>
                 <div class="surgeon-period">
                     <div class="period-item">
                         <div class="period-label">From</div>
-                        <div class="period-line"></div>
+                        <div class="period-line">{{ $certifying_surgeons[2]['from_date'] ?? '' }}</div>
                     </div>
                     <div class="period-item">
                         <div class="period-label">To</div>
-                        <div class="period-line"></div>
+                        <div class="period-line">{{ $certifying_surgeons[2]['to_date'] ?? '' }}</div>
                     </div>
                 </div>
             </div>
@@ -226,25 +226,55 @@
             </thead>
             <tbody>
 
-                @for($i = 0; $i < 12; $i++)
+                @if($is_nil)
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td colspan="15" style="text-align: center; font-weight: bold;">NIL</td>
                     </tr>
-                @endfor
+                @else
+                    @foreach($rows as $row)
+                        <tr>
+                            <td>{{ $row['sl_no'] }}</td>
+                            <td>{{ $row['works_no'] }}</td>
+                            <td class="col-name">{{ $row['name_of_worker'] }}</td>
+                            <td>{{ $row['sex'] }}</td>
+                            <td>{{ $row['age_last_birthday'] }}</td>
+                            <td>{{ $row['date_of_employment_on_present_work'] }}</td>
+                            <td>{{ $row['date_of_leaving_or_transfer'] }}</td>
+                            <td class="col-reason">{{ $row['reason_for_leaving_transfer_or_discharge'] }}</td>
+                            <td>{{ $row['nature_of_job_or_occupation'] }}</td>
+                            <td>{{ $row['raw_material_or_byproduct_handled'] }}</td>
+                            <td>{{ $row['result_of_medical_examination'] }}</td>
+                            <td class="col-suspend">{{ $row['suspension_period_with_reasons'] }}</td>
+                            <td>{{ $row['recertified_fit_to_resume_duty_on'] }}</td>
+                            <td>{{ $row['certificate_of_unfitness_or_suspension_issued'] }}</td>
+                            <td>{{ $row['signature_with_date_of_certifying_surgeon'] }}</td>
+                        </tr>
+                    @endforeach
+                    
+                    @php
+                        $fillerRows = max(0, 12 - count($rows));
+                    @endphp
+                    
+                    @for($i = 0; $i < $fillerRows; $i++)
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    @endfor
+                @endif
 
             </tbody>
         </table>

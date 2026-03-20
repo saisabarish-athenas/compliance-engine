@@ -107,25 +107,25 @@
                 <div class="info-label">Name and address of Contractor</div>
                 <div class="dot-line"></div>
             </div>
-            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'tenant.name', 'NIL') }}</div>
+            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'tenant.name') ?? '' }}</div>
 
             <div class="info-row">
                 <div class="info-label">Name and address of Establishment in / under which contract is carried on</div>
                 <div class="dot-line"></div>
             </div>
-            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'branch.name', 'NIL') }}</div>
+            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'branch.name') ?? '' }}</div>
 
             <div class="info-row">
                 <div class="info-label">Nature and location of work</div>
                 <div class="dot-line"></div>
             </div>
-            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'branch.address', 'NIL') }}</div>
+            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'branch.address') ?? '' }}</div>
 
             <div class="info-row">
                 <div class="info-label">Name and address of Principal Employer</div>
                 <div class="dot-line"></div>
             </div>
-            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'tenant.address', 'NIL') }}</div>
+            <div style="margin-left: 35%; margin-bottom: 8px; font-size: 9px;">{{ data_get($header, 'tenant.address') ?? '' }}</div>
         </div>
 
         <table class="register-table">
@@ -164,36 +164,23 @@
                     @foreach($rows as $index => $row)
                     <tr>
                         <td class="col-1">{{ $index + 1 }}</td>
-                        <td class="col-2">{{ data_get($row, 'name', 'NIL') }}</td>
-                        <td class="col-3">{{ data_get($row, 'age', 'NIL') }} / {{ data_get($row, 'sex', 'NIL') }}</td>
-                        <td class="col-4">{{ data_get($row, 'father_name', 'NIL') }}</td>
-                        <td class="col-5">{{ data_get($row, 'designation', 'NIL') }}</td>
-                        <td class="col-6">{{ data_get($row, 'permanent_address', 'NIL') }}</td>
-                        <td class="col-7">{{ data_get($row, 'local_address', 'NIL') }}</td>
-                        <td class="col-8">{{ data_get($row, 'joining_date', 'NIL') }}</td>
+                        <td class="col-2">{{ $row['name'] ?? '' }}</td>
+                        <td class="col-3">{{ $row['age'] ?? '' }}{{ !empty($row['sex']) ? ' / ' . $row['sex'] : '' }}</td>
+                        <td class="col-4">{{ $row['father_name'] ?? '' }}</td>
+                        <td class="col-5">{{ $row['designation'] ?? '' }}</td>
+                        <td class="col-6">{{ $row['permanent_address'] ?? '' }}</td>
+                        <td class="col-7">{{ $row['local_address'] ?? '' }}</td>
+                        <td class="col-8">{{ $row['joining_date'] ?? '' }}</td>
                         <td class="col-9"></td>
-                        <td class="col-10">{{ data_get($row, 'termination_date', 'NIL') }}</td>
-                        <td class="col-11">{{ data_get($row, 'termination_reason', 'NIL') }}</td>
-                        <td class="col-12">{{ data_get($row, 'remarks', 'NIL') }}</td>
+                        <td class="col-10">{{ $row['termination_date'] ?? '' }}</td>
+                        <td class="col-11">{{ $row['termination_reason'] ?? '' }}</td>
+                        <td class="col-12"></td>
                     </tr>
                     @endforeach
                 @else
-                    @for($i = 0; $i < 10; $i++)
                     <tr>
-                        <td class="col-1">{{ $i + 1 }}</td>
-                        <td class="col-2">NIL</td>
-                        <td class="col-3">NIL</td>
-                        <td class="col-4">NIL</td>
-                        <td class="col-5">NIL</td>
-                        <td class="col-6">NIL</td>
-                        <td class="col-7">NIL</td>
-                        <td class="col-8">NIL</td>
-                        <td class="col-9"></td>
-                        <td class="col-10">NIL</td>
-                        <td class="col-11">NIL</td>
-                        <td class="col-12">NIL</td>
+                        <td colspan="12" style="text-align:center;">No records found</td>
                     </tr>
-                    @endfor
                 @endif
             </tbody>
         </table>

@@ -10,9 +10,6 @@ return new class extends Migration
     {
         if (Schema::hasTable('contract_labour_deployment')) {
             Schema::table('contract_labour_deployment', function (Blueprint $table) {
-                if (!Schema::hasColumn('contract_labour_deployment', 'contractor_id')) {
-                    $table->unsignedBigInteger('contractor_id')->nullable()->after('tenant_id');
-                }
                 if (!Schema::hasColumn('contract_labour_deployment', 'deployment_date')) {
                     $table->date('deployment_date')->nullable()->after('deployment_start');
                 }
@@ -30,7 +27,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('contract_labour_deployment')) {
             Schema::table('contract_labour_deployment', function (Blueprint $table) {
-                $columns = ['contractor_id', 'deployment_date', 'workmen_count', 'work_description'];
+                $columns = ['deployment_date', 'workmen_count', 'work_description'];
                 foreach ($columns as $col) {
                     if (Schema::hasColumn('contract_labour_deployment', $col)) {
                         $table->dropColumn($col);

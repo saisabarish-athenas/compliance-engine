@@ -1,6 +1,6 @@
 @extends('compliance.layouts.preview')
 
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -114,20 +114,20 @@
         <div class="form-header">
             <div class="header-title">FORM – C</div>
             <div>(See Rule 29 of the Tamil Nadu Labour Welfare Fund Rules, 1973)</div>
-            <div class="header-title">Register of Fines and Unpaid Accumulations for the Year ______</div>
+            <div class="header-title">Register of Fines and Unpaid Accumulations for the Year {{ $header['period'] ?? '______' }}</div>
         </div>
 
         <!-- Establishment Details -->
         <div class="establishment-section">
             <div class="establishment-row">
                 <div class="establishment-label">Name of the Establishment :</div>
-                <div class="establishment-line"></div>
+                <div class="establishment-line">{{ $header['establishment_name'] ?? '' }}</div>
             </div>
 
             <div class="address-label">Address :</div>
             <div class="address-lines">
-                <div class="address-line"></div>
-                <div class="address-line"></div>
+                <div class="address-line">{{ $header['address'] ?? '' }}</div>
+                <div class="address-line">{{ $header['district'] ?? '' }}</div>
                 <div class="address-line"></div>
                 <div class="address-line"></div>
             </div>
@@ -154,10 +154,10 @@
             <tbody>
                 <tr>
                     <td class="col-details">1.Total Realisation under Fines</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['fines_realisation']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['fines_realisation']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['fines_realisation']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['fines_realisation']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details">2.Total amount being unpaid accumulations* of</td>
@@ -168,59 +168,59 @@
                 </tr>
                 <tr>
                     <td class="col-details sub-row">(i) Basic wages</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['unpaid_basic']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_basic']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_basic']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_basic']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details sub-row">(ii) Overtime</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['unpaid_overtime']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_overtime']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_overtime']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_overtime']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details sub-row">(iii) Dearness allowances and other allowances</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['unpaid_allowance']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_allowance']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_allowance']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_allowance']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details sub-row">(iv) Bonus</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['unpaid_bonus']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_bonus']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_bonus']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_bonus']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details sub-row">(v) Gratuity</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['unpaid_gratuity']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_gratuity']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_gratuity']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_gratuity']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details sub-row">(vi) Any other item of unpaid accumulation</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['unpaid_other']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_other']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_other']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['unpaid_other']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details">3.Deductions under Standing Orders</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['standing_order_deduction']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['standing_order_deduction']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['standing_order_deduction']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['standing_order_deduction']['december'] ?? '' }}</td>
                 </tr>
                 <tr>
                     <td class="col-details">4.Deductions under Payment of Wages Act</td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
-                    <td class="col-quarter"></td>
+                    <td class="col-quarter">{{ $data['pwa_deduction']['march'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['pwa_deduction']['june'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['pwa_deduction']['september'] ?? '' }}</td>
+                    <td class="col-quarter">{{ $data['pwa_deduction']['december'] ?? '' }}</td>
                 </tr>
             </tbody>
         </table>

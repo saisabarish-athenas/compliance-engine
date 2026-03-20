@@ -25,9 +25,6 @@ class ComplianceOrchestrator
         private FormGeneratorFactory $factory
     ) {}
 
-    /**
-     * Execute compliance workflow in specified mode
-     */
     public function execute(
         int $tenantId,
         int $branchId,
@@ -101,9 +98,6 @@ class ComplianceOrchestrator
         }
     }
 
-    /**
-     * Execute batch mode - generate and store PDF
-     */
     public function executeBatch(string $formCode, array $formData, int $tenantId, int $branchId, ?int $batchId, int $month, int $year): array
     {
         $generator = $this->factory::make($formCode);
@@ -113,6 +107,7 @@ class ComplianceOrchestrator
         $formData['period_month'] = $month;
         $formData['period_year'] = $year;
         
+        \Log::info("Orchestrator: Generating PDF for {$formCode}", ['batch_id' => $batchId]);
         $pdfContent = $generator->generatePdf($formData);
 
         if (!$pdfContent || strlen($pdfContent) === 0) {
@@ -130,6 +125,26 @@ class ComplianceOrchestrator
             throw new \Exception("Failed to store PDF for {$formCode}");
         }
 
+        // Always update file_path when batch is provided
+        if ($batchId) {
+            \Log::info("Orchestrator: Updating batch form {$formCode} for batch {$batchId}", ['file_path' => $filePath]);
+            
+            $updated = DB::table('compliance_batch_forms')
+                ->where('batch_id', $batchId)
+                ->where('form_code', $formCode)
+                ->update([
+                    'file_path' => $filePath,
+                    'status' => 'generated',
+                    'updated_at' => now(),
+                ]);
+
+            \Log::info("Orchestrator: Update result for {$formCode}", ['rows_updated' => $updated]);
+            
+            if ($updated === 0) {
+                throw new \Exception("Failed to update batch form record for {$formCode}");
+            }
+        }
+
         return [
             'file_path' => $filePath,
             'file_size' => strlen($pdfContent),
@@ -137,9 +152,6 @@ class ComplianceOrchestrator
         ];
     }
 
-    /**
-     * Execute PDF mode - return PDF content
-     */
     public function executePdf(string $formCode, array $formData, int $month, int $year): array
     {
         $generator = $this->factory::make($formCode);
@@ -162,9 +174,6 @@ class ComplianceOrchestrator
         ];
     }
 
-    /**
-     * Execute preview mode - return blade view
-     */
     public function executePreview(string $formCode, array $formData, int $month, int $year, ?int $batchId = null): array
     {
         $viewPath = FormTemplateRegistry::resolve($formCode);
@@ -184,6 +193,8 @@ class ComplianceOrchestrator
                 'header' => $formData['header'] ?? [],
                 'rows' => $formData['rows'] ?? [],
                 'entries' => $formData['rows'] ?? [],
+                'cards' => $formData['cards'] ?? [],
+                'slips' => $formData['slips'] ?? [],
                 'totals' => $formData['totals'] ?? [],
                 'is_nil' => $formData['is_nil'] ?? empty($formData['rows'])
             ]
@@ -198,9 +209,6 @@ class ComplianceOrchestrator
         ];
     }
 
-    /**
-     * Execute inspection pack mode - collect PDFs and create ZIP
-     */
     public function executeInspectionPack(string $formCode, array $formData, int $tenantId, int $branchId, ?int $batchId): array
     {
         $generator = $this->factory::make($formCode);
@@ -236,9 +244,6 @@ class ComplianceOrchestrator
         ];
     }
 
-    /**
-     * Run validation pipeline
-     */
     private function runValidationPipeline(int $tenantId, int $branchId, int $month, int $year): void
     {
         $tenantValidation = $this->dataValidator->validateTenantSetup($tenantId);
@@ -258,9 +263,6 @@ class ComplianceOrchestrator
         }
     }
 
-    /**
-     * Validate input parameters
-     */
     private function validateInputs(int $tenantId, int $branchId, int $month, int $year, string $formCode): void
     {
         if ($tenantId <= 0) {
@@ -289,26 +291,22 @@ class ComplianceOrchestrator
         }
     }
 
-    /**
-     * Validate subscription access
-     */
     private function validateSubscriptionAccess(int $tenantId, string $mode): void
     {
-        if ($mode === 'preview' || $mode === 'pdf' || $mode === 'inspection_pack') {
-            $tenant = Tenant::find($tenantId);
-            if (!$tenant) {
-                throw new \Exception("Tenant {$tenantId} not found");
-            }
-
-            if ($tenant->subscription_type !== 'FULL') {
-                throw new \Exception("Subscription access denied. Mode '{$mode}' requires FULL subscription");
-            }
+        $tenant = Tenant::find($tenantId);
+        if (!$tenant) {
+            throw new \Exception("Tenant {$tenantId} not found");
         }
+
+        // Only inspection_pack requires FULL subscription
+        if ($mode === 'inspection_pack' && $tenant->subscription_type !== 'FULL') {
+            throw new \Exception("Subscription access denied. Inspection pack requires FULL subscription");
+        }
+
+        // Preview and PDF allowed for all subscriptions (for testing/development)
+        // Batch mode allowed for all subscriptions
     }
 
-    /**
-     * Log execution to database
-     */
     private function logExecution(
         int $tenantId,
         int $branchId,
@@ -339,9 +337,6 @@ class ComplianceOrchestrator
         }
     }
 
-    /**
-     * Get execution logs for batch
-     */
     public function getExecutionLogs(int $batchId, ?string $formCode = null): array
     {
         $query = DB::table('compliance_execution_logs')
@@ -355,9 +350,6 @@ class ComplianceOrchestrator
         return $query->get()->toArray();
     }
 
-    /**
-     * Get execution statistics
-     */
     public function getExecutionStats(int $batchId): array
     {
         $logs = DB::table('compliance_execution_logs')

@@ -120,23 +120,23 @@
         <table class="info-grid">
             <tr>
                 <td class="info-label">NAME AND ADDRESS OF CONTRACTOR :</td>
-                <td class="info-value">{{ $header['contractor_name'] ?? 'N/A' }}</td>
+                <td class="info-value">{{ $header['contractor_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td class="info-label">NATURE AND LOCATION OF WORK :</td>
-                <td class="info-value">{{ $header['work_nature'] ?? 'N/A' }}</td>
+                <td class="info-value">{{ $header['work_nature'] ?? '' }}</td>
             </tr>
             <tr>
                 <td class="info-label">NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
-                <td class="info-value">{{ $header['establishment_name'] ?? 'N/A' }}</td>
+                <td class="info-value">{{ $header['establishment_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td class="info-label">NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
-                <td class="info-value">{{ $header['principal_employer'] ?? 'N/A' }}</td>
+                <td class="info-value">{{ $header['principal_employer'] ?? '' }}</td>
             </tr>
             <tr>
                 <td class="info-label">Month & Year:</td>
-                <td class="info-value">{{ $header['period'] ?? 'N/A' }}</td>
+                <td class="info-value">{{ $header['period'] ?? '' }}</td>
             </tr>
         </table>
 
@@ -229,7 +229,7 @@
                         <td class="text-center">{{ $row['instalments'] ?? '' }}</td>
                         <td class="text-center">{{ $row['first_month'] ?? '' }}</td>
                         <td class="text-center">{{ $row['last_month'] ?? '' }}</td>
-                        <td>{{ $row['remarks'] ?? '' }}</td>
+                        <td></td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -238,7 +238,7 @@
 
         <div class="footer-note">
             *Applicable only in case of damage/loss/fine
-            <span style="float: right;">Nil for the month of {{ strtoupper($header['period'] ?? '') }}</span>
+
         </div>
 
         <div class="footer-section">

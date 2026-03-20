@@ -178,18 +178,20 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 12; $i++)
-                <tr>
-                    <td class="col-year"></td>
-                    <td class="col-sl"></td>
-                    <td class="col-datehour"></td>
-                    <td class="col-report"></td>
-                    <td class="col-place"></td>
-                    <td class="col-description"></td>
-                    <td class="col-damage"></td>
-                    <td class="col-remarks"></td>
-                </tr>
-                @endfor
+                @if(!empty($rows) && count($rows) > 0)
+                    @foreach($rows as $index => $row)
+                    <tr>
+                        <td class="col-year">{{ $row['calendar_year'] ?? '' }}</td>
+                        <td class="col-sl">{{ $index + 1 }}</td>
+                        <td class="col-datehour">{{ $row['date_and_hour'] ?? '' }}</td>
+                        <td class="col-report">{{ $row['report_date'] ?? '' }}</td>
+                        <td class="col-place">{{ $row['place'] ?? '' }}</td>
+                        <td class="col-description">{{ $row['description'] ?? '' }}</td>
+                        <td class="col-damage">{{ $row['damage_details'] ?? '' }}</td>
+                        <td class="col-remarks">{{ $row['remarks'] ?? '' }}</td>
+                    </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 

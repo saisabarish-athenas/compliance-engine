@@ -12,6 +12,7 @@ class ESIForm12ApiService extends BaseFormApiService
         $this->validateTenantAndBranch($tenantId, $branchId);
 
         $rows = DB::table('incidents as i')
+            ->leftJoin('workforce_employee as e', 'i.id', '=', 'e.id')
             ->where('i.tenant_id', $tenantId)
             ->where('i.branch_id', $branchId)
             ->whereYear('i.incident_date', $year)
@@ -21,6 +22,11 @@ class ESIForm12ApiService extends BaseFormApiService
                 'i.incident_date',
                 'i.description',
                 'i.severity',
+                'e.name as employee_name',
+                'e.esi_number as insurance_no',
+                'e.designation as occupation',
+                'e.department',
+                'e.gender',
             ])
             ->orderBy('i.incident_date')
             ->get()

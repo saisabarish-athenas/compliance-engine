@@ -41,7 +41,7 @@
         .register-table td {
             border: 1px solid black;
             padding: 2px 2px;
-            text-align: center;
+            text-align: left;
             vertical-align: middle;
         }
         .register-table th {
@@ -49,18 +49,19 @@
             background-color: #fff;
             line-height: 1.1;
             height: 16px;
+            text-align: center;
         }
         .register-table td {
             height: 20px;
         }
-        .col-sl { width: 4%; }
+        .col-sl { width: 4%; text-align: center; }
         .col-name { width: 28%; }
         .col-father { width: 12%; }
         .col-nature { width: 12%; }
-        .col-group { width: 6%; }
-        .col-relay { width: 6%; }
-        .col-cert { width: 10%; }
-        .col-token { width: 10%; }
+        .col-group { width: 6%; text-align: center; }
+        .col-relay { width: 6%; text-align: center; }
+        .col-cert { width: 10%; text-align: center; }
+        .col-token { width: 10%; text-align: center; }
         .col-remarks { width: 12%; }
         .footer-section {
             margin-top: 8px;
@@ -101,23 +102,6 @@
         <!-- Register Table -->
         <table class="register-table">
             <thead>
-                <!-- Row 1: Main headers -->
-                <tr>
-                    <th class="col-sl" rowspan="2">Sl. No.</th>
-                    <th class="col-name" rowspan="2">Name & residential address of the worker</th>
-                    <th class="col-father" rowspan="2">Father's name</th>
-                    <th class="col-nature" rowspan="2">Nature of work</th>
-                    <th class="col-group" rowspan="2">Letter of group as in Form No. 11</th>
-                    <th class="col-relay" rowspan="2">No. of relay, if working in shifts</th>
-                    <th colspan="2" style="text-align: center;">No. & date of certificate if an adolescent</th>
-                    <th class="col-remarks" rowspan="2">Remarks</th>
-                </tr>
-                <!-- Row 2: Certificate sub-headers -->
-                <tr>
-                    <th class="col-cert">No. of certificate & date</th>
-                    <th class="col-token">Token No. giving reference to the certificates</th>
-                </tr>
-                <!-- Row 3: Column numbers -->
                 <tr>
                     <th class="col-sl">(1)</th>
                     <th class="col-name">(2)</th>
@@ -129,32 +113,38 @@
                     <th class="col-token">(8)</th>
                     <th class="col-remarks">(9)</th>
                 </tr>
+                <tr>
+                    <th class="col-sl">Sl. No.</th>
+                    <th class="col-name">Name & residential address</th>
+                    <th class="col-father">Father's name</th>
+                    <th class="col-nature">Nature of work</th>
+                    <th class="col-group">Group</th>
+                    <th class="col-relay">Relay</th>
+                    <th class="col-cert">Certificate No.</th>
+                    <th class="col-token">Token No.</th>
+                    <th class="col-remarks">Remarks</th>
+                </tr>
             </thead>
             <tbody>
-                @forelse($rows ?? $entries ?? [] as $index => $row)
-                <tr>
-                    <td class="col-sl">{{ $index + 1 }}</td>
-                    <td class="col-name">{{ $row['employee_name'] ?? '' }}</td>
-                    <td class="col-father">{{ $row['father_name'] ?? '' }}</td>
-                    <td class="col-nature">{{ $row['designation'] ?? '' }}</td>
-                    <td class="col-group">{{ $row['group'] ?? '' }}</td>
-                    <td class="col-relay">{{ $row['relay'] ?? '' }}</td>
-                    <td class="col-cert">{{ $row['certificate_no'] ?? '' }}</td>
-                    <td class="col-token">{{ $row['token_no'] ?? '' }}</td>
-                    <td class="col-remarks">{{ $row['remarks'] ?? '' }}</td>
-                </tr>
-                @empty
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                <tr><td class="col-sl"></td><td class="col-name"></td><td class="col-father"></td><td class="col-nature"></td><td class="col-group"></td><td class="col-relay"></td><td class="col-cert"></td><td class="col-token"></td><td class="col-remarks"></td></tr>
-                @endforelse
+                @if(!empty($rows) && count($rows) > 0)
+                    @foreach($rows as $index => $row)
+                        <tr>
+                            <td class="col-sl">{{ $index + 1 }}</td>
+                            <td class="col-name">{{ $row['employee_name'] ?? '' }}</td>
+                            <td class="col-father">{{ $row['father_name'] ?? '' }}</td>
+                            <td class="col-nature">{{ $row['designation'] ?? '' }}</td>
+                            <td class="col-group">{{ $row['group'] ?? '' }}</td>
+                            <td class="col-relay">{{ $row['relay'] ?? '' }}</td>
+                            <td class="col-cert">{{ $row['certificate_no'] ?? '' }}</td>
+                            <td class="col-token">{{ $row['token_no'] ?? '' }}</td>
+                            <td class="col-remarks">{{ $row['remarks'] ?? '' }}</td>
+                        </tr>
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="9" style="text-align:center;">No records found</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
 

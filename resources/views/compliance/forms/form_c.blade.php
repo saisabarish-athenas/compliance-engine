@@ -131,41 +131,29 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($rows ?? $entries ?? [] as $index => $row)
-                    <tr>
-                        <td class="col-1">{{ $index + 1 }}</td>
-                        <td class="col-2">{{ $row['employee_name'] ?? 'NIL' }}</td>
-                        <td class="col-3">{{ $row['recovery_type'] ?? 'NIL' }}</td>
-                        <td class="col-4">{{ $row['particulars'] ?? 'NIL' }}</td>
-                        <td class="col-5">{{ $row['damage_date'] ?? 'NIL' }}</td>
-                        <td class="col-6">{{ $row['amount'] ?? 'NIL' }}</td>
-                        <td class="col-7">{{ $row['show_cause'] ?? 'NIL' }}</td>
-                        <td class="col-8">{{ $row['explanation'] ?? 'NIL' }}</td>
-                        <td class="col-9">{{ $row['installments'] ?? 'NIL' }}</td>
-                        <td class="col-10">{{ $row['first_month'] ?? 'NIL' }}</td>
-                        <td class="col-11">{{ $row['last_month'] ?? 'NIL' }}</td>
-                        <td class="col-12">{{ $row['recovery_date'] ?? 'NIL' }}</td>
-                        <td class="col-13">{{ $row['remarks'] ?? 'NIL' }}</td>
-                    </tr>
-                @empty
-                    @for($i = 0; $i < 9; $i++)
+                @if(!empty($rows) && count($rows) > 0)
+                    @foreach($rows as $index => $row)
                         <tr>
-                            <td class="col-1">{{ $i + 1 }}</td>
-                            <td class="col-2">NIL</td>
-                            <td class="col-3">NIL</td>
-                            <td class="col-4">NIL</td>
-                            <td class="col-5">NIL</td>
-                            <td class="col-6">NIL</td>
-                            <td class="col-7">NIL</td>
-                            <td class="col-8">NIL</td>
-                            <td class="col-9">NIL</td>
-                            <td class="col-10">NIL</td>
-                            <td class="col-11">NIL</td>
-                            <td class="col-12">NIL</td>
-                            <td class="col-13">NIL</td>
+                            <td class="col-1">{{ $index + 1 }}</td>
+                            <td class="col-2">{{ $row['employee_name'] ?? '' }}</td>
+                            <td class="col-3">{{ $row['recovery_type'] ?? '' }}</td>
+                            <td class="col-4">{{ $row['particulars'] ?? '' }}</td>
+                            <td class="col-5">{{ $row['damage_date'] ?? '' }}</td>
+                            <td class="col-6">{{ $row['amount'] ?? '' }}</td>
+                            <td class="col-7">{{ $row['show_cause'] ?? '' }}</td>
+                            <td class="col-8">{{ $row['explanation'] ?? '' }}</td>
+                            <td class="col-9">{{ $row['installments'] ?? '' }}</td>
+                            <td class="col-10">{{ $row['first_month'] ?? '' }}</td>
+                            <td class="col-11">{{ $row['last_month'] ?? '' }}</td>
+                            <td class="col-12">{{ $row['recovery_date'] ?? '' }}</td>
+                            <td class="col-13">{{ $row['remarks'] ?? '' }}</td>
                         </tr>
-                    @endfor
-                @endforelse
+                    @endforeach
+                @else
+                    <tr>
+                        <td colspan="13" style="text-align:center;">No records found</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
 

@@ -2,6 +2,14 @@
 
 namespace App\Services\Compliance\FormGenerator;
 
+use Carbon\Carbon;
+
+/**
+ * Form17Generator - Health Register Generator
+ * 
+ * Transforms raw worker data into FORM 17 statutory structure
+ * Maps 15 required columns for Health Register
+ */
 class Form17Generator extends BaseFormGenerator
 {
     protected string $formCode = 'FORM_17';
@@ -10,13 +18,37 @@ class Form17Generator extends BaseFormGenerator
     protected function prepareData(array $rawData): array
     {
         $rows = [];
-        foreach ($rawData['records'] ?? [] as $record) {
+        $records = $rawData['records'] ?? [];
+
+        foreach ($records as $index => $record) {
             $record = $this->normalizeRecord($record);
+            
+            // Calculate age from date of birth
+            $age = '';
+            if (!empty($record['date_of_birth'])) {
+                try {
+                    $age = Carbon::parse($record['date_of_birth'])->age;
+                } catch (\Exception $e) {
+                    $age = '';
+                }
+            }
+
             $rows[] = [
-                'employee_code' => $record['employee_code'] ?? '',
-                'name' => $record['name'] ?? 'N/A',
-                'designation' => $record['designation'] ?? 'N/A',
-                'date_of_birth' => $record['date_of_birth'] ?? 'N/A',
+                'sl_no' => $index + 1,
+                'works_no' => $record['works_no'] ?? '',
+                'name_of_worker' => $record['name_of_worker'] ?? '',
+                'sex' => $record['sex'] ?? '',
+                'age_last_birthday' => $age,
+                'date_of_employment_on_present_work' => $this->formatDate($record['date_of_joining'] ?? null),
+                'date_of_leaving_or_transfer' => '',
+                'reason_for_leaving_transfer_or_discharge' => '',
+                'nature_of_job_or_occupation' => $record['designation'] ?? '',
+                'raw_material_or_byproduct_handled' => '',
+                'result_of_medical_examination' => '',
+                'suspension_period_with_reasons' => '',
+                'recertified_fit_to_resume_duty_on' => '',
+                'certificate_of_unfitness_or_suspension_issued' => '',
+                'signature_with_date_of_certifying_surgeon' => '',
             ];
         }
 
@@ -27,7 +59,7 @@ class Form17Generator extends BaseFormGenerator
 
         return [
             'header' => [
-                'form_title' => 'FORM 17 - Register of Young Persons',
+                'form_title' => 'FORM 17 - Health Register',
                 'period' => $this->formatPeriod($month, $year),
                 'branch' => $branch,
                 'tenant' => is_array($tenant) ? ($tenant['name'] ?? 'N/A') : $tenant,
@@ -43,5 +75,21 @@ class Form17Generator extends BaseFormGenerator
             'totals' => [],
             'is_nil' => count($rows) === 0,
         ];
+    }
+
+    /**
+     * Format date to DD-MM-YYYY format
+     */
+    private function formatDate(?string $date): string
+    {
+        if (empty($date)) {
+            return '';
+        }
+
+        try {
+            return Carbon::parse($date)->format('d-m-Y');
+        } catch (\Exception $e) {
+            return '';
+        }
     }
 }

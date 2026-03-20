@@ -19,15 +19,16 @@ class ComprehensiveDemoDataSeeder extends Seeder
 
     public function run(): void
     {
-        DB::table('users')->insert([
-            'id' => 1,
-            'name' => 'Demo Admin',
-            'email' => 'admin@demo.com',
-            'password' => Hash::make('password'),
-            'tenant_id' => 1,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+        // Check if user already exists
+        if (!DB::table('users')->where('email', 'admin@demo.com')->exists()) {
+            DB::table('users')->insert([
+                'name' => 'Demo Admin',
+                'email' => 'admin@demo.com',
+                'password' => Hash::make('password'),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
         $this->createTenant();
         $this->createBranch();
         $this->createPayrollCycles();
@@ -48,6 +49,10 @@ class ComprehensiveDemoDataSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        DB::table('users')
+            ->where('email', 'admin@demo.com')
+            ->update(['tenant_id' => $this->tenantId]);
 
         $this->command->info("✓ Created Tenant: {$this->tenantId}");
     }

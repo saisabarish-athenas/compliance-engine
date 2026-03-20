@@ -1,6 +1,6 @@
 @extends('compliance.layouts.preview')
 
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
@@ -45,6 +45,10 @@
             font-weight: bold;
             width: 7%;
             margin-right: 5px;
+        }
+        .info-value {
+            flex: 1;
+            padding-left: 3px;
         }
         .info-line {
             flex: 1;
@@ -130,9 +134,13 @@
             height: 10px;
             padding-left: 3px;
         }
+        .page-break {
+            page-break-after: always;
+        }
     </style>
 </head>
 <body>
+    @forelse($rows as $employee)
     <div class="form-container">
         <!-- Header -->
         <div class="form-header">
@@ -145,27 +153,27 @@
         <div class="employee-info">
             <div class="info-row">
                 <div class="info-label">Name of Establishment</div>
-                <div class="info-line"></div>
+                <div class="info-value">{{ $header['establishment_name'] ?? '' }}</div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">Name of Employee</div>
-                <div class="info-line"></div>
+                <div class="info-value">{{ $employee['employee_name'] }}</div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">Employee No</div>
-                <div class="info-line"></div>
+                <div class="info-value">{{ $employee['employee_code'] }}</div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">Designation</div>
-                <div class="info-line"></div>
+                <div class="info-value">{{ $employee['designation'] }}</div>
             </div>
 
             <div class="info-row">
                 <div class="info-label">Date of Joining</div>
-                <div class="info-line"></div>
+                <div class="info-value">{{ $employee['date_of_joining'] }}</div>
             </div>
         </div>
 
@@ -186,20 +194,22 @@
                 </tr>
             </thead>
             <tbody>
-                @for($i = 0; $i < 12; $i++)
-                <tr>
-                    <td class="col-sl"></td>
-                    <td class="col-year"></td>
-                    <td class="col-credit"></td>
-                    <td class="col-earned"></td>
-                    <td class="col-total"></td>
-                    <td class="col-from"></td>
-                    <td class="col-to"></td>
-                    <td class="col-days"></td>
-                    <td class="col-balance"></td>
-                    <td class="col-remarks"></td>
-                </tr>
-                @endfor
+                @if(!empty($employee['leave_rows']) && count($employee['leave_rows']) > 0)
+                    @foreach($employee['leave_rows'] as $index => $row)
+                    <tr>
+                        <td class="col-sl">{{ $index + 1 }}</td>
+                        <td class="col-year">{{ $row['year'] }}</td>
+                        <td class="col-credit">{{ $row['leave_credit'] }}</td>
+                        <td class="col-earned">{{ $row['leave_earned'] }}</td>
+                        <td class="col-total">{{ $row['total_leave'] }}</td>
+                        <td class="col-from">{{ $row['from_date'] }}</td>
+                        <td class="col-to">{{ $row['to_date'] }}</td>
+                        <td class="col-days">{{ $row['leave_days'] }}</td>
+                        <td class="col-balance">{{ $row['balance'] }}</td>
+                        <td class="col-remarks">{{ $row['remarks'] }}</td>
+                    </tr>
+                    @endforeach
+                @endif
             </tbody>
         </table>
 
@@ -216,5 +226,20 @@
             </div>
         </div>
     </div>
+
+    @if(!$loop->last)
+    <div class="page-break"></div>
+    @endif
+
+    @empty
+    <div class="form-container">
+        <div class="form-header">
+            <div>Tamil Nadu Shops and Establishments Rules</div>
+            <div class="header-title">FORM 13</div>
+            <div class="header-title">LEAVE BOOK</div>
+        </div>
+        <p style="text-align: center; margin-top: 20px;">No leave records found for the selected period.</p>
+    </div>
+    @endforelse
 </body>
 </html>

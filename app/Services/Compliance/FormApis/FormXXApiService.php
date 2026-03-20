@@ -11,22 +11,27 @@ class FormXXApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('workforce_payroll_entry as pe')
-            ->join('workforce_employee as e', 'e.id', '=', 'pe.employee_id')
-            ->join('workforce_payroll_cycle as pc', 'pc.id', '=', 'pe.payroll_cycle_id')
-            ->where('e.tenant_id', $tenantId)
-            ->where('e.branch_id', $branchId)
-            ->whereYear('pc.period_from', $year)
-            ->whereMonth('pc.period_from', $month)
-            ->where('pe.total_deductions', '>', 0)
+        $rows = DB::table('workforce_deductions as wd')
+            ->join('workforce_employee as e', 'e.id', '=', 'wd.employee_id')
+            ->where('wd.tenant_id', $tenantId)
+            ->where('wd.branch_id', $branchId)
+            ->whereYear('wd.deduction_date', $year)
+            ->whereMonth('wd.deduction_date', $month)
             ->select([
-                'e.employee_code',
-                'e.name',
-                'pe.advances',
-                'pe.fines',
-                'pe.total_deductions',
+                'e.name as employee_name',
+                'e.father_name',
+                'e.designation',
+                'wd.particulars as damage_particulars',
+                'wd.deduction_date as damage_date',
+                'wd.amount as deduction_amount',
+                'wd.showed_cause',
+                'wd.witness_name',
+                'wd.num_instalments as instalments',
+                'wd.first_month',
+                'wd.last_month',
+                'wd.remarks',
             ])
-            ->orderBy('e.employee_code')
+            ->orderBy('wd.deduction_date')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();

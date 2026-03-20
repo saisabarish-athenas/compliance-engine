@@ -16,8 +16,20 @@ class ShopsForm13Generator extends BaseFormGenerator
                 'employee_code' => $record['employee_code'] ?? '',
                 'employee_name' => $record['employee_name'] ?? 'N/A',
                 'designation' => $record['designation'] ?? 'N/A',
-                'attendance_date' => $record['attendance_date'] ?? 'N/A',
-                'status' => $record['status'] ?? 'N/A',
+                'date_of_joining' => $record['joining_date'] ?? 'N/A',
+                'leave_rows' => [
+                    [
+                        'year' => date('Y', strtotime($record['leave_date'] ?? now())),
+                        'leave_credit' => '',
+                        'leave_earned' => '',
+                        'total_leave' => '',
+                        'from_date' => $record['leave_date'] ?? '',
+                        'to_date' => '',
+                        'leave_days' => '1',
+                        'balance' => '',
+                        'remarks' => '',
+                    ]
+                ],
             ];
         }
 
@@ -28,7 +40,7 @@ class ShopsForm13Generator extends BaseFormGenerator
 
         return [
             'header' => [
-                'form_title' => 'SHOPS FORM 13 - Attendance Register',
+                'form_title' => 'SHOPS FORM 13 - Leave Book',
                 'period' => $this->formatPeriod($month, $year),
                 'branch' => $branch,
                 'tenant' => is_array($tenant) ? ($tenant['name'] ?? 'N/A') : $tenant,
@@ -41,7 +53,6 @@ class ShopsForm13Generator extends BaseFormGenerator
                 'district' => $branch['district'] ?? 'N/A',
             ],
             'rows' => $rows,
-            'totals' => [],
             'is_nil' => count($rows) === 0,
         ];
     }

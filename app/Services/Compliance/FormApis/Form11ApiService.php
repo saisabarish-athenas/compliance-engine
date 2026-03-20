@@ -11,21 +11,33 @@ class Form11ApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('workforce_payroll_entry as pe')
-            ->join('workforce_employee as e', 'e.id', '=', 'pe.employee_id')
-            ->join('workforce_payroll_cycle as pc', 'pc.id', '=', 'pe.payroll_cycle_id')
-            ->where('e.tenant_id', $tenantId)
-            ->where('e.branch_id', $branchId)
-            ->whereYear('pc.period_from', $year)
-            ->whereMonth('pc.period_from', $month)
+        $rows = DB::table('incidents as i')
+            ->join('workforce_employee as e', 'e.id', '=', 'i.employee_id')
+            ->where('i.tenant_id', $tenantId)
+            ->where('i.branch_id', $branchId)
+            ->whereYear('i.notice_date', $year)
+            ->whereMonth('i.notice_date', $month)
             ->select([
-                'e.employee_code',
+                'i.id',
+                'i.notice_date',
+                'i.notice_time',
+                'i.incident_date',
+                'i.incident_time',
+                'i.location',
+                'i.cause',
+                'i.injury_type',
+                'i.activity',
+                'i.first_aid_by',
+                'i.witness',
+                'i.remarks',
                 'e.name',
-                'pe.gross_salary',
-                'pe.pf_employee',
-                'pe.esi_employee',
+                'e.permanent_address as address',
+                'e.gender',
+                DB::raw('YEAR(CURDATE()) - YEAR(e.date_of_birth) as age'),
+                'e.esi_number',
+                'e.designation',
             ])
-            ->orderBy('e.employee_code')
+            ->orderBy('i.notice_date')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();

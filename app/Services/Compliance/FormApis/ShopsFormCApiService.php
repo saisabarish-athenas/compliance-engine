@@ -20,8 +20,19 @@ class ShopsFormCApiService extends BaseFormApiService
             ->whereMonth('pc.period_from', $month)
             ->select([
                 'e.employee_code',
-                'e.name',
-                'pe.gross_salary',
+                'e.name as employee_name',
+                'e.father_name',
+                'e.date_of_birth',
+                'e.designation',
+                'pe.total_days_worked as days_worked',
+                'pe.gross_salary as total_wages',
+                DB::raw('0 as bonus_amount'),
+                DB::raw('0 as puja_bonus'),
+                DB::raw('0 as interim_bonus'),
+                'pe.professional_tax as tax_deducted',
+                'pe.other_deductions as loss_deduction',
+                DB::raw('0 as bonus_paid'),
+                DB::raw('NULL as bonus_payment_date'),
             ])
             ->orderBy('e.employee_code')
             ->get()

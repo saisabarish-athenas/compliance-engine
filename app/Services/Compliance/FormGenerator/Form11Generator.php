@@ -9,29 +9,54 @@ class Form11Generator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $rows = [];
+        $entries = [];
         foreach ($rawData['records'] as $record) {
             $record = $this->normalizeRecord($record);
-            $rows[] = [
-                'employee_name' => $record['employee_name'] ?? 'N/A',
-                'esi_number' => $record['esi_number'] ?? 'N/A',
-                'incident_date' => $record['incident_date'] ?? null,
-                'incident_type' => $record['incident_type'] ?? 'N/A',
-                'location' => $record['location'] ?? 'N/A',
-                'description' => $record['description'] ?? 'N/A',
+            $entries[] = [
+                'date_of_notice' => $this->formatDate($record['notice_date'] ?? null),
+                'time_of_notice' => $record['notice_time'] ?? '',
+                'injured_person' => ($record['name'] ?? 'N/A') . (isset($record['address']) ? ', ' . $record['address'] : ''),
+                'sex' => $this->mapGender($record['gender'] ?? ''),
+                'age' => $record['age'] ?? '',
+                'insurance_no' => $record['esi_number'] ?? '',
+                'occupation' => $record['designation'] ?? '',
+                'cause' => $record['cause'] ?? '',
+                'nature' => $record['injury_type'] ?? '',
+                'injury_date' => $this->formatDate($record['incident_date'] ?? null),
+                'injury_time' => $record['incident_time'] ?? '',
+                'place' => $record['location'] ?? '',
+                'activity' => $record['activity'] ?? '',
+                'first_aid_person' => $record['first_aid_by'] ?? '',
+                'signature' => '',
+                'witnesses' => $record['witness'] ?? '',
+                'remarks' => $record['remarks'] ?? '',
             ];
         }
 
         return [
-            'header' => [
-                'form_title' => 'FORM 11 - Accident Register',
-                'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'branch' => $rawData['branch'] ?? [],
-                'tenant' => $rawData['tenant'] ?? [],
-            ],
-            'rows' => $rows,
-            'totals' => [],
-            'is_nil' => count($rows) === 0,
+            'company_name' => $rawData['tenant']['establishment_name'] ?? $rawData['tenant']['name'] ?? 'N/A',
+            'contractor_name' => '',
+            'total_workers' => '',
+            'work_location' => $rawData['branch']['address'] ?? 'N/A',
+            'principal_employer' => $rawData['tenant']['name'] ?? 'N/A',
+            'month_year' => $rawData['period'] ?? '',
+            'entries' => $entries,
         ];
+    }
+
+    private function formatDate($date): string
+    {
+        if (!$date) return '';
+        try {
+            return \Carbon\Carbon::parse($date)->format('d/m/Y');
+        } catch (\Exception $e) {
+            return '';
+        }
+    }
+
+    private function mapGender($gender): string
+    {
+        $map = ['M' => 'M', 'F' => 'F', 'Male' => 'M', 'Female' => 'F'];
+        return $map[$gender] ?? '';
     }
 }

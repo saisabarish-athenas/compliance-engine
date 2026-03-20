@@ -11,25 +11,22 @@ class ShopsForm12ApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('workforce_payroll_entry as pe')
-            ->join('workforce_employee as e', 'e.id', '=', 'pe.employee_id')
-            ->join('workforce_payroll_cycle as pc', 'pc.id', '=', 'pe.payroll_cycle_id')
-            ->where('e.tenant_id', $tenantId)
-            ->where('e.branch_id', $branchId)
-            ->whereYear('pc.period_from', $year)
-            ->whereMonth('pc.period_from', $month)
+        $rows = DB::table('workforce_advances as wa')
+            ->join('workforce_employee as e', 'e.id', '=', 'wa.employee_id')
+            ->where('wa.tenant_id', $tenantId)
+            ->where('wa.branch_id', $branchId)
+            ->whereYear('wa.advance_date', $year)
+            ->whereMonth('wa.advance_date', $month)
             ->select([
                 'e.employee_code',
-                'e.name',
-                'e.designation',
-                'pe.basic_earned',
-                'pe.da_earned',
-                'pe.hra_earned',
-                'pe.gross_salary',
-                'pe.pf_employee',
-                'pe.esi_employee',
-                'pe.total_deductions',
-                'pe.net_salary',
+                'e.name as employee_name',
+                'e.father_name',
+                'wa.amount as advance_amount',
+                'wa.advance_date',
+                DB::raw("'Advance' as advance_purpose"),
+                'wa.num_instalments as advance_installments',
+                DB::raw("NULL as advance_postponements"),
+                DB::raw("NULL as advance_repaid_date"),
             ])
             ->orderBy('e.employee_code')
             ->get()

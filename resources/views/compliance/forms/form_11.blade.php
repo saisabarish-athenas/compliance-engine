@@ -267,7 +267,6 @@
             </thead>
             <tbody>
                 @if (isset($entries) && count($entries) > 0)
-
                     @foreach ($entries as $index => $row)
                         <tr>
                             <td class="col-1">{{ $index + 1 }}</td>
@@ -285,19 +284,15 @@
                             <td class="col-13">{{ $row['place'] ?? '' }}</td>
                             <td class="col-14">{{ $row['activity'] ?? '' }}</td>
                             <td class="col-15">{{ $row['first_aid_person'] ?? '' }}</td>
-                            <td class="col-16">{{ $row['signature'] ?? '' }}</td>
+                            <td class="col-16"></td>
                             <td class="col-17">{{ $row['witnesses'] ?? '' }}</td>
                             <td class="col-18">{{ $row['remarks'] ?? '' }}</td>
                         </tr>
                     @endforeach
                 @else
-                    @for ($i = 0; $i < 9; $i++)
-                        <tr>
-                            <td class="col-1">{{ $i + 1 }}</td>
-                            <td colspan="17">NIL</td>
-                        </tr>
-                    @endfor
-
+                    <tr>
+                        <td colspan="18" style="text-align:center;">No records found</td>
+                    </tr>
                 @endif
             </tbody>
         </table>

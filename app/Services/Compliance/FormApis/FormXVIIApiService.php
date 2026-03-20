@@ -11,6 +11,9 @@ class FormXVIIApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
+        $periodStart = $this->periodStart;
+        $periodEnd = $this->periodEnd;
+
         $rows = DB::table('workforce_payroll_entry as pe')
             ->join('workforce_employee as e', 'e.id', '=', 'pe.employee_id')
             ->join('workforce_payroll_cycle as pc', 'pc.id', '=', 'pe.payroll_cycle_id')
@@ -19,6 +22,7 @@ class FormXVIIApiService extends BaseFormApiService
             ->whereYear('pc.period_from', $year)
             ->whereMonth('pc.period_from', $month)
             ->select([
+                'e.id as employee_id',
                 'e.employee_code',
                 'e.name',
                 'e.designation',
@@ -32,7 +36,19 @@ class FormXVIIApiService extends BaseFormApiService
             ])
             ->orderBy('e.employee_code')
             ->get()
-            ->map(fn($row) => (array)$row)
+            ->map(function($row) use ($tenantId, $periodStart, $periodEnd) {
+                $row = (array)$row;
+                $daysWorked = DB::table('workforce_attendance')
+                    ->where('employee_id', $row['employee_id'])
+                    ->where('tenant_id', $tenantId)
+                    ->whereBetween('attendance_date', [$periodStart, $periodEnd])
+                    ->whereIn('status', ['present', 'leave'])
+                    ->count();
+                
+                $row['days_worked'] = $daysWorked;
+                $row['daily_rate'] = $daysWorked > 0 ? round($row['gross_salary'] / $daysWorked, 2) : 0;
+                return $row;
+            })
             ->toArray();
 
         return [

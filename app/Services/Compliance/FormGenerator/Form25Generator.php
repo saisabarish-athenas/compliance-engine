@@ -13,17 +13,17 @@ class Form25Generator extends BaseFormGenerator
         foreach ($rawData['records'] as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
-                'employee_code' => $record['employee_code'] ?? '',
                 'employee_name' => $record['name'] ?? '',
+                'father_name' => $record['father_name'] ?? '',
                 'designation' => $record['designation'] ?? '',
-                'total_days_worked' => $record['total_days_worked'] ?? 0,
-                'basic_earned' => round($record['basic_earned'] ?? 0, 2),
-                'da_earned' => round($record['da_earned'] ?? 0, 2),
-                'gross_salary' => round($record['gross_salary'] ?? 0, 2),
+                'date_of_birth' => $record['date_of_birth'] ?? '',
+                'place_of_employment' => $rawData['branch']['address'] ?? '',
+                'group' => '',
+                'relay' => '',
+                'periods_of_work' => '',
+                'date' => $record['attendance_date'] ?? '',
             ];
         }
-
-        $totals = $this->calculateTotals($rows, ['basic_earned', 'da_earned', 'gross_salary']);
 
         return [
             'header' => [
@@ -33,7 +33,7 @@ class Form25Generator extends BaseFormGenerator
                 'tenant' => $rawData['tenant'] ?? [],
             ],
             'rows' => $rows,
-            'totals' => $totals,
+            'totals' => [],
             'is_nil' => count($rows) === 0,
         ];
     }

@@ -12,18 +12,38 @@ class Form10Generator extends BaseFormGenerator
         $rows = [];
         foreach ($rawData['records'] as $record) {
             $record = $this->normalizeRecord($record);
+            
+            // Calculate derived fields
+            $totalDaysWorked = $record['total_days_worked'] ?? 26;
+            $basicEarned = $record['basic_earned'] ?? 0;
+            $daEarned = $record['da_earned'] ?? 0;
+            $hraEarned = $record['hra_earned'] ?? 0;
+            $otherAllowances = $record['other_allowances'] ?? 0;
+            $overtimeHours = $record['overtime_hours'] ?? 0;
+            $overtimeWages = $record['overtime_wages'] ?? 0;
+            
+            // Normal earnings = basic + da + hra + other allowances
+            $normalEarnings = $basicEarned + $daEarned + $hraEarned + $otherAllowances;
+            
+            // Calculate normal rate per hour (assuming 8 hour day, 26 working days)
+            $normalRate = $totalDaysWorked > 0 ? ($normalEarnings / ($totalDaysWorked * 8)) : 0;
+            
+            // Calculate overtime rate (typically 1.5x normal rate)
+            $overtimeRate = $overtimeHours > 0 ? ($overtimeWages / $overtimeHours) : 0;
+            
             $rows[] = [
                 'employee_code' => $record['employee_code'] ?? '',
                 'employee_name' => $record['name'] ?? '',
                 'designation' => $record['designation'] ?? '',
-                'normal_rate' => round($record['normal_rate'] ?? 0, 2),
-                'overtime_rate' => round($record['overtime_rate'] ?? 0, 2),
-                'normal_earnings' => round($record['normal_earnings'] ?? 0, 2),
-                'overtime_hours' => $record['overtime_hours'] ?? 0,
-                'overtime_wages' => round($record['overtime_wages'] ?? 0, 2),
-                'food_grain_benefit' => round($record['food_grain_benefit'] ?? 0, 2),
-                'is_piece_worker' => $record['is_piece_worker'] ?? false,
-                'piece_worker_overtime' => $record['piece_worker_overtime'] ?? 0,
+                'department' => $record['department'] ?? '',
+                'normal_rate' => round($normalRate, 2),
+                'overtime_rate' => round($overtimeRate, 2),
+                'normal_earnings' => round($normalEarnings, 2),
+                'overtime_hours' => round($overtimeHours, 2),
+                'overtime_wages' => round($overtimeWages, 2),
+                'food_grain_benefit' => 0,
+                'is_piece_worker' => false,
+                'piece_worker_overtime' => 0,
             ];
         }
 
@@ -34,7 +54,7 @@ class Form10Generator extends BaseFormGenerator
 
         return [
             'header' => [
-                'form_title' => 'FORM 10 - Overtime Register',
+                'form_title' => 'FORM 10 - Overtime Muster Roll',
                 'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
                 'total_workers' => count($rows),
                 'contractor_name' => $rawData['contractor_name'] ?? 'N/A',

@@ -3,826 +3,1012 @@
 @section('title', 'Dashboard - Compliance Engine')
 
 @section('content')
-    @if (isset($subscription))
-        <div class="ant-card">
-            <div class="ant-card-head">🏢 Organization Information</div>
-            <div class="ant-card-body">
-                <div class="ant-row">
-                    <div class="ant-col ant-col-4">
-                        <p class="mb-2"><strong>Organization:</strong><br>{{ Auth::user()->tenant->name ?? 'N/A' }}</p>
-                        <p class="mb-2">
-                            <strong>Subscription:</strong><br>
-                            <span class="ant-tag {{ $subscription === 'FULL' ? 'ant-tag-success' : 'ant-tag-default' }}">
-                                {{ $subscription }}
-                            </span>
-                        </p>
-                    </div>
-                    <div class="ant-col ant-col-4">
-                        @if (isset($branch))
-                            <p class="mb-2"><strong>Branch:</strong><br>{{ $branch->branch_name ?? 'N/A' }}</p>
-                            <p class="mb-2"><strong>License No:</strong><br>{{ $branch->factory_license_number ?? '-' }}
-                            </p>
-                        @else
-                            <p class="mb-2 text-muted">No branch assigned</p>
-                        @endif
-                    </div>
-                    <div class="ant-col ant-col-4">
-                        @if (isset($branch))
-                            <p class="mb-2"><strong>PF Code:</strong><br>{{ $branch->pf_code ?? '-' }}</p>
-                            <p class="mb-2"><strong>ESI Code:</strong><br>{{ $branch->esi_code ?? '-' }}</p>
-                        @endif
-                        <p class="mb-2"><strong>Logged in as:</strong><br>{{ $user->name ?? Auth::user()->name }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
+    <div class="container-fluid dashboard-wrapper">
+        @include('compliance.partials.org-info')
+        @include('compliance.partials.timeline-status')
 
-    @if (isset($healthScore))
-        <div class="ant-card">
-            <div
-                class="ant-card-head {{ $healthScore['status'] === 'Excellent' ? 'success' : ($healthScore['status'] === 'Good' ? 'warning' : 'danger') }}">
-                💚 Compliance Health Score</div>
-            <div class="ant-card-body">
-                <div class="ant-row align-items-center">
-                    <div class="ant-col ant-col-4 text-center">
-                        <h1
-                            style="font-size: 48px; margin: 0; color: {{ $healthScore['status'] === 'Excellent' ? '#52c41a' : ($healthScore['status'] === 'Good' ? '#faad14' : '#ff4d4f') }};">
-                            {{ $healthScore['percentage'] }}%</h1>
-                        <span
-                            class="ant-tag {{ $healthScore['status'] === 'Excellent' ? 'ant-tag-success' : ($healthScore['status'] === 'Good' ? 'ant-tag-warning' : 'ant-tag-error') }}"
-                            style="font-size: 16px; padding: 6px 16px;">{{ $healthScore['status'] }}</span>
-                    </div>
-                    <div class="ant-col ant-col-8">
-                        <p class="mb-2"><strong>Score Breakdown:</strong></p>
-                        <ul style="list-style: none; padding: 0;">
-                            @foreach ($healthScore['breakdown'] as $metric => $score)
-                                <li class="mb-2">
-                                    <span
-                                        class="ant-tag {{ $score >= 18 ? 'ant-tag-success' : ($score >= 10 ? 'ant-tag-warning' : 'ant-tag-error') }}"
-                                        style="margin-right: 8px;">{{ $score }}%</span>
-                                    {{ $metric }}
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    @if (isset($timelineMetrics))
-        <div class="ant-card">
-            <div class="ant-card-head info">📅 Compliance Timeline Status</div>
-            <div class="ant-card-body">
-                <div class="ant-row text-center">
-                    <div class="ant-col ant-col-4">
-                        <h4 style="color: #8c8c8c; margin: 0;">{{ $timelineMetrics['total'] }}</h4>
-                        <small class="text-muted">Total</small>
-                    </div>
-                    <div class="ant-col ant-col-4">
-                        <h4 style="color: #faad14; margin: 0;">{{ $timelineMetrics['pending'] }}</h4>
-                        <small class="text-muted">Pending</small>
-                    </div>
-                    <div class="ant-col ant-col-4">
-                        <h4 style="color: #1890ff; margin: 0;">{{ $timelineMetrics['generated'] }}</h4>
-                        <small class="text-muted">Generated</small>
-                    </div>
-                    <div class="ant-col ant-col-4">
-                        <h4 style="color: #52c41a; margin: 0;">{{ $timelineMetrics['filed'] }}</h4>
-                        <small class="text-muted">Filed</small>
-                    </div>
-                    <div class="ant-col ant-col-4">
-                        <h4 style="color: #ff4d4f; margin: 0;">{{ $timelineMetrics['overdue'] }}</h4>
-                        <small class="text-muted">Overdue</small>
-                    </div>
-                </div>
-            </div>
-        </div>
-    @endif
-
-    @if (isset($subscription) && $subscription === 'MINIMAL')
-        <div class="ant-alert ant-alert-warning">
-            <strong>⚠️ MINIMAL Subscription:</strong> Enter statutory data manually to auto-generate forms. Upgrade to FULL
-            for complete automation.
-        </div>
-    @endif
-
-    @if (session('success'))
-        <div class="ant-alert ant-alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="ant-alert ant-alert-error">
-            {{ session('error') }}
-        </div>
-    @endif
-
-    @if ($errors->any())
-        <div class="ant-alert ant-alert-error">
-            <ul style="margin: 0; padding-left: 20px;">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
-
-    <div class="ant-row">
-        <div class="ant-col ant-col-6">
-            <div class="ant-card">
-                <div class="ant-card-head">📋 Create Compliance Batch</div>
-                <div class="ant-card-body">
-                    <form method="POST" action="{{ route('compliance.batch.create') }}" id="batchForm">
-                        @csrf
-                        <div class="ant-form-item">
-                            <label for="statutory_section" class="ant-form-item-label">Select Statutory Section</label>
-                            <select class="ant-select" id="statutory_section" name="statutory_section" required>
-                                <option value="">-- Select Section --</option>
-                                @foreach ($statutorySections as $key => $section)
-                                    <option value="{{ $key }}">{{ $section['icon'] }} {{ $section['title'] }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="ant-form-item" id="formsContainer" style="display:none;">
-                            <label class="ant-form-item-label">Select Forms</label>
-                            <div class="mb-2">
-                                <label style="display: flex; align-items: center; gap: 8px;">
-                                    <input type="checkbox" id="selectAllForms" class="ant-checkbox">
-                                    <strong>Select All Forms</strong>
-                                </label>
-                            </div>
-                            <div id="formsList"
-                                style="border: 1px solid #d9d9d9; border-radius: 6px; padding: 16px; background: #fafafa; max-height: 300px; overflow-y: auto;">
-                                <p class="text-muted" style="margin: 0;">Loading forms...</p>
-                            </div>
-                        </div>
-                        <div class="ant-row">
-                            <div class="ant-col ant-col-6">
-                                <div class="ant-form-item">
-                                    <label for="period_month" class="ant-form-item-label">Month</label>
-                                    <select class="ant-select" id="period_month" name="period_month" required>
-                                        <option value="">-- Select Month --</option>
-                                        <option value="1">January</option>
-                                        <option value="2">February</option>
-                                        <option value="3">March</option>
-                                        <option value="4">April</option>
-                                        <option value="5">May</option>
-                                        <option value="6">June</option>
-                                        <option value="7">July</option>
-                                        <option value="8">August</option>
-                                        <option value="9">September</option>
-                                        <option value="10">October</option>
-                                        <option value="11">November</option>
-                                        <option value="12">December</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="ant-col ant-col-6">
-                                <div class="ant-form-item">
-                                    <label for="period_year" class="ant-form-item-label">Year</label>
-                                    <select class="ant-select" id="period_year" name="period_year" required>
-                                        <option value="">-- Select Year --</option>
-                                        @for ($year = date('Y') - 2; $year <= date('Y') + 3; $year++)
-                                            <option value="{{ $year }}"
-                                                {{ $year == date('Y') ? 'selected' : '' }}>{{ $year }}</option>
-                                        @endfor
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="ant-btn ant-btn-primary w-100" id="createBatchBtn">
-                            <span id="submitSpinner" class="spinner d-none"></span>
-                            Create Batch
-                        </button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="ant-col ant-col-6">
-            @if (session('batch_id'))
-                <div class="ant-card" style="border: 2px solid #52c41a;">
-                    <div class="ant-card-head success">✅ Batch Created</div>
-                    <div class="ant-card-body">
-                        <p><strong>Batch ID:</strong> {{ session('batch_id') }}</p>
-                        @if (session('results'))
-                            <p><strong>Status:</strong> <span class="ant-tag ant-tag-success">Completed</span></p>
-                            <div class="mt-3 d-flex gap-2">
-                                <a href="{{ route('compliance.batch.download', session('batch_id')) }}"
-                                    class="ant-btn ant-btn-info">📥 Download Report</a>
-                                <a href="{{ route('compliance.batch.inspectionPack', session('batch_id')) }}"
-                                    class="ant-btn ant-btn-primary">📦 Consolidated Reports</a>
-                            </div>
-                        @elseif(isset($subscription) && $subscription === 'MINIMAL')
-                            <p><strong>Status:</strong> <span class="ant-tag ant-tag-warning" id="batchStatus">Awaiting
-                                    Data Entry</span></p>
-                            <div class="mt-3">
-                                <a href="{{ route('compliance.manual-data.show', ['month' => session('period_month', date('n')), 'year' => session('period_year', date('Y'))]) }}"
-                                    class="ant-btn ant-btn-primary w-100" target="_blank">
-                                    📝 Step 1: Enter Statutory Data
-                                </a>
-                            </div>
-                            <div id="previewFormsSection" class="mt-3 mb-3">
-                                <p class="text-muted">Step 2: Preview forms with entered data:</p>
-                                <div id="previewFormsList"></div>
-                            </div>
-                            <div class="mt-3">
-                                <form method="POST"
-                                    action="{{ route('compliance.batch.process', session('batch_id')) }}">
-                                    @csrf
-                                    <button type="submit" class="ant-btn ant-btn-success w-100">⚙️ Step 3: Generate
-                                        Forms</button>
-                                </form>
-                            </div>
-                        @else
-                            <p><strong>Status:</strong> <span class="ant-tag ant-tag-warning">Pending</span></p>
-                            @if (isset($subscription) && $subscription === 'FULL')
-                                <div id="previewFormsSection" class="mt-3 mb-3">
-                                    <p class="text-muted">Preview forms before processing:</p>
-                                    <div id="previewFormsList"></div>
-                                </div>
-                                <form method="POST"
-                                    action="{{ route('compliance.batch.process', session('batch_id')) }}" class="mt-3">
-                                    @csrf
-                                    <button type="submit" class="ant-btn ant-btn-success w-100">⚙️ Process Batch</button>
-                                </form>
-                            @endif
-                        @endif
-                    </div>
-                </div>
-            @endif
-
-            <div class="ant-card">
-                <div class="ant-card-head info">📊 Quick Stats</div>
-                <div class="ant-card-body">
-                    <div class="ant-row text-center">
-                        <div class="ant-col ant-col-4">
-                            <h3 style="color: #1890ff; margin: 0;">{{ count($sections) }}</h3>
-                            <small class="text-muted">Sections</small>
-                        </div>
-                        <div class="ant-col ant-col-4">
-                            <h3 style="color: #52c41a; margin: 0;">{{ count($batches) }}</h3>
-                            <small class="text-muted">Batches</small>
-                        </div>
-                        <div class="ant-col ant-col-4">
-                            <h3 style="color: #13c2c2; margin: 0;">
-                                {{ collect($batches)->filter(fn($b) => in_array($b->display_status ?? $b->status, ['Completed', 'completed']))->count() }}
-                            </h3>
-                            <small class="text-muted">Completed</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="ant-card mt-4">
-        <div class="ant-card-head secondary">📜 Recent Batches</div>
-        <div class="ant-card-body">
-            @if (count($batches) > 0)
-                <div style="overflow-x: auto;">
-                    <table class="ant-table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Section</th>
-                                <th>Period</th>
-                                <th>Status</th>
-                                <th>Audit Score</th>
-                                <th>Certification</th>
-                                <th>Created</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($batches as $batch)
-                                <tr data-batch-id="{{ $batch->id }}">
-                                    <td><strong>#{{ $batch->id }}</strong></td>
-                                    <td>{{ $batch->section->section_name ?? 'N/A' }}</td>
-                                    <td>
-                                        @if ($batch->period_month && $batch->period_year)
-                                            <small>{{ \Carbon\Carbon::create($batch->period_year, $batch->period_month, 1)->format('F Y') }}</small>
-                                        @else
-                                            <small>{{ \Carbon\Carbon::parse($batch->period_from)->format('M d') }} -
-                                                {{ \Carbon\Carbon::parse($batch->period_to)->format('M d, Y') }}</small>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <div class="mb-1"><span class="ant-tag ant-tag-success">Completed</span></div>
-                                        @if(isset($batch->audit_status))
-                                            <div><span class="ant-tag {{ $batch->audit_status === 'Passed' ? 'ant-tag-success' : ($batch->audit_status === 'Partial' ? 'ant-tag-warning' : ($batch->audit_status === 'Not Audited' ? 'ant-tag-default' : 'ant-tag-error')) }}">Audit: {{ $batch->audit_status }}</span></div>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if (isset($batch->audit_score))
-                                            <span
-                                                class="ant-tag batch-score-badge {{ $batch->audit_score >= 90 ? 'ant-tag-success' : ($batch->audit_score >= 70 ? 'ant-tag-warning' : 'ant-tag-error') }}"
-                                                style="font-weight: bold;">
-                                                {{ $batch->audit_score }}/100
-                                            </span>
-                                            <br>
-                                            <button class="ant-btn ant-btn-sm ant-btn-default mt-1" data-bs-toggle="modal"
-                                                data-bs-target="#auditModal{{ $batch->id }}">
-                                                👁️ View
-                                            </button>
-                                        @else
-                                            <span class="ant-tag ant-tag-default">Not Audited</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($batch->certification_status)
-                                            <span class="ant-tag {{ $batch->certification_status === 'Certified' ? 'ant-tag-success' : 'ant-tag-error' }}">
-                                                {{ $batch->certification_status }}
-                                            </span>
-                                        @else
-                                            <button class="ant-btn ant-btn-sm ant-btn-primary certify-btn" data-batch="{{ $batch->id }}">
-                                                Certify
-                                            </button>
-                                        @endif
-                                    </td>
-                                    <td><small>{{ $batch->created_at->diffForHumans() }}</small></td>
-                                    <td>
-                                        <div class="d-flex gap-2">
-
-                                            {{-- Download Report --}}
-                                            <a href="{{ route('compliance.batch.download', $batch->id) }}"
-                                                class="ant-btn ant-btn-sm ant-btn-info">
-                                                📥 Download
-                                            </a>
-
-                                            {{-- Inspection Pack (FULL only) --}}
-                                            @if (($batch->audit_score ?? 0) >= 70 || $batch->certification_status === 'Certified')
-                                            <a href="{{ route('compliance.batch.inspectionPack', $batch->id) }}"
-                                                class="ant-btn ant-btn-sm ant-btn-primary">
-                                                📦 CONSOLIDATED REPORTS
-                                            </a>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            @else
-                <p class="text-muted text-center" style="padding: 32px 0;">No batches created yet. Create your first batch
-                    above!</p>
-            @endif
-        </div>
-    </div>
-
-    {{-- Audit Details Modals --}}
-    @foreach ($batches as $batch)
-        @if (isset($batch->audit_score))
-            <div class="modal fade" id="auditModal{{ $batch->id }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header" style="background: #f0f2f5; border-bottom: 2px solid #d9d9d9;">
-                            <h5 class="modal-title"><strong>🔍 Audit Details - Batch #{{ $batch->id }}</strong></h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="mb-4">
-                                <h4 style="margin: 0 0 8px 0;">Audit Score: <strong>{{ $batch->audit_score }}/100</strong>
-                                </h4>
-
-                                @php
-                                    $confidenceLabel =
-                                        $batch->audit_score >= 90
-                                            ? 'Inspection Ready'
-                                            : ($batch->audit_score >= 70
-                                                ? 'Moderate Risk – Review Recommended'
-                                                : 'High Risk – Immediate Correction Required');
-                                    $confidenceClass =
-                                        $batch->audit_score >= 90
-                                            ? 'success'
-                                            : ($batch->audit_score >= 70
-                                                ? 'warning'
-                                                : 'danger');
-                                @endphp
-
-                                <span class="badge bg-{{ $confidenceClass }}"
-                                    style="font-size: 14px; padding: 8px 12px; margin-bottom: 12px;">
-                                    {{ $confidenceLabel }}
-                                </span>
-
-                                <div class="progress" style="height: 30px; margin-top: 12px;">
-                                    <div class="progress-bar bg-{{ $confidenceClass }}" role="progressbar"
-                                        style="width: {{ $batch->audit_score }}%; font-weight: bold; font-size: 16px;"
-                                        aria-valuenow="{{ $batch->audit_score }}" aria-valuemin="0" aria-valuemax="100">
-                                        {{ $batch->audit_score }}%
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr>
-
-                            <h5 class="mb-3"><strong>📋 Form-wise Audit Breakdown</strong></h5>
-
-                            @if ($batch->audit_logs->isNotEmpty())
-                                <div class="list-group">
-                                    @foreach ($batch->audit_logs as $log)
-                                        <div class="list-group-item">
-                                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                                <div>
-                                                    <strong>{{ $log->form_code }}</strong>
-                                                    <span
-                                                        class="badge bg-{{ $log->status === 'passed' ? 'success' : 'danger' }} ms-2">
-                                                        {{ ucfirst($log->status) }}
-                                                    </span>
-                                                </div>
-                                                <span class="badge bg-secondary">Score: {{ $log->audit_score }}/100</span>
-                                            </div>
-
-                                            @if ($log->violations && count($log->violations) > 0)
-                                                <div class="mt-2">
-                                                    <strong class="text-danger">⚠️ Violations:</strong>
-                                                    <ul class="mb-2" style="margin-top: 8px;">
-                                                        @foreach ($log->violations as $violation)
-                                                            <li>
-                                                                <small>
-                                                                    <strong>{{ $violation['field'] ?? 'Unknown' }}</strong>
-                                                                    ({{ $violation['type'] ?? 'general' }})
-                                                                    :
-                                                                    {{ $violation['message'] ?? 'No details' }}
-                                                                </small>
-                                                            </li>
-                                                        @endforeach
-                                                    </ul>
-
-                                                    @if ($log->status === 'failed')
-                                                        <button class="btn btn-sm btn-danger re-audit-btn"
-                                                            data-batch="{{ $batch->id }}"
-                                                            data-form="{{ $log->form_code }}">
-                                                            🔧 Fix & Re-Audit
-                                                        </button>
-                                                        <a href="{{ route('compliance.batch.preview', ['batch' => $batch->id, 'form' => $log->form_code]) }}"
-                                                            class="btn btn-sm btn-outline-secondary ms-2" target="_blank">
-                                                            👁️ Preview
-                                                        </a>
-                                                    @endif
-                                                </div>
-                                            @else
-                                                <small class="text-success">✅ No violations detected</small>
-                                            @endif
-                                        </div>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p class="text-muted">No audit logs available for this batch.</p>
-                            @endif
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </div>
-                </div>
+        @if (isset($subscription) && $subscription === 'MINIMAL')
+            <div class="ant-alert ant-alert-warning">
+                <strong>⚠️ MINIMAL Subscription:</strong> Enter statutory data manually to auto-generate forms.
             </div>
         @endif
-    @endforeach
+
+        @if (session('success'))
+            <div class="ant-alert ant-alert-success">{{ session('success') }}</div>
+        @endif
+
+        @if (session('error'))
+            <div class="ant-alert ant-alert-error">{{ session('error') }}</div>
+        @endif
+
+        <div class="ant-row" gutter="16">
+            <div class="ant-col ant-col-6">
+                @include('compliance.partials.create-batch-card')
+            </div>
+            <div class="ant-col ant-col-6">
+                @include('compliance.partials.quick-stats')
+            </div>
+        </div>
+
+        <style>
+            #batch-section-row { display: flex; flex-wrap: wrap; gap: 16px; }
+            #batch-col { flex: 1 1 0; min-width: 0; display: flex; justify-content: center; }
+            #batch-col > #batch-review-container { width: 100%; max-width: 900px; }
+            #manual-col { flex: 0 0 auto; width: 60%;min-width: 0; }
+            #batch-section-row.has-manual #batch-col > #batch-review-container { max-width: 100%; }
+        </style>
+
+        <div id="batch-section-row" class="mt-4">
+            <div id="batch-col">
+                <div id="batch-review-container"></div>
+            </div>
+            <div id="manual-col">
+                @include('compliance.partials.manual-compliance-panel')
+            </div>
+        </div>
+
+        <div class="ant-row mt-4" style="justify-content: center;">
+            <div class="ant-col ant-col-24">
+                @include('compliance.partials.recent-batches')
+            </div>
+        </div>
+    </div>
+
+    @include('compliance.partials.preview-modal')
+
 @endsection
 
 @push('scripts')
     <script>
-        const statutorySections = @json($statutorySections);
-        const formCodeToId = @json($formCodeToId);
+        const SUBSCRIPTION = '{{ $subscription ?? 'MINIMAL' }}';
+        const IS_FULL = SUBSCRIPTION === 'FULL';
 
-        document.getElementById('statutory_section').addEventListener('change', function() {
-            const sectionKey = this.value;
-            const formsContainer = document.getElementById('formsContainer');
-            const formsList = document.getElementById('formsList');
+        const BatchProcessor = {
+            processing: false,
+            currentBatchId: null,
 
-            if (!sectionKey) {
-                formsContainer.style.display = 'none';
-                return;
-            }
+            async processBatch(batchId) {
+                this.processing = true;
+                this.currentBatchId = batchId;
 
-            formsContainer.style.display = 'block';
-            const section = statutorySections[sectionKey];
-            const forms = section.forms;
+                this.showProcessingUI(batchId);
 
-            formsList.innerHTML = '';
-            Object.entries(forms).forEach(([formCode, formName]) => {
-                const formId = formCodeToId[formCode];
-                if (formId) {
-                    const div = document.createElement('div');
-                    div.className = 'mb-2';
-                    div.innerHTML = `
-                        <label style="display: flex; align-items: center; gap: 8px;">
-                            <input class="ant-checkbox form-checkbox" type="checkbox" name="form_ids[]" value="${formId}" id="form${formId}">
-                            <span>
-                                <strong>${formCode}</strong> - ${formName}
-                            </span>
-                        </label>
-                    `;
-                    formsList.appendChild(div);
-                }
-            });
-        });
+                while (this.processing) {
+                    try {
+                        const response = await fetch(`/compliance/batch/${batchId}/process-next`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                            }
+                        });
 
-        document.getElementById('batchForm').addEventListener('submit', function() {
-            document.getElementById('submitSpinner').classList.remove('d-none');
-        });
+                        const data = await response.json();
 
-        document.getElementById('selectAllForms').addEventListener('change', function() {
-            const checkboxes = document.querySelectorAll('.form-checkbox');
-            checkboxes.forEach(cb => cb.checked = this.checked);
-        });
+                        if (data.status === 'complete') {
+                            this.showComplete(batchId);
+                            this.processing = false;
+                            break;
+                        }
 
-        @if (session('batch_id') && isset($subscription) && in_array($subscription, ['MINIMAL', 'FULL']) && !session('results'))
-
-            const previewBatchId = {{ session('batch_id') }};
-            const previewFormIds = @json(session('form_ids', []));
-            const previewList = document.getElementById('previewFormsList');
-
-            if (previewFormIds.length > 0) {
-
-                previewFormIds.forEach(function(formId) {
-
-                    const formCode = Object.keys(formCodeToId).find(
-                        key => formCodeToId[key] == formId
-                    );
-
-                    if (formCode) {
-
-                        const div = document.createElement('div');
-                        div.className = 'mb-2';
-
-                        div.innerHTML = `
-                <a href="/compliance/batch/${previewBatchId}/preview/${formCode}"
-                   class="ant-btn ant-btn-primary w-100"
-                   target="_blank"
-                   style="display:block;text-align:center;">
-                   👁️ Preview ${formCode}
-                </a>
-            `;
-
-                        previewList.appendChild(div);
-
+                        if (data.status === 'processing') {
+                            this.updateProgress(data);
+                            await new Promise(resolve => setTimeout(resolve, 500));
+                        }
+                    } catch (error) {
+                        console.error('Processing error:', error);
+                        this.processing = false;
+                        alert('Error: ' + error.message);
                     }
+                }
+            },
 
-                });
-
-            }
-        @endif
-
-        // Fix violations functionality
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('re-audit-btn') || e.target.closest('.re-audit-btn')) {
-                const btn = e.target.classList.contains('re-audit-btn') ? e.target : e.target.closest(
-                    '.re-audit-btn');
-                const batchId = btn.dataset.batch;
-                const formCode = btn.dataset.form;
-
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Fixing...';
-
-                fetch(`/compliance/batch/${batchId}/fix-violations/${formCode}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                        }
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.status === 'requires_input') {
-                            // Show modal for missing fields
-                            showFixModal(batchId, formCode, data.missing_fields, btn);
-                        } else if (data.status === 'success') {
-                            updateAuditUI(batchId, formCode, data, btn);
-                            alert('✅ Form corrected successfully!');
-                        } else if (data.status === 'no_violations') {
-                            alert('ℹ️ No violations found for this form.');
-                            btn.disabled = false;
-                            btn.innerHTML = '🔧 Fix & Re-Audit';
-                        } else {
-                            alert('❌ Fix failed: ' + (data.message || 'Unknown error'));
-                            btn.disabled = false;
-                            btn.innerHTML = '🔧 Fix & Re-Audit';
-                        }
-                    })
-                    .catch(err => {
-                        alert('❌ Error: ' + err.message);
-                        btn.disabled = false;
-                        btn.innerHTML = '🔧 Fix & Re-Audit';
-                    });
-            }
-        });
-
-        function showFixModal(batchId, formCode, missingFields, originalBtn) {
-            // Create modal dynamically
-            const modalId = `fixModal_${batchId}_${formCode}`;
-            let modal = document.getElementById(modalId);
-
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = modalId;
-                modal.className = 'modal fade';
-                modal.innerHTML = `
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">🔧 Fix Violations - ${formCode}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            showProcessingUI(batchId) {
+                const html = `
+                    <div class="ant-card mb-3" id="processing-card">
+                        <div class="ant-card-head info">⏳ Processing Batch #${batchId}</div>
+                        <div class="ant-card-body">
+                            <div style="margin-bottom:20px">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                                    <strong>Progress</strong>
+                                    <span id="progress-text" class="ant-tag ant-tag-processing">0/0 forms</span>
+                                </div>
+                                <div class="progress" style="height:24px;">
+                                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" style="width:0%; font-weight:bold;">0%</div>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <p class="text-muted">Please provide the following missing information:</p>
-                                <form id="fixForm_${batchId}_${formCode}">
-                                    ${missingFields.map((field, idx) => `
-                                            <div class="mb-3">
-                                                <label class="form-label">
-                                                    <strong>${field.field}</strong>
-                                                    <small class="text-muted d-block">${field.message}</small>
-                                                </label>
-                                                <input type="text" class="form-control" name="${field.field}" required>
-                                            </div>
-                                        `).join('')}
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary" id="submitFix_${batchId}_${formCode}">Submit & Regenerate</button>
+                            <div style="overflow-x:auto">
+                                <table class="ant-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="width:35%">Form Code</th>
+                                            <th style="width:30%">Status</th>
+                                            <th style="width:35%">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="forms-table-body"></tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 `;
-                document.body.appendChild(modal);
-            }
 
+                document.getElementById('batch-review-container').innerHTML = html;
+            },
+
+            updateProgress(data) {
+                const progressBar = document.getElementById('progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = data.progress + '%';
+                    progressBar.textContent = data.progress + '%';
+                }
+
+                const progressText = document.getElementById('progress-text');
+                if (progressText) {
+                    progressText.textContent = `${data.generated}/${data.total} forms`;
+                }
+
+                const tbody = document.getElementById('forms-table-body');
+                if (tbody && data.forms) {
+                    tbody.innerHTML = data.forms.map(form => {
+                        let statusBadge = '';
+                        let actionBtn = '';
+
+                        if (form.status === 'generated') {
+                            statusBadge = '<span class="ant-tag ant-tag-success">✅ Generated</span>';
+                            actionBtn = `<button class="ant-btn ant-btn-primary ant-btn-sm preview-btn" data-batch="${data.batch_id}" data-form="${form.form_code}">👁️ Preview</button>`;
+                        } else if (form.status === 'processing') {
+                            statusBadge = '<span class="ant-tag ant-tag-processing">⏳ Processing</span>';
+                            actionBtn = '-';
+                        } else {
+                            statusBadge = '<span class="ant-tag">⏸️ Pending</span>';
+                            actionBtn = '-';
+                        }
+
+                        return `
+                            <tr>
+                                <td><strong>${form.form_code}</strong></td>
+                                <td>${statusBadge}</td>
+                                <td>${actionBtn}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            },
+
+            showComplete(batchId) {
+                const progressBar = document.getElementById('progress-bar');
+                if (progressBar) {
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+                    progressBar.classList.remove('progress-bar-animated');
+                    progressBar.classList.add('bg-success');
+                }
+
+                const card = document.getElementById('processing-card');
+                if (card) {
+                    const completeMsg = document.createElement('div');
+                    completeMsg.className = 'ant-alert ant-alert-success mt-3';
+                    completeMsg.innerHTML = '<strong>✅ All Forms Generated Successfully!</strong>';
+                    card.appendChild(completeMsg);
+                }
+            }
+        };
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+
+        document.getElementById('batchForm')?.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const month = document.getElementById('period_month').value;
+            const year  = document.getElementById('period_year').value;
+            const btn     = document.getElementById('createBatchBtn');
+            const spinner = document.getElementById('submitSpinner');
+
+            if (!month || !year) { alert('Please select both month and year'); return; }
+
+            btn.disabled = true;
+            spinner.classList.remove('d-none');
+
+            const endpoint = IS_FULL ? '/compliance/batch/create' : '/compliance/batch/create-minimal';
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                },
+                body: JSON.stringify({ period_month: month, period_year: year })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    renderBatchReview(data);
+                    document.getElementById('batchForm').reset();
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to create batch'));
+                }
+            })
+            .catch(err => alert('Error: ' + err.message))
+            .finally(() => {
+                btn.disabled = false;
+                spinner.classList.add('d-none');
+            });
+        });
+
+        // Track which data categories have been provided in MINIMAL mode
+        const _minimalDataProvided = { employees: false, attendance: false, payroll: false };
+
+        function markMinimalDataProvided(category) {
+            if (category === 'manual')    { _minimalDataProvided.employees = _minimalDataProvided.attendance = _minimalDataProvided.payroll = true; }
+            else if (category === 'csv') { _minimalDataProvided[document.getElementById('csvDataType')?.value] = true; }
+            else if (category === 'pdf') { _minimalDataProvided.employees = true; } // PDF covers form data
+            refreshMinimalProceedBtn();
+        }
+
+        function refreshMinimalProceedBtn() {
+            const allProvided = _minimalDataProvided.employees && _minimalDataProvided.attendance && _minimalDataProvided.payroll;
+            const btn = document.getElementById('proceed-generate-btn');
+            if (!btn) return;
+            if (allProvided) {
+                btn.removeAttribute('disabled');
+                btn.classList.remove('ant-btn-default');
+                btn.classList.add('ant-btn-primary');
+                const hint = document.getElementById('proceed-hint');
+                if (hint) hint.textContent = '✅ All data provided. You can now generate forms.';
+            }
+            // Update checklist badges
+            ['employees','attendance','payroll'].forEach(cat => {
+                const el = document.getElementById('data-check-' + cat);
+                if (el) el.className = 'ant-tag ' + (_minimalDataProvided[cat] ? 'ant-tag-success' : 'ant-tag-error');
+            });
+        }
+
+        function renderBatchReview(data) {
+            const isMinimal = data.minimal_mode === true;
+
+            const dataAvailabilityHtml = data.data_availability.all_data_exists
+                ? `<div class="ant-alert ant-alert-success mb-3"><strong>✅ All Required Data Available</strong></div>`
+                : isMinimal
+                    ? `<div class="ant-alert ant-alert-warning mb-3">
+                        <strong>📋 Provide data for all three categories below to generate forms.</strong>
+                       </div>`
+                    : `<div class="ant-alert ant-alert-warning mb-3">
+                        <strong>⚠️ Missing Data Detected</strong>
+                        <ul class="mb-0 mt-2">
+                            ${data.data_availability.missing_data.map(m => `<li>${escapeHtml(m.charAt(0).toUpperCase() + m.slice(1).replace(/_/g, ' '))}</li>`).join('')}
+                        </ul>
+                       </div>`;
+
+            // Data checklist for MINIMAL
+            const minimalChecklist = isMinimal ? `
+                <div style="display:flex; gap:12px; flex-wrap:wrap; margin-bottom:16px;">
+                    <span>Data status:</span>
+                    <span id="data-check-employees" class="ant-tag ant-tag-error">Employees ✗</span>
+                    <span id="data-check-attendance" class="ant-tag ant-tag-error">Attendance ✗</span>
+                    <span id="data-check-payroll"    class="ant-tag ant-tag-error">Payroll ✗</span>
+                </div>` : '';
+
+            // Data summary table (FULL only)
+            const dataSummaryHtml = !isMinimal ? `
+                <div class="mt-3">
+                    <p class="mb-2"><strong>Data Summary:</strong></p>
+                    <table class="ant-table" style="font-size:12px; margin-bottom:0;">
+                        <tbody>
+                            ${Object.entries(data.data_availability.data_summary).map(([key, count]) => `
+                                <tr>
+                                    <td style="width:60%;"><strong>${escapeHtml(key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' '))}</strong></td>
+                                    <td style="text-align:right;">
+                                        <span class="ant-tag ${parseInt(count) > 0 ? 'ant-tag-success' : 'ant-tag-error'}">${parseInt(count)} records</span>
+                                    </td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>` : '';
+
+            // Show data input panel: always for MINIMAL, only when missing for FULL
+            const showDataInput = isMinimal || !data.can_proceed;
+            const dataInputHtml = showDataInput ? `
+                <div class="ant-card mb-3" id="data-input-options">
+                    <div class="ant-card-head info">📥 ${isMinimal ? 'Provide Compliance Data' : 'Fill Missing Data'}</div>
+                    <div class="ant-card-body">
+                        ${isMinimal
+                            ? `<p class="mb-3" style="font-size:13px;">Provide data using any combination of the three methods below. All three categories (Employees, Attendance, Payroll) must be covered before you can generate forms.</p>`
+                            : `<p class="mb-3">Choose one of the following options to provide missing data:</p>`
+                        }
+                        <div class="ant-row" gutter="16">
+                            <div class="ant-col ant-col-8">
+                                <div class="ant-card" style="cursor:pointer; text-align:center; padding:20px;" onclick="showManualDataModal(${data.batch_id})">
+                                    <div style="font-size:32px; margin-bottom:10px;">✍️</div>
+                                    <strong>Manual Data Entry</strong>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Enter employees, attendance &amp; payroll data directly</p>
+                                </div>
+                            </div>
+                            <div class="ant-col ant-col-8">
+                                <div class="ant-card" style="cursor:pointer; text-align:center; padding:20px;" onclick="showPdfUploadModal(${data.batch_id}, ${JSON.stringify(data.forms).replace(/"/g, '&quot;')})">
+                                    <div style="font-size:32px; margin-bottom:10px;">📄</div>
+                                    <strong>PDF Upload</strong>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Upload filled PDF forms directly</p>
+                                </div>
+                            </div>
+                            <div class="ant-col ant-col-8">
+                                <div class="ant-card" style="cursor:pointer; text-align:center; padding:20px;" onclick="showCsvUploadModal(${data.batch_id})">
+                                    <div style="font-size:32px; margin-bottom:10px;">📊</div>
+                                    <strong>CSV Upload</strong>
+                                    <p class="text-muted mt-2" style="font-size:12px;">Upload CSV for employees, attendance or payroll</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>` : '';
+
+            const proceedDisabled = isMinimal ? 'disabled' : (!data.can_proceed ? 'disabled' : '');
+            const proceedHint = isMinimal
+                ? 'Provide all three data categories above to enable generation.'
+                : (!data.can_proceed ? 'Proceed button will be enabled once all required data is provided.' : '');
+
+            const html = `
+                <div class="batch-review-wrapper" data-batch-id="${data.batch_id}">
+                    <div class="ant-card mb-3">
+                        <div class="ant-card-head success">✅ Batch Created — ${escapeHtml(data.period)}</div>
+                        <div class="ant-card-body">
+                            <div class="ant-row">
+                                <div class="ant-col ant-col-6"><p class="mb-0"><strong>Batch ID:</strong> #${data.batch_id}</p></div>
+                                <div class="ant-col ant-col-6"><p class="mb-0"><strong>Period:</strong> ${escapeHtml(data.period)}</p></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ant-card mb-3">
+                        <div class="ant-card-head info">📋 Forms to be Generated (${data.forms.length})</div>
+                        <div class="ant-card-body">
+                            ${data.forms.length > 0 ? `
+                                <div style="max-height:260px; overflow-y:auto;">
+                                    <table class="ant-table" style="font-size:13px; margin-bottom:0;">
+                                        <thead><tr><th>Form Code</th><th>Section</th><th>Status</th></tr></thead>
+                                        <tbody>
+                                            ${data.forms.map(f => `
+                                                <tr>
+                                                    <td><strong>${escapeHtml(f.form_code)}</strong></td>
+                                                    <td>${escapeHtml(f.section || '-')}</td>
+                                                    <td><span class="ant-tag ant-tag-processing">${escapeHtml(f.status.charAt(0).toUpperCase() + f.status.slice(1))}</span></td>
+                                                </tr>`).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>` : `<p class="text-muted text-center" style="padding:20px 0;">No forms detected.</p>`}
+                        </div>
+                    </div>
+
+                    <div class="ant-card mb-3">
+                        <div class="ant-card-head warning">📊 Data ${isMinimal ? 'Input Required' : 'Availability Check'}</div>
+                        <div class="ant-card-body">
+                            ${dataAvailabilityHtml}
+                            ${minimalChecklist}
+                            ${dataSummaryHtml}
+                        </div>
+                    </div>
+
+                    ${dataInputHtml}
+
+                    <div class="ant-card">
+                        <div class="ant-card-body">
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button type="button" class="ant-btn ant-btn-default cancel-batch-btn" data-batch="${data.batch_id}">❌ Cancel</button>
+                                <button type="button" class="ant-btn ant-btn-default proceed-batch-btn" id="proceed-generate-btn"
+                                        data-batch="${data.batch_id}" ${proceedDisabled}>
+                                    ✅ Proceed to Generate
+                                </button>
+                            </div>
+                            ${proceedHint ? `<p class="text-muted text-center mt-2" id="proceed-hint" style="font-size:12px;">${proceedHint}</p>` : ''}
+                        </div>
+                    </div>
+                </div>`;
+
+            document.getElementById('batch-review-container').innerHTML = html;
+        }
+
+        function showManualDataModal(batchId) {
+            const existing = document.getElementById('manualDataModal');
+            if (existing) existing.remove();
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'manualDataModal';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">✍️ Manual Data Entry</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            ${!IS_FULL ? `<div class="alert alert-info" style="font-size:13px;">
+                                <strong>📌 MINIMAL mode:</strong> Fill all three sections. This data will be used directly for form generation.
+                            </div>` : ''}
+                            <form id="manualDataForm">
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Employees Data</strong></label>
+                                    <textarea class="form-control" name="employees_data" rows="4"
+                                        placeholder="Name, Designation, Salary (one per line)&#10;e.g. John Doe, Operator, 18000"></textarea>
+                                    <small class="text-muted">Format: Name, Designation, Salary (one per line)</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Attendance Data</strong></label>
+                                    <textarea class="form-control" name="attendance_data" rows="4"
+                                        placeholder="Employee Name, Days Present, Days Absent (one per line)&#10;e.g. John Doe, 26, 0"></textarea>
+                                    <small class="text-muted">Format: Employee Name, Days Present, Days Absent (one per line)</small>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Payroll Data</strong></label>
+                                    <textarea class="form-control" name="payroll_data" rows="4"
+                                        placeholder="Employee Name, Basic, HRA, Deductions, Net Pay (one per line)&#10;e.g. John Doe, 18000, 2000, 1800, 18200"></textarea>
+                                    <small class="text-muted">Format: Employee Name, Basic, HRA, Deductions, Net Pay (one per line)</small>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="submitManualData(${batchId})">Save &amp; Continue</button>
+                        </div>
+                    </div>
+                </div>`;
+            document.body.appendChild(modal);
+            new bootstrap.Modal(modal).show();
+        }
+
+        function showPdfUploadModal(batchId, forms) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'pdfUploadModal';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">📄 PDF Upload - Multiple Forms</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="pdf-uploads-container"></div>
+                            <button type="button" class="btn btn-secondary btn-sm mt-3" onclick="addPdfUploadRow()">
+                                ➕ Add Another Form
+                            </button>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="submitAllPdfUploads(${batchId})">Upload All PDFs</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
             const bsModal = new bootstrap.Modal(modal);
             bsModal.show();
 
-            // Handle form submission
-            document.getElementById(`submitFix_${batchId}_${formCode}`).onclick = function() {
-                const form = document.getElementById(`fixForm_${batchId}_${formCode}`);
-                const formData = new FormData(form);
-                const corrections = {};
+            // Initialize with first row
+            const container = document.getElementById('pdf-uploads-container');
+            container.innerHTML = '';
+            addPdfUploadRow(forms);
+        }
 
-                for (let [key, value] of formData.entries()) {
-                    corrections[key] = value;
+        function addPdfUploadRow(forms) {
+            const container = document.getElementById('pdf-uploads-container');
+            const rowId = 'pdf-row-' + Date.now();
+
+            const row = document.createElement('div');
+            row.id = rowId;
+            row.className = 'mb-3 p-3 border rounded';
+            row.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label"><strong>Select Form</strong></label>
+                        <select class="form-control form-code-select" required>
+                            <option value="">-- Select a form --</option>
+                            ${forms.map(f => `<option value="${f.form_code}">${f.form_code}</option>`).join('')}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label"><strong>Upload PDF File</strong></label>
+                        <input type="file" class="form-control pdf-file-input" accept=".pdf" required>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removePdfUploadRow('${rowId}')">
+                    🗑️ Remove
+                </button>
+            `;
+            container.appendChild(row);
+        }
+
+        function removePdfUploadRow(rowId) {
+            const row = document.getElementById(rowId);
+            if (row) {
+                row.remove();
+            }
+        }
+
+        async function submitAllPdfUploads(batchId) {
+            const rows = document.querySelectorAll('#pdf-uploads-container > div');
+
+            if (rows.length === 0) {
+                alert('Please add at least one PDF');
+                return;
+            }
+
+            let uploadedCount = 0;
+            let failedCount = 0;
+
+            for (const row of rows) {
+                const formCode = row.querySelector('.form-code-select').value;
+                const fileInput = row.querySelector('.pdf-file-input');
+                const file = fileInput.files[0];
+
+                if (!formCode || !file) {
+                    alert('Please select both form and file for all rows');
+                    return;
                 }
 
-                this.disabled = true;
-                this.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Processing...';
+                try {
+                    const formData = new FormData();
+                    formData.append('file', file);
 
-                fetch(`/compliance/batch/${batchId}/submit-fix/${formCode}`, {
+                    const response = await fetch(`/compliance/form/upload/${batchId}/${formCode}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+                        },
+                        body: formData
+                    });
+
+                    const data = await response.json();
+                    if (data.status === 'success') {
+                        uploadedCount++;
+                    } else {
+                        failedCount++;
+                    }
+                } catch (error) {
+                    failedCount++;
+                }
+            }
+
+            if (failedCount === 0) {
+                bootstrap.Modal.getInstance(document.getElementById('pdfUploadModal'))?.hide();
+                if (!IS_FULL) {
+                    markMinimalDataProvided('pdf');
+                } else {
+                    location.reload();
+                }
+            } else {
+                alert(`⚠️ ${uploadedCount} uploaded, ${failedCount} failed`);
+            }
+        }
+
+        function showCsvUploadModal(batchId) {
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.id = 'csvUploadModal';
+            modal.innerHTML = `
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">📊 CSV Upload</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="csvUploadForm">
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Data Type</strong></label>
+                                    <select class="form-control" id="csvDataType" required>
+                                        <option value="">-- Select data type --</option>
+                                        <option value="employees">Employees</option>
+                                        <option value="payroll">Payroll</option>
+                                        <option value="attendance">Attendance</option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Upload CSV File</strong></label>
+                                    <input type="file" class="form-control" id="csvFile" accept=".csv,.txt" required>
+                                    <small class="text-muted">Maximum file size: 10MB</small>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" onclick="submitCsvUpload(${batchId})">Upload & Process</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            new bootstrap.Modal(modal).show();
+        }
+
+        function submitManualData(batchId) {
+            const form = document.getElementById('manualDataForm');
+            const employees = form.querySelector('[name=employees_data]').value.trim();
+            const attendance = form.querySelector('[name=attendance_data]').value.trim();
+            const payroll    = form.querySelector('[name=payroll_data]').value.trim();
+
+            if (!employees || !attendance || !payroll) {
+                alert('Please fill in all three sections: Employees, Attendance, and Payroll.');
+                return;
+            }
+
+            const formData = new FormData(form);
+
+            fetch(`/compliance/batch/${batchId}/save-manual-data`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    bootstrap.Modal.getInstance(document.getElementById('manualDataModal'))?.hide();
+                    markMinimalDataProvided('manual');
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to save data'));
+                }
+            })
+            .catch(err => alert('Error: ' + err.message));
+        }
+
+        function submitCsvUpload(batchId) {
+            const dataType = document.getElementById('csvDataType').value;
+            const file     = document.getElementById('csvFile').files[0];
+
+            if (!dataType || !file) { alert('Please select both data type and file'); return; }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('dataset_type', dataType);
+
+            fetch(`/compliance/batch/${batchId}/upload-csv`, {
+                method: 'POST',
+                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                body: formData
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    bootstrap.Modal.getInstance(document.getElementById('csvUploadModal'))?.hide();
+                    if (!IS_FULL) {
+                        _minimalDataProvided[dataType] = true;
+                        refreshMinimalProceedBtn();
+                    } else {
+                        location.reload();
+                    }
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to upload CSV'));
+                }
+            })
+            .catch(err => alert('Error: ' + err.message));
+        }
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('proceed-batch-btn')) {
+                const batchId = e.target.dataset.batch;
+                BatchProcessor.processBatch(batchId);
+            }
+
+            if (e.target.classList.contains('cancel-batch-btn')) {
+                document.getElementById('batch-review-container').innerHTML = '';
+            }
+
+            if (e.target.classList.contains('preview-btn')) {
+                const batchId = e.target.dataset.batch;
+                const formCode = e.target.dataset.form;
+                openPreview(batchId, formCode);
+            }
+        });
+
+        function openPreview(batchId, formCode) {
+            const previewModal = new bootstrap.Modal(document.getElementById('preview-modal'));
+            document.getElementById('preview-title').textContent = `Preview - ${escapeHtml(formCode)}`;
+            document.getElementById('preview-content').innerHTML = '<div class="text-center"><div class="spinner-border"></div></div>';
+
+            fetch(`/compliance/batch/${batchId}/preview/${formCode}`)
+                .then(r => r.text())
+                .then(html => {
+                    document.getElementById('preview-content').innerHTML = html;
+                })
+                .catch(err => {
+                    document.getElementById('preview-content').innerHTML = `<div class="alert alert-danger">Error: ${escapeHtml(err.message)}</div>`;
+                });
+
+            previewModal.show();
+        }
+
+        // ─── Manual Compliance Panel ───────────────────────────────────────────
+
+        const ManualPanel = {
+            batchId: null,
+            uploadItemId: null,
+            uploadModal: null,
+
+            init(batchId) {
+                this.batchId = batchId;
+                this.uploadModal = new bootstrap.Modal(document.getElementById('manualUploadModal'));
+                document.getElementById('manual-compliance-panel').style.display = '';
+                document.getElementById('batch-section-row').classList.add('has-manual');
+                this.loadItems();
+            },
+
+            async loadItems() {
+                try {
+                    const res = await fetch(`/compliance/manual-batch/${this.batchId}`);
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.message || 'Failed to load tasks');
+                    this.renderItems(data.items || []);
+                    this.updateProgress();
+                } catch (err) {
+                    this.showGlobalError(err.message);
+                }
+            },
+
+            renderItems(items) {
+                const tbody = document.getElementById('manual-tasks-body');
+                if (!items.length) {
+                    tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted" style="padding:20px;">No manual tasks for this period.</td></tr>';
+                    return;
+                }
+                tbody.innerHTML = items.map(item => {
+                    const statusBadge = {
+                        completed: '<span class="ant-tag ant-tag-success">✅ Completed</span>',
+                        skipped:   '<span class="ant-tag ant-tag-default">⏭️ Skipped</span>',
+                        pending:   '<span class="ant-tag ant-tag-processing">⏳ Pending</span>',
+                    }[item.status] || `<span class="ant-tag">${escapeHtml(item.status)}</span>`;
+
+                    const actions = item.status === 'pending'
+                        ? `<button class="ant-btn ant-btn-primary ant-btn-sm me-1 manual-yes-btn" data-id="${item.item_id}" data-name="${escapeHtml(item.compliance_name)}">✅ YES</button>
+                           <button class="ant-btn ant-btn-default ant-btn-sm manual-no-btn" data-id="${item.item_id}">❌ NO</button>`
+                        : `<span class="text-muted" style="font-size:12px;">—</span>`;
+
+                    return `<tr id="manual-row-${item.item_id}">
+                        <td><strong>${escapeHtml(item.compliance_name)}</strong></td>
+                        <td>${escapeHtml(item.act_name || '—')}</td>
+                        <td>${statusBadge}</td>
+                        <td>${actions}</td>
+                    </tr>`;
+                }).join('');
+            },
+
+            async updateProgress() {
+                try {
+                    const res = await fetch(`/compliance/manual-batch/${this.batchId}/summary`);
+                    const data = await res.json();
+                    if (!res.ok) return;
+
+                    const { total, completed, skipped, pending } = data;
+                    const done = completed + skipped;
+                    const pct = total > 0 ? Math.round(done / total * 100) : 0;
+
+                    document.getElementById('manual-progress-badge').textContent = `${completed} / ${total} completed`;
+                    const bar = document.getElementById('manual-progress-bar');
+                    bar.style.width = pct + '%';
+                    bar.textContent = pct + '%';
+                    if (pct === 100) {
+                        bar.classList.remove('progress-bar-animated', 'bg-info');
+                        bar.classList.add('bg-success');
+                    }
+
+                    // Store for download-lock check
+                    window._manualPending = pending;
+                    checkDownloadLock();
+                } catch (_) {}
+            },
+
+            openUploadModal(itemId, name) {
+                this.uploadItemId = itemId;
+                document.getElementById('manual-upload-compliance-name').textContent = name;
+                document.getElementById('manual-upload-file').value = '';
+                document.getElementById('manual-upload-error').style.display = 'none';
+                this.uploadModal.show();
+            },
+
+            async submitUpload() {
+                const file = document.getElementById('manual-upload-file').files[0];
+                const errEl = document.getElementById('manual-upload-error');
+                if (!file) { errEl.textContent = 'Please select a file.'; errEl.style.display = ''; return; }
+
+                const btn = document.getElementById('manual-upload-submit');
+                btn.disabled = true;
+                btn.textContent = 'Uploading…';
+
+                const fd = new FormData();
+                fd.append('item_id', this.uploadItemId);
+                fd.append('file', file);
+
+                try {
+                    const res = await fetch('/compliance/manual-item/upload', {
+                        method: 'POST',
+                        headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
+                        body: fd
+                    });
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.message || 'Upload failed');
+
+                    this.uploadModal.hide();
+                    this.updateRowStatus(this.uploadItemId, 'completed');
+                    this.updateProgress();
+                } catch (err) {
+                    errEl.textContent = err.message;
+                    errEl.style.display = '';
+                } finally {
+                    btn.disabled = false;
+                    btn.textContent = 'Upload & Complete';
+                }
+            },
+
+            async skipItem(itemId) {
+                const row = document.getElementById(`manual-row-${itemId}`);
+                if (row) row.style.opacity = '0.5';
+
+                try {
+                    const res = await fetch('/compliance/manual-item/skip', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                         },
-                        body: JSON.stringify({
-                            corrections
-                        })
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        if (data.status === 'success') {
-                            bsModal.hide();
-                            updateAuditUI(batchId, formCode, data, originalBtn);
-                            alert('✅ Form corrected and regenerated successfully!');
-                        } else {
-                            alert('❌ Fix failed: ' + (data.message || 'Unknown error'));
-                            this.disabled = false;
-                            this.innerHTML = 'Submit & Regenerate';
-                        }
-                    })
-                    .catch(err => {
-                        alert('❌ Error: ' + err.message);
-                        this.disabled = false;
-                        this.innerHTML = 'Submit & Regenerate';
+                        body: JSON.stringify({ item_id: itemId })
                     });
-            };
+                    const data = await res.json();
+                    if (!data.success) throw new Error(data.message || 'Skip failed');
 
-            originalBtn.disabled = false;
-            originalBtn.innerHTML = '🔧 Fix & Re-Audit';
-        }
-
-        function updateAuditUI(batchId, formCode, data, btn) {
-            const modal = btn.closest('.modal-body');
-            const listItem = btn.closest('.list-group-item');
-
-            // 1. Update batch average score in modal header
-            const modalHeader = modal.querySelector('h4');
-            if (modalHeader) {
-                modalHeader.innerHTML = `Audit Score: <strong>${data.batch_average_score}/100</strong>`;
-            }
-
-            // 2. Update progress bar
-            const progressBar = modal.querySelector('.progress-bar');
-            if (progressBar) {
-                const barClass = data.batch_average_score >= 90 ? 'bg-success' : (data.batch_average_score >= 70 ?
-                    'bg-warning' : 'bg-danger');
-                progressBar.className = `progress-bar ${barClass}`;
-                progressBar.style.width = `${data.batch_average_score}%`;
-                progressBar.textContent = `${data.batch_average_score}%`;
-                progressBar.setAttribute('aria-valuenow', data.batch_average_score);
-            }
-
-            // 3. Update legal confidence badge
-            const confidenceBadge = modal.querySelector('.badge');
-            if (confidenceBadge) {
-                const badgeClass = data.batch_average_score >= 90 ? 'bg-success' : (data.batch_average_score >= 70 ?
-                    'bg-warning' : 'bg-danger');
-                confidenceBadge.className = `badge ${badgeClass}`;
-                confidenceBadge.style.fontSize = '14px';
-                confidenceBadge.style.padding = '8px 12px';
-                confidenceBadge.textContent = data.confidence_label;
-            }
-
-            // 4. Update form status badge
-            const statusBadge = listItem.querySelector('.badge');
-            if (statusBadge) {
-                statusBadge.className = `badge ${data.audit_status === 'passed' ? 'bg-success' : 'bg-danger'} ms-2`;
-                statusBadge.textContent = data.audit_status.charAt(0).toUpperCase() + data.audit_status.slice(1);
-            }
-
-            // 5. Update form score
-            const scoreBadge = listItem.querySelector('.badge.bg-secondary');
-            if (scoreBadge) {
-                scoreBadge.textContent = `Score: ${data.form_score}/100`;
-            }
-
-            // 6. Update violations section
-            const violationsDiv = listItem.querySelector('.mt-2');
-            if (data.violations.length === 0) {
-                if (violationsDiv) {
-                    violationsDiv.innerHTML = '<small class="text-success">✅ No violations detected</small>';
+                    this.updateRowStatus(itemId, 'skipped');
+                    this.updateProgress();
+                } catch (err) {
+                    if (row) row.style.opacity = '';
+                    const errCell = row?.querySelector('td:last-child');
+                    if (errCell) errCell.innerHTML += `<div class="text-danger" style="font-size:11px;">${escapeHtml(err.message)}</div>`;
                 }
-            } else {
-                const violationsList = listItem.querySelector('ul');
-                if (violationsList) {
-                    violationsList.innerHTML = data.violations.map(v => `
-                        <li>
-                            <small>
-                                <strong>${v.field || 'Unknown'}</strong>
-                                (${v.type || 'general'}):
-                                ${v.message || 'No details'}
-                            </small>
-                        </li>
-                    `).join('');
-                }
-                btn.disabled = false;
-                btn.innerHTML = '🔧 Fix & Re-Audit';
-            }
+            },
 
-            // 7. Update table score badge
-            const tableRow = document.querySelector(`tr[data-batch-id="${batchId}"]`);
-            if (tableRow) {
-                const scoreCell = tableRow.querySelector('.batch-score-badge');
-                if (scoreCell) {
-                    const scoreClass = data.batch_average_score >= 90 ? 'ant-tag-success' : (data.batch_average_score >=
-                        70 ? 'ant-tag-warning' : 'ant-tag-error');
-                    scoreCell.className = `ant-tag batch-score-badge ${scoreClass}`;
-                    scoreCell.style.fontWeight = 'bold';
-                    scoreCell.textContent = `${data.batch_average_score}/100`;
-                }
-            }
-        }
+            updateRowStatus(itemId, status) {
+                const row = document.getElementById(`manual-row-${itemId}`);
+                if (!row) return;
+                row.style.opacity = '';
+                const badges = {
+                    completed: '<span class="ant-tag ant-tag-success">✅ Completed</span>',
+                    skipped:   '<span class="ant-tag ant-tag-default">⏭️ Skipped</span>',
+                };
+                row.cells[2].innerHTML = badges[status] || '';
+                row.cells[3].innerHTML = '<span class="text-muted" style="font-size:12px;">—</span>';
+            },
 
-        // Certification logic
+            showGlobalError(msg) {
+                const el = document.getElementById('manual-global-error');
+                el.textContent = msg;
+                el.style.display = '';
+            }
+        };
+
+        // Wire up manual panel button clicks via delegation
         document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('certify-btn') || e.target.closest('.certify-btn')) {
-                const btn = e.target.classList.contains('certify-btn') ? e.target : e.target.closest('.certify-btn');
-                const batchId = btn.dataset.batch;
-
-                btn.disabled = true;
-                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Certifying...';
-
-                fetch(`/compliance/batch/${batchId}/certify`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                .then(r => r.json())
-                .then(data => {
-                    if (data.status === 'success') {
-                        if (data.certified) {
-                            alert('✅ Certification Successful! Score: ' + data.score + '/100');
-                        } else {
-                            alert('❌ Certification Failed. Score: ' + data.score + '/100. Violations found.');
-                        }
-                        window.location.reload();
-                    } else {
-                        alert('❌ Error: ' + (data.message || 'Validation Failed'));
-                        btn.disabled = false;
-                        btn.innerHTML = 'Certify';
-                    }
-                })
-                .catch(err => {
-                    alert('❌ Error: ' + err.message);
-                    btn.disabled = false;
-                    btn.innerHTML = 'Certify';
-                });
+            if (e.target.classList.contains('manual-yes-btn')) {
+                ManualPanel.openUploadModal(
+                    e.target.dataset.id,
+                    e.target.dataset.name
+                );
+            }
+            if (e.target.classList.contains('manual-no-btn')) {
+                ManualPanel.skipItem(e.target.dataset.id);
             }
         });
+
+        document.getElementById('manual-upload-submit').addEventListener('click', () => ManualPanel.submitUpload());
+
+        // Prevent disabled download link from navigating
+        document.addEventListener('click', function(e) {
+            const btn = e.target.closest('#download-pack-btn');
+            if (btn && btn.hasAttribute('disabled')) e.preventDefault();
+        });
+
+        // ─── Download Lock Logic ───────────────────────────────────────────────
+        window._automatedComplete = false;
+        window._manualPending = null; // null = not yet loaded
+
+        function checkDownloadLock() {
+            const btn = document.getElementById('download-pack-btn');
+            if (!btn) return;
+
+            // null means manual panel hasn't loaded yet — don't unlock
+            const manualReady = window._manualPending === 0;
+            const canDownload = window._automatedComplete && manualReady;
+
+            if (canDownload) {
+                btn.removeAttribute('disabled');
+                btn.style.pointerEvents = '';
+                btn.title = '';
+                btn.classList.remove('ant-btn-default');
+                btn.classList.add('ant-btn-primary');
+
+                if (!btn.dataset.unlocked) {
+                    btn.dataset.unlocked = '1';
+                    showUnlockToast();
+                }
+            } else {
+                btn.setAttribute('disabled', 'disabled');
+                btn.style.pointerEvents = 'none';
+                btn.title = 'Complete all automated PDFs and manual tasks first';
+                btn.classList.remove('ant-btn-primary');
+                btn.classList.add('ant-btn-default');
+            }
+
+            updateDualProgressLabel();
+        }
+
+        function updateDualProgressLabel() {
+            const lbl = document.getElementById('manual-progress-label');
+            if (!lbl) return;
+            if (window._manualPending === null) {
+                lbl.textContent = 'Loading…';
+            } else if (window._manualPending === 0) {
+                lbl.textContent = 'Complete ✅';
+            } else {
+                lbl.textContent = `${window._manualPending} task(s) pending ⏳`;
+            }
+        }
+
+        function showUnlockToast() {
+            const toast = document.createElement('div');
+            toast.className = 'ant-alert ant-alert-success';
+            toast.style.cssText = 'position:fixed;bottom:24px;right:24px;z-index:9999;padding:14px 20px;border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.15);max-width:360px;';
+            toast.innerHTML = '🎉 <strong>All compliance tasks completed.</strong> You can now download the inspection pack.';
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 5000);
+        }
+
+        // Patch BatchProcessor.showComplete to set automated flag
+        const _origShowComplete = BatchProcessor.showComplete.bind(BatchProcessor);
+        BatchProcessor.showComplete = function(batchId) {
+            _origShowComplete(batchId);
+            window._automatedComplete = true;
+
+            const card = document.getElementById('processing-card');
+            if (card && !document.getElementById('dual-progress-summary')) {
+                const summary = document.createElement('div');
+                summary.id = 'dual-progress-summary';
+                summary.className = 'mt-3';
+                summary.innerHTML = `
+                    <div class="ant-alert ant-alert-info" style="margin-bottom:12px;">
+                        <div style="display:flex; gap:24px; flex-wrap:wrap;">
+                            <span>🤖 <strong>Automated PDFs:</strong> <span id="auto-progress-label">Complete ✅</span></span>
+                            <span>📋 <strong>Manual Compliance:</strong> <span id="manual-progress-label">Loading…</span></span>
+                        </div>
+                    </div>
+                    <div class="text-end">
+                        <button type="button"
+                                class="ant-btn ant-btn-default"
+                                id="download-pack-btn"
+                                disabled
+                                style="pointer-events:none;"
+                                title="Complete all automated PDFs and manual tasks first"
+                                onclick="window.location='/compliance/batch/${batchId}/inspection-pack'">
+                            📦 Download Inspection Pack
+                        </button>
+                    </div>`;
+                card.appendChild(summary);
+            }
+
+            checkDownloadLock();
+        };
+
+        // Keep dual-progress label in sync
+        const _origUpdateProgress = BatchProcessor.updateProgress.bind(BatchProcessor);
+        BatchProcessor.updateProgress = function(data) {
+            _origUpdateProgress(data);
+            const lbl = document.getElementById('auto-progress-label');
+            if (lbl) lbl.textContent = `${data.generated} / ${data.total} generated`;
+        };
+
+        // Activate manual panel when batch processing starts
+        const _origProcessBatch = BatchProcessor.processBatch.bind(BatchProcessor);
+        BatchProcessor.processBatch = async function(batchId) {
+            ManualPanel.init(batchId);
+            await _origProcessBatch(batchId);
+        };
     </script>
 @endpush

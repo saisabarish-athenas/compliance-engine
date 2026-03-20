@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -20,45 +21,51 @@ return new class extends Migration
 
         // Add unique constraint on workforce_payroll_cycle
         if (Schema::hasTable('workforce_payroll_cycle')) {
-            Schema::table('workforce_payroll_cycle', function (Blueprint $table) {
-                $table->unique(['tenant_id', 'cycle_name'], 'unique_tenant_cycle');
-            });
+            if (!Schema::hasIndex('workforce_payroll_cycle', 'unique_tenant_cycle')) {
+                Schema::table('workforce_payroll_cycle', function (Blueprint $table) {
+                    $table->unique(['tenant_id', 'cycle_name'], 'unique_tenant_cycle');
+                });
+            }
         }
 
         // Add constraints and indexes on workforce_payroll_entry
         if (Schema::hasTable('workforce_payroll_entry')) {
-            Schema::table('workforce_payroll_entry', function (Blueprint $table) {
-                $table->unique(['payroll_cycle_id', 'employee_id'], 'unique_cycle_employee');
-                $table->index(['tenant_id', 'payroll_cycle_id']);
-                
-                if (!Schema::hasColumn('workforce_payroll_entry', 'tenant_id')) {
+            if (!Schema::hasIndex('workforce_payroll_entry', 'unique_cycle_employee')) {
+                Schema::table('workforce_payroll_entry', function (Blueprint $table) {
+                    $table->unique(['payroll_cycle_id', 'employee_id'], 'unique_cycle_employee');
+                });
+            }
+            
+            if (!Schema::hasColumn('workforce_payroll_entry', 'tenant_id')) {
+                Schema::table('workforce_payroll_entry', function (Blueprint $table) {
                     $table->unsignedBigInteger('tenant_id')->after('id')->index();
-                }
-            });
-
-            // Add foreign keys if not exists
-            Schema::table('workforce_payroll_entry', function (Blueprint $table) {
-                $table->foreign('payroll_cycle_id')->references('id')->on('workforce_payroll_cycle')->onDelete('cascade');
-                $table->foreign('employee_id')->references('id')->on('workforce_employee')->onDelete('cascade');
-            });
+                });
+            }
         }
     }
 
     public function down(): void
     {
         if (Schema::hasTable('workforce_payroll_entry')) {
-            Schema::table('workforce_payroll_entry', function (Blueprint $table) {
-                $table->dropForeign(['payroll_cycle_id']);
-                $table->dropForeign(['employee_id']);
-                $table->dropUnique('unique_cycle_employee');
-                $table->dropIndex(['tenant_id', 'payroll_cycle_id']);
-            });
+            // Drop foreign keys first using raw SQL
+            try {
+                DB::statement('ALTER TABLE workforce_payroll_entry DROP FOREIGN KEY workforce_payroll_entry_payroll_cycle_id_foreign');
+            } catch (\Exception $e) {}
+            
+            try {
+                DB::statement('ALTER TABLE workforce_payroll_entry DROP FOREIGN KEY workforce_payroll_entry_employee_id_foreign');
+            } catch (\Exception $e) {}
+            
+            // Then drop unique constraints using raw SQL
+            try {
+                DB::statement('ALTER TABLE workforce_payroll_entry DROP INDEX unique_cycle_employee');
+            } catch (\Exception $e) {}
         }
 
         if (Schema::hasTable('workforce_payroll_cycle')) {
-            Schema::table('workforce_payroll_cycle', function (Blueprint $table) {
-                $table->dropUnique('unique_tenant_cycle');
-            });
+            try {
+                DB::statement('ALTER TABLE workforce_payroll_cycle DROP INDEX unique_tenant_cycle');
+            } catch (\Exception $e) {}
         }
 
         if (Schema::hasTable('workforce_payroll_entry')) {

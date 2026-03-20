@@ -11,32 +11,39 @@ class FormBGenerator extends BaseFormGenerator
     {
         $records = $rawData['records'] ?? [];
         $rows = [];
+        
         foreach ($records as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
                 'employee_code' => $record['employee_code'] ?? 'N/A',
                 'employee_name' => $record['employee_name'] ?? 'N/A',
-                'designation' => $record['designation'] ?? 'N/A',
+                'rate_of_wage' => round($record['basic_earned'] ?? 0, 2),
                 'total_days_worked' => $record['total_days_worked'] ?? 0,
-                'daily_rate' => round($record['daily_rate'] ?? 0, 2),
+                'overtime_hours' => round($record['overtime_hours'] ?? 0, 2),
                 'basic_earned' => round($record['basic_earned'] ?? 0, 2),
+                'special_allowance' => round($record['special_allowance'] ?? 0, 2),
                 'da_earned' => round($record['da_earned'] ?? 0, 2),
-                'hra_earned' => round($record['hra_earned'] ?? 0, 2),
-                'overtime_hours' => $record['overtime_hours'] ?? 0,
                 'overtime_wages' => round($record['overtime_wages'] ?? 0, 2),
+                'hra_earned' => round($record['hra_earned'] ?? 0, 2),
+                'other_earnings' => round($record['other_earnings'] ?? 0, 2),
                 'gross_salary' => round($record['gross_salary'] ?? 0, 2),
                 'pf_employee' => round($record['pf_employee'] ?? 0, 2),
                 'esi_employee' => round($record['esi_employee'] ?? 0, 2),
-                'advances' => round($record['advances'] ?? 0, 2),
-                'fines' => round($record['fines'] ?? 0, 2),
+                'other_deductions' => round($record['other_deductions'] ?? 0, 2),
+                'pt_deduction' => round($record['pt_deduction'] ?? 0, 2),
+                'recovery' => round($record['recovery'] ?? 0, 2),
                 'total_deductions' => round($record['total_deductions'] ?? 0, 2),
                 'net_salary' => round($record['net_salary'] ?? 0, 2),
+                'payment_date' => $record['payment_date'] ?? '',
+                'remarks' => $record['remarks'] ?? '',
             ];
         }
 
         $totals = $this->calculateTotals($rows, [
-            'basic_earned', 'da_earned', 'hra_earned', 'overtime_wages',
-            'gross_salary', 'pf_employee', 'esi_employee', 'total_deductions', 'net_salary'
+            'basic_earned', 'special_allowance', 'da_earned', 'overtime_wages',
+            'hra_earned', 'other_earnings', 'gross_salary', 'pf_employee',
+            'esi_employee', 'other_deductions', 'pt_deduction', 'recovery',
+            'total_deductions', 'net_salary'
         ]);
 
         $month = $rawData['meta']['month'] ?? 1;

@@ -13,12 +13,15 @@ class ShopsFinesGenerator extends BaseFormGenerator
         foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
-                'employee_code' => $record['employee_code'] ?? '',
                 'employee_name' => $record['employee_name'] ?? 'N/A',
-                'designation' => $record['designation'] ?? 'N/A',
-                'fine_amount' => round($record['fine_amount'] ?? 0, 2),
-                'fine_date' => $record['fine_date'] ?? 'N/A',
+                'father_name' => $record['father_name'] ?? 'N/A',
                 'reason' => $record['reason'] ?? 'N/A',
+                'cause' => $record['cause'] ?? 'N/A',
+                'wages' => $record['wages'] ?? 0,
+                'fine_amount' => $record['fine_amount'] ?? 0,
+                'fine_date' => $record['fine_date'] ?? '',
+                'realized_date' => $record['realized_date'] ?? '',
+                'remarks' => $record['remarks'] ?? '',
             ];
         }
 

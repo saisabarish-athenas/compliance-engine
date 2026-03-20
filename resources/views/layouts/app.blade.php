@@ -4,40 +4,37 @@
     <meta charset="UTF-8">
     <title>Compliance Platform</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    {{-- Bootstrap CSS — must be in <head> so the page renders styled on first paint --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
 
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background:#f5f6fa;
-            margin:0;
-            padding:20px;
+            background: #f5f6fa;
         }
-
-        .container{
-            max-width:1200px;
-            margin:auto;
-            background:white;
-            padding:20px;
-            border-radius:8px;
-            box-shadow:0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header{
-            margin-bottom:20px;
+        .header {
+            margin-bottom: 20px;
         }
     </style>
+
+    @stack('styles')
 </head>
 <body>
 
-<div class="container">
-
+<div class="container-fluid px-4 py-3">
     <div class="header">
         <h2>Labour Compliance Platform</h2>
     </div>
 
     @yield('content')
-
 </div>
+
+{{-- Bootstrap JS bundle (includes Popper) — must come BEFORE @stack('scripts') --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+{{-- Page-level scripts pushed here so they always run after Bootstrap is defined --}}
+@stack('scripts')
 
 </body>
 </html>

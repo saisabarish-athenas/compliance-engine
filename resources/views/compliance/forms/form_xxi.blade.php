@@ -132,23 +132,23 @@
         <table class="establishment-table">
             <tr>
                 <td>NAME AND ADDRESS OF CONTRACTOR :</td>
-                <td>{{ $contractor_name ?? '' }}</td>
+                <td>{{ $header['contractor_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NATURE AND LOCATION OF WORK :</td>
-                <td>{{ $work_nature ?? '' }}</td>
+                <td>{{ $header['work_nature'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
-                <td>{{ $establishment_name ?? '' }}</td>
+                <td>{{ $header['establishment_name'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
-                <td>{{ $principal_employer ?? '' }}</td>
+                <td>{{ $header['principal_employer'] ?? '' }}</td>
             </tr>
             <tr>
                 <td>Month & Year:</td>
-                <td>{{ $month_year ?? '' }}</td>
+                <td>{{ $header['month_year'] ?? '' }}</td>
             </tr>
         </table>
 
@@ -170,47 +170,34 @@
                 </tr>
             </thead>
             <tbody>
-                @if(isset($rows) && count($rows) > 0)
+                @if(!empty($rows) && count($rows) > 0)
                     @foreach($rows as $index => $row)
                         <tr>
                             <td class="col-sl">{{ $index + 1 }}</td>
-                            <td class="col-name">{{ $row['name'] ?? 'NIL' }}</td>
-                            <td class="col-father">{{ $row['father_name'] ?? 'NIL' }}</td>
-                            <td class="col-designation">{{ $row['designation'] ?? 'NIL' }}</td>
-                            <td class="col-act">{{ $row['act_or_omission'] ?? 'NIL' }}</td>
-                            <td class="col-date-offence">{{ $row['date_of_offence'] ?? 'NIL' }}</td>
-                            <td class="col-showed-cause">{{ $row['showed_cause'] ?? 'NIL' }}</td>
-                            <td class="col-heard-by">{{ $row['heard_by'] ?? 'NIL' }}</td>
-                            <td class="col-wage">{{ $row['wage_period'] ?? 'NIL' }}</td>
-                            <td class="col-amount">{{ $row['fine_amount'] ?? 'NIL' }}</td>
-                            <td class="col-date-realised">{{ $row['fine_realised'] ?? 'NIL' }}</td>
-                            <td class="col-remarks">{{ $row['remarks'] ?? 'NIL' }}</td>
+                            <td class="col-name">{{ $row['name'] ?? '' }}</td>
+                            <td class="col-father">{{ $row['father_name'] ?? '' }}</td>
+                            <td class="col-designation">{{ $row['designation'] ?? '' }}</td>
+                            <td class="col-act">{{ $row['act_or_omission'] ?? '' }}</td>
+                            <td class="col-date-offence">{{ $row['date_of_offence'] ?? '' }}</td>
+                            <td class="col-showed-cause">{{ $row['showed_cause'] ?? '' }}</td>
+                            <td class="col-heard-by">{{ $row['heard_by'] ?? '' }}</td>
+                            <td class="col-wage">{{ $row['wage_period'] ?? '' }}</td>
+                            <td class="col-amount">{{ $row['fine_amount'] ?? '' }}</td>
+                            <td class="col-date-realised">{{ $row['fine_realised'] ?? '' }}</td>
+                            <td class="col-remarks"></td>
                         </tr>
                     @endforeach
                 @else
-                    @for($i = 0; $i < 9; $i++)
-                        <tr>
-                            <td class="col-sl">{{ $i + 1 }}</td>
-                            <td class="col-name">NIL</td>
-                            <td class="col-father">NIL</td>
-                            <td class="col-designation">NIL</td>
-                            <td class="col-act">NIL</td>
-                            <td class="col-date-offence">NIL</td>
-                            <td class="col-showed-cause">NIL</td>
-                            <td class="col-heard-by">NIL</td>
-                            <td class="col-wage">NIL</td>
-                            <td class="col-amount">NIL</td>
-                            <td class="col-date-realised">NIL</td>
-                            <td class="col-remarks">NIL</td>
-                        </tr>
-                    @endfor
+                    <tr>
+                        <td colspan="12" style="text-align:center;">No records found</td>
+                    </tr>
                 @endif
             </tbody>
         </table>
 
         <div class="footer-section">
             <div class="footer-note">*Applicable only in case of damage/loss/fine</div>
-            <div class="nil-footer">Nil for the month of {{ $month_year ?? '' }}</div>
+
         </div>
 
         <div class="signature-section">

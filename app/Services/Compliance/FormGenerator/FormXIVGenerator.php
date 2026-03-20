@@ -9,21 +9,32 @@ class FormXIVGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $rows = [];
+        $cards = [];
+        $tenant = $rawData['tenant'] ?? [];
+        $branch = $rawData['branch'] ?? [];
+        $serialNumber = 1;
+
         foreach ($rawData['records'] ?? [] as $record) {
             $record = $this->normalizeRecord($record);
-            $rows[] = [
-                'worker_name' => $record['worker_name'] ?? 'N/A',
-                'contractor_name' => $record['contractor_name'] ?? 'N/A',
-                'deployment_start' => $record['deployment_start'] ?? 'N/A',
-                'wage_rate' => $record['wage_rate'] ?? 0,
+
+            $cards[] = [
+                'contractor_name' => $record['contractor_name'] ?? 'NIL',
+                'work_location' => $branch['address'] ?? 'NIL',
+                'establishment_name' => $branch['name'] ?? 'NIL',
+                'principal_employer' => is_array($tenant) ? ($tenant['name'] ?? 'NIL') : $tenant,
+                'workman_name' => $record['employee_name'] ?? 'NIL',
+                'register_serial' => $serialNumber,
+                'designation' => $record['designation'] ?? $record['work_description'] ?? 'NIL',
+                'wage_rate' => 'NIL',
+                'wage_period' => 'Monthly',
+                'tenure' => $record['date_of_joining'] ?? 'NIL',
+                'remarks' => '',
             ];
+            $serialNumber++;
         }
 
         $month = $rawData['meta']['month'] ?? 1;
         $year = $rawData['meta']['year'] ?? 2024;
-        $tenant = $rawData['tenant'] ?? [];
-        $branch = $rawData['branch'] ?? [];
 
         return [
             'header' => [
@@ -31,19 +42,9 @@ class FormXIVGenerator extends BaseFormGenerator
                 'period' => $this->formatPeriod($month, $year),
                 'branch' => $branch,
                 'tenant' => is_array($tenant) ? ($tenant['name'] ?? 'N/A') : $tenant,
-                'tenant_details' => $tenant,
-                'contractor_name' => $tenant['name'] ?? 'N/A',
-                'principal_employer' => $branch['name'] ?? 'N/A',
-                'factory_name' => $branch['name'] ?? 'N/A',
-                'establishment_name' => $tenant['establishment_name'] ?? 'N/A',
-                'owner_name' => $tenant['name'] ?? 'N/A',
-                'address' => $branch['address'] ?? 'N/A',
-                'place' => $branch['address'] ?? 'N/A',
-                'district' => $branch['district'] ?? 'N/A',
             ],
-            'rows' => $rows,
-            'totals' => [],
-            'is_nil' => count($rows) === 0,
+            'cards' => $cards,
+            'is_nil' => count($cards) === 0,
         ];
     }
 }

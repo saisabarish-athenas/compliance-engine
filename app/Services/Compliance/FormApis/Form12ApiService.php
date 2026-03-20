@@ -11,20 +11,21 @@ class Form12ApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('workforce_employee as e')
-            ->where('e.tenant_id', $tenantId)
-            ->where('e.branch_id', $branchId)
+        $rows = DB::table('workforce_employee')
+            ->where('tenant_id', $tenantId)
+            ->where('branch_id', $branchId)
             ->select([
-                'e.employee_code',
-                'e.name',
-                'e.designation',
-                'e.date_of_joining',
-                'e.date_of_birth',
-                'e.gender',
+                'employee_code',
+                'name',
+                'permanent_address as address',
+                'father_name',
+                'designation',
+                'date_of_joining',
+                'date_of_birth',
+                'gender',
             ])
-            ->orderBy('e.employee_code')
+            ->orderBy('employee_code')
             ->get()
-            ->map(fn($row) => (array)$row)
             ->toArray();
 
         return [
