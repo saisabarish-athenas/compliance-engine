@@ -4,12 +4,12 @@
     <meta charset="utf-8">
     <title>FORM 'D' - Equal Remuneration Register</title>
     <style>
-        @page { size: A4 landscape; margin: 10mm; }
+        @page { size: A4 landscape; margin: 8mm; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: Arial, sans-serif; font-size: 11px; color: #000; background: #ccc; }
+        body { font-family: Arial, sans-serif; font-size: 10px; color: #000; background: #fff; }
 
-        .page-wrapper { display: flex; justify-content: center; }
-        .page-container { width: 90%; margin: 20px auto; background: #fff; border: 2px solid #000; padding: 8px 0 0 0; }
+        .page-wrapper { width: 100%; }
+        .page-container { width: 100%; max-width: 100%; background: #fff; border: 2px solid #000; padding: 6px; }
 
         .title-block { text-align: center; margin-bottom: 8px; }
         .title-block .title    { font-weight: bold; font-size: 14px; }
@@ -21,19 +21,16 @@
             border-collapse: collapse;
             table-layout: fixed;
             border: none;
-            font-family: serif;
+            font-family: Arial, sans-serif;
         }
         .form-d td,
         .form-d th {
-            border-top: 0.8px solid #000;
-            border-bottom: 0.8px solid #000;
-            border-left: 0.8px solid #000;
-            border-right: 0.8px solid #000;
-            padding: 4px;
-            font-size: 11px;
+            border: 1px solid #000;
+            padding: 3px 2px;
+            font-size: 9px;
             text-align: center;
             vertical-align: middle;
-            overflow: hidden;
+            word-wrap: break-word;
         }
         /* All 4 outer edges connect to page-container box — no table border of its own */
         .form-d tr td:first-child,
@@ -67,37 +64,36 @@
 
         /* Column header row */
         .form-d tr.header th {
-            font-size: 10px;
-            font-weight: 600;
+            font-size: 8px;
+            font-weight: bold;
             background: transparent;
             white-space: normal;
-            word-break: break-word;
-            line-height: 1.2;
-            padding: 5px 4px;
-            height: 65px;
-            border-top: 1px solid #000;
-            border-bottom: 1px solid #000;
+            word-wrap: break-word;
+            line-height: 1.1;
+            padding: 3px 2px;
+            height: auto;
+            min-height: 50px;
+            border: 1px solid #000;
             text-align: center;
         }
         .form-d tr.header th:nth-child(1),
-        .form-d tr.header th:nth-child(2) { text-align: left; padding-left: 6px; }
+        .form-d tr.header th:nth-child(2) { text-align: left; padding-left: 4px; }
 
         /* Column numbers row */
         .form-d tr.numbers td {
-            font-size: 10px;
-            padding: 3px 0;
-            height: 20px;
+            font-size: 8px;
+            padding: 2px;
+            height: 18px;
             font-weight: bold;
             background: transparent;
             text-align: center;
-            border-top: none;
-            border-bottom: 1px solid #000;
+            border: 1px solid #000;
         }
 
         /* Data rows */
-        .form-d tr.data td       { font-size: 9px; height: 28px; white-space: nowrap; text-overflow: ellipsis; text-align: center; }
-        .form-d tr.data td.left  { text-align: left; padding-left: 6px; }
-        .form-d tr.data td.right { text-align: right; }
+        .form-d tr.data td       { font-size: 8px; height: auto; min-height: 24px; word-wrap: break-word; text-align: center; padding: 2px; }
+        .form-d tr.data td.left  { text-align: left; padding-left: 4px; }
+        .form-d tr.data td.right { text-align: right; padding-right: 4px; }
 
         /* No-data row */
         .form-d tr.no-data td {
@@ -124,8 +120,8 @@
 
         @media print {
             body { background: #fff; margin: 0; }
-            .page-wrapper { display: block; }
-            .page-container { width: 100%; margin: 0; }
+            .page-wrapper { width: 100%; }
+            .page-container { width: 100%; margin: 0; padding: 4px; border: 2px solid #000; }
             table { page-break-inside: avoid; }
         }
     </style>
@@ -142,16 +138,16 @@
 
     <table class="form-d">
         <colgroup>
-            <col style="width:14%">
-            <col style="width:14%">
-            <col style="width:9%">
-            <col style="width:9%">
+            <col style="width:12%">
+            <col style="width:15%">
+            <col style="width:7%">
+            <col style="width:7%">
+            <col style="width:10%">
+            <col style="width:10%">
+            <col style="width:8%">
+            <col style="width:10%">
+            <col style="width:10%">
             <col style="width:11%">
-            <col style="width:11%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:8%">
-            <col style="width:8%">
         </colgroup>
         <tbody>
             {{-- Meta rows: single full-width ruled line per field --}}

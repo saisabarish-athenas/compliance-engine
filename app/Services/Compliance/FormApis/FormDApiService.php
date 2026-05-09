@@ -19,8 +19,8 @@ class FormDApiService extends BaseFormApiService
             ->whereMonth('wa.attendance_date', $month)
             ->select([
                 'we.employee_code',
-                'we.name',
-                'we.designation',
+                DB::raw('COALESCE(we.name, we.employee_name) as name'),
+                DB::raw('COALESCE(we.designation, we.job_title, we.position) as designation'),
                 'wa.attendance_date',
                 'wa.status',
             ])

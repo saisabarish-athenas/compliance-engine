@@ -47,15 +47,12 @@ class FormDGenerator extends BaseFormGenerator
             Log::info("FormDGenerator: Built rows", ['row_count' => count($rows)]);
 
             $result = [
-                'header' => [
-                    'establishment_name' => $rawData['tenant']['name'] ?? '',
-                    'owner_name' => $rawData['tenant']['owner_name'] ?? '',
-                    'month_name' => $this->getMonthName($rawData['meta']['month'] ?? 1),
-                    'year' => $rawData['meta']['year'] ?? 2024,
-                    'tenant' => $rawData['tenant'] ?? [],
-                    'branch' => $rawData['branch'] ?? [],
-                ],
+                'establishment_name' => $rawData['tenant']['name'] ?? '',
+                'owner_name' => $rawData['tenant']['owner_name'] ?? '',
+                'month_name' => $this->getMonthName($rawData['meta']['month'] ?? 1),
+                'year' => $rawData['meta']['year'] ?? 2024,
                 'rows' => $rows,
+                'entries' => $rows,
                 'totals' => $totals,
                 'is_nil' => count($rows) === 0,
             ];
@@ -160,7 +157,7 @@ class FormDGenerator extends BaseFormGenerator
     public function generatePdf(array $formData): string
     {
         $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($this->view, $formData)
-            ->setPaper('A4', 'landscape')
+            ->setPaper('A3', 'landscape')
             ->setOption('isHtml5ParserEnabled', false)
             ->setOption('isRemoteEnabled', false)
             ->setOption('dpi', 96)

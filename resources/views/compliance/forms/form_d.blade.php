@@ -1,261 +1,206 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Form D - Register of Attendance</title>
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
+    <meta charset="UTF-8">
+    <title>FORM D - Register of Attendance</title>
+    <style>
+        @page {
+            size: A3 landscape;
+            margin: 5mm;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 7px;
+            width: 100%;
+            overflow: hidden;
+        }
+        .page-border {
+            border: 1px solid #000;
+            padding: 3px;
+            width: 410mm;
+            max-width: 410mm;
+        }
+        .form-header {
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding: 2px 0;
+            margin-bottom: 2px;
+        }
+        .form-header h1 {
+            font-size: 11px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .form-header h2 {
+            font-size: 9px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .form-header p {
+            font-size: 7px;
+            margin: 0;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2px;
+        }
+        .info-table td {
+            border: 1px solid #000;
+            padding: 2px 4px;
+            font-size: 7px;
+        }
+        .info-label {
+            font-weight: bold;
+            width: 130px;
+            background-color: #f5f5f5;
+        }
 
-body {
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 10px;
-    color: #000;
-}
-
-.form-wrapper {
-    border: 2px solid #000;
-    margin-top: 25px;
-    padding: 10px 12px;
-    width: 95%;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-@media print {
-    .form-wrapper { margin-top: 20px; }
-}
-
-.attendance-table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-    font-family: 'Times New Roman', Times, serif;
-    font-size: 10px;
-}
-
-.attendance-table th,
-.attendance-table td {
-    border: 1px solid #000;
-    padding: 2px 3px;
-    text-align: center;
-    vertical-align: middle;
-    overflow: hidden;
-    white-space: nowrap;
-    line-height: 1.2;
-    box-sizing: border-box;
-}
-
-.attendance-table tr { height: 20px; }
-
-/* Title rows */
-.row-title td {
-    border: none;
-    text-align: center;
-    padding: 2px 0;
-    font-family: 'Times New Roman', Times, serif;
-}
-
-/* Header info rows */
-.header-row td {
-    border: none;
-    vertical-align: middle;
-    line-height: 1.4;
-    height: 22px;
-}
-
-.label-cell {
-    text-align: left;
-    font-weight: 600;
-    padding: 4px 6px;
-    white-space: nowrap;
-    font-size: 11px;
-}
-
-.value-cell {
-    text-align: left;
-    padding: 4px 6px 4px 10px;
-    font-size: 11px;
-}
-
-/* Main header row */
-.main-header-row th {
-    background-color: #d9e7f5;
-    font-weight: bold;
-    font-size: 8px;
-    text-align: center;
-    vertical-align: middle;
-    height: 32px;
-    white-space: normal;
-    line-height: 1.3;
-    padding: 2px 1px;
-}
-
-/* Day numbers row */
-.day-row th {
-    background-color: #e8f4f8;
-    font-weight: bold;
-    font-size: 8px;
-    text-align: center;
-    vertical-align: middle;
-    height: 16px;
-    padding: 1px 0;
-}
-
-/* Data rows */
-.attendance-table tbody td { height: 18px; padding: 1px 2px; font-size: 10px; }
-.attendance-table tbody td.day-cell { padding: 0; font-size: 9px; }
-
-.td-name,  .th-name  { text-align: left !important; padding-left: 4px !important; font-size: 10px; }
-.td-desig, .th-desig { text-align: left !important; padding-left: 4px !important; font-size: 10px; }
-
-/* Weekly off highlight */
-.wo { background-color: #f4a742; font-weight: bold; }
-
-/* Total row */
-.tr-total td {
-    font-weight: bold;
-    background-color: #f0f0f0;
-    border-top: 2px solid #000;
-    text-align: center;
-    padding: 2px 3px;
-}
-
-.tr-total td:first-child { text-align: left; padding-left: 6px; }
-
-/* Signature block */
-.signature-block {
-    margin-top: 40px;
-    height: 100px;
-    text-align: center;
-    position: relative;
-}
-
-.signature-text {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    font-size: 11px;
-}
-
-@media print {
-    .signature-block { margin-top: 30px; height: 90px; }
-}
-</style>
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 7px;
+            table-layout: fixed;
+        }
+        .attendance-table th,
+        .attendance-table td {
+            border: 1px solid #000;
+            padding: 2px;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+        .attendance-table thead th {
+            background-color: #d0e8f7;
+            font-weight: bold;
+            font-size: 7px;
+            line-height: 1.2;
+        }
+        .col-sno { width: 30px; max-width: 30px; }
+        .col-name { width: 180px; max-width: 180px; min-width: 180px; text-align: left !important; padding: 3px 5px !important; font-size: 7px; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+        .col-designation { width: 120px; max-width: 120px; min-width: 120px; text-align: left !important; padding: 3px 5px !important; font-size: 7px; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
+        .col-date { width: 18px; max-width: 18px; font-size: 6.5px; padding: 2px 1px !important; }
+        .col-summary { width: 35px; max-width: 35px; font-size: 6.5px; padding: 2px 1px !important; }
+        .col-remarks { width: 35px; max-width: 35px; font-size: 6.5px; padding: 2px 1px !important; }
+        .date-header {
+            background-color: #b8d9f0 !important;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #f0f0f0;
+        }
+        .signature-area {
+            margin-top: 15px;
+            text-align: center;
+            font-size: 7px;
+        }
+    </style>
 </head>
 <body>
+    <div class="page-border">
+        <div class="form-header">
+            <h1>FORM D</h1>
+            <h2>REGISTER OF ATTENDANCE</h2>
+            <p>[See rule 2(1)]</p>
+        </div>
 
-<div class="form-wrapper">
-<table class="attendance-table">
-    <colgroup>
-        <col style="width:3%">
-        <col style="width:13%">
-        <col style="width:9%">
-        <col span="31" style="width:1.45%">
-        <col style="width:5%">
-        <col style="width:5%">
-        <col style="width:5%">
-        <col style="width:5%">
-        <col style="width:5%">
-        <col style="width:5%">
-        <col style="width:4%">
-    </colgroup>
+        <table class="info-table">
+            <tr>
+                <td class="info-label">Name of the Establishment</td>
+                <td>{{ $establishment_name ?? 'M/S. MAK47' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Name of Owner</td>
+                <td>{{ $owner_name ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">For the Period From</td>
+                <td>{{ $month_name ?? 'December' }} {{ $year ?? '' }}</td>
+            </tr>
+        </table>
 
-    <thead>
-        {{-- Title --}}
-        <tr class="row-title">
-            <td colspan="41" style="font-size:13px; font-weight:bold; letter-spacing:1px; padding:4px 0 2px;">FORM D</td>
-        </tr>
-        <tr class="row-title">
-            <td colspan="41" style="font-size:11px; font-weight:bold; padding-bottom:2px;">REGISTER OF ATTENDANCE</td>
-        </tr>
-        <tr class="row-title">
-            <td colspan="41" style="font-size:9px; padding-bottom:4px;">[See Rule 2(1) of the Tamil Nadu Shops and Establishments Rules]</td>
-        </tr>
+        <table class="attendance-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="col-sno">S.NO</th>
+                    <th rowspan="2" class="col-name">NAME</th>
+                    <th rowspan="2" class="col-designation">DESIGNATION</th>
+                    <th colspan="31" class="date-header">DATE</th>
+                    <th rowspan="2" class="col-summary">Total<br>Days</th>
+                    <th rowspan="2" class="col-summary">Paid<br>Holidays</th>
+                    <th rowspan="2" class="col-summary">Paid<br>Leave</th>
+                    <th rowspan="2" class="col-summary">Weekly<br>Off</th>
+                    <th rowspan="2" class="col-summary">ABSENT<br>Days</th>
+                    <th rowspan="2" class="col-summary">Total<br>Days</th>
+                    <th rowspan="2" class="col-remarks">Remarks</th>
+                </tr>
+                <tr>
+                    @for($day = 1; $day <= 31; $day++)
+                        <th class="col-date date-header">{{ $day }}</th>
+                    @endfor
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($rows ?? $entries ?? [] as $index => $row)
+                    <tr>
+                        <td class="col-sno">{{ $index + 1 }}</td>
+                        <td class="col-name">{{ $row['employee_name'] ?? '' }}</td>
+                        <td class="col-designation">{{ $row['designation'] ?? '' }}</td>
+                        @for($day = 1; $day <= 31; $day++)
+                            <td class="col-date">{{ $row['day_' . $day] ?? '' }}</td>
+                        @endfor
+                        <td class="col-summary">{{ $row['total_present'] ?? '0' }}</td>
+                        <td class="col-summary">{{ $row['paid_holidays'] ?? '0' }}</td>
+                        <td class="col-summary">{{ $row['paid_leave'] ?? '0' }}</td>
+                        <td class="col-summary">{{ $row['weekly_off'] ?? '0' }}</td>
+                        <td class="col-summary">{{ $row['absent_days'] ?? '0' }}</td>
+                        <td class="col-summary">{{ $row['total_days'] ?? '0' }}</td>
+                        <td class="col-remarks">{{ $row['remarks'] ?? '-' }}</td>
+                    </tr>
+                @empty
+                    @for($i = 1; $i <= 9; $i++)
+                        <tr>
+                            <td class="col-sno">{{ $i }}</td>
+                            <td class="col-name"></td>
+                            <td class="col-designation"></td>
+                            @for($day = 1; $day <= 31; $day++)
+                                <td class="col-date"></td>
+                            @endfor
+                            <td class="col-summary">0</td>
+                            <td class="col-summary">0</td>
+                            <td class="col-summary">0</td>
+                            <td class="col-summary">0</td>
+                            <td class="col-summary">0</td>
+                            <td class="col-summary">0</td>
+                            <td class="col-remarks">-</td>
+                        </tr>
+                    @endfor
+                @endforelse
+                <tr class="total-row">
+                    <td colspan="3" style="text-align: center;">TOTAL</td>
+                    @for($day = 1; $day <= 31; $day++)
+                        <td class="col-date"></td>
+                    @endfor
+                    <td class="col-summary">{{ $totals['total_present'] ?? '0' }}</td>
+                    <td class="col-summary">{{ $totals['paid_holidays'] ?? '0' }}</td>
+                    <td class="col-summary">{{ $totals['paid_leave'] ?? '0' }}</td>
+                    <td class="col-summary">{{ $totals['weekly_off'] ?? '0' }}</td>
+                    <td class="col-summary">{{ $totals['absent_days'] ?? '0' }}</td>
+                    <td class="col-summary">{{ $totals['total_days'] ?? '0' }}</td>
+                    <td class="col-remarks">-</td>
+                </tr>
+            </tbody>
+        </table>
 
-        {{-- Establishment info --}}
-        <tr class="header-row">
-            <td colspan="8" class="label-cell">Name of the Establishment</td>
-            <td colspan="33" class="value-cell">{{ $header['establishment_name'] ?? '' }}</td>
-        </tr>
-        <tr class="header-row">
-            <td colspan="8" class="label-cell">Name of Owner / Manager</td>
-            <td colspan="33" class="value-cell">{{ $header['owner_name'] ?? '' }}</td>
-        </tr>
-        <tr class="header-row">
-            <td colspan="8" class="label-cell">For the Period</td>
-            <td colspan="33" class="value-cell">{{ $header['month_name'] ?? '' }} {{ $header['year'] ?? '' }}</td>
-        </tr>
-
-        {{-- Spacer --}}
-        <tr><td colspan="41" style="border:none; height:6px;"></td></tr>
-
-        {{-- Grid header: rowspan for left+right, colspan for DATE --}}
-        <tr class="main-header-row">
-            <th rowspan="2">S.No</th>
-            <th rowspan="2" class="th-name">Name of Employee</th>
-            <th rowspan="2" class="th-desig">Designation</th>
-            <th colspan="31">DATE</th>
-            <th rowspan="2">Total<br>Present<br>Days</th>
-            <th rowspan="2">Paid<br>Holi-<br>days</th>
-            <th rowspan="2">Paid<br>Leave</th>
-            <th rowspan="2">Weekly<br>Off</th>
-            <th rowspan="2">Absent<br>Days</th>
-            <th rowspan="2">Total<br>Days</th>
-            <th rowspan="2">Remarks</th>
-        </tr>
-        <tr class="day-row">
-            @for ($d = 1; $d <= 31; $d++)
-                <th>{{ $d }}</th>
-            @endfor
-        </tr>
-    </thead>
-
-    <tbody>
-        @forelse ($rows ?? [] as $i => $row)
-        <tr>
-            <td>{{ $i + 1 }}</td>
-            <td class="td-name">{{ $row['employee_name'] ?? '' }}</td>
-            <td class="td-desig">{{ $row['designation'] ?? '' }}</td>
-            @for ($d = 1; $d <= 31; $d++)
-                @php $m = $row['day_' . $d] ?? ''; @endphp
-                @if (in_array($m, ['W/O', 'WO']))
-                    <td class="wo day-cell">W/O</td>
-                @else
-                    <td class="day-cell">{{ $m }}</td>
-                @endif
-            @endfor
-            <td>{{ $row['total_present'] ?? 0 }}</td>
-            <td>{{ $row['paid_holidays'] ?? 0 }}</td>
-            <td>{{ $row['paid_leave']    ?? 0 }}</td>
-            <td>{{ $row['weekly_off']   ?? 0 }}</td>
-            <td>{{ $row['absent_days']  ?? 0 }}</td>
-            <td>{{ $row['total_days']   ?? 0 }}</td>
-            <td>{{ $row['remarks']      ?? '' }}</td>
-        </tr>
-        @empty
-        <tr>
-            <td colspan="41" style="text-align:center; padding:4pt;">No records found for this period.</td>
-        </tr>
-        @endforelse
-
-        {{-- Totals --}}
-        <tr class="tr-total">
-            <td colspan="34">TOTAL</td>
-            <td>{{ $totals['total_present'] ?? 0 }}</td>
-            <td>{{ $totals['paid_holidays'] ?? 0 }}</td>
-            <td>{{ $totals['paid_leave']    ?? 0 }}</td>
-            <td>{{ $totals['weekly_off']   ?? 0 }}</td>
-            <td>{{ $totals['absent_days']  ?? 0 }}</td>
-            <td>{{ $totals['total_days']   ?? 0 }}</td>
-            <td>—</td>
-        </tr>
-
-    </tbody>
-</table>
-
-<div class="signature-block"></div>
-
-</div>
+        <div class="signature-area">
+            <div style="margin-top: 30px;">_______________________</div>
+            <div>Signature</div>
+        </div>
+    </div>
 </body>
 </html>

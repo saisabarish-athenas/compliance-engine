@@ -4,28 +4,27 @@
     <meta charset="UTF-8">
     <title>FORM C - Register of Loan / Recoveries / Damage / Loss / Fine / Advance</title>
     <style>
-        @page { size: A4 landscape; margin: 10mm; }
+        @page { size: A4 landscape; margin: 8mm; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: Arial, sans-serif; font-size: 8px; color: #000; background: #ccc; }
-        .page-wrapper { display: block; padding: 15px; box-sizing: border-box; }
-        .page-container { width: 100%; background: #fff; border: 2px solid #000; padding: 20px 25px 25px 25px; box-sizing: border-box; overflow: hidden; }
+        .page-wrapper { padding: 8px; }
+        .page-container { background: #fff; border: 2px solid #000; padding: 15px 10px 20px 10px; }
         .form-title { text-align: center; font-weight: bold; font-size: 11px; line-height: 1.6; margin-bottom: 16px; }
         .header-block { margin: 10px 0 14px 0; }
         .header-block .row { display: flex; margin-bottom: 10px; font-size: 9px; }
         .header-block .row .label { width: 200px; flex-shrink: 0; }
         .header-block .row .value { padding-left: 40px; flex: 1; }
-        table.reg-table { width: 100%; border-collapse: collapse; table-layout: fixed; max-width: 100%; }
-        table.reg-table th, table.reg-table td { border: 1px solid #000; font-size: 7px; padding: 2px 1px; text-align: center; vertical-align: middle; overflow: hidden; }
-        table.reg-table th { font-weight: bold; white-space: normal; word-break: break-word; line-height: 1.3; height: 40px; }
+        .table-wrap { width: 100%; overflow: visible; }
+        table.reg-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        table.reg-table th, table.reg-table td { border: 1px solid #000; font-size: 7px; padding: 2px 1px; text-align: center; vertical-align: middle; }
+        table.reg-table th { font-weight: bold; white-space: normal; word-break: break-word; line-height: 1.3; height: 50px; }
         table.reg-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        table.reg-table td.left { text-align: left; padding: 2px 2px; font-size: 6.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        table.reg-table td.left { text-align: left; padding: 2px 2px; font-size: 6.5px; }
         table.reg-table tr.col-nums td { font-size: 6.5px; font-weight: bold; background: #f5f5f5; padding: 2px 0; }
         .footer-note { font-size: 8px; margin-top: 6px; }
-        .signature-box { margin-top: 20px; text-align: right; font-size: 8px; }
         @media print {
             body { background: #fff; }
             .page-wrapper { padding: 0; }
-            .page-container { width: 100%; border: 2px solid #000; }
         }
     </style>
 </head>
@@ -41,22 +40,23 @@
         <div class="row"><span class="label">Name of the Establishment :-</span><span class="value">{{ $establishment_name ?? '' }}</span></div>
         <div class="row"><span class="label">Name of Owner :-</span><span class="value">{{ $owner_name ?? '' }}</span></div>
     </div>
+    <div class="table-wrap">
     <table class="reg-table">
         <thead>
             <tr>
                 <th style="width:5%">Sr. No.</th>
-                <th style="width:16%">Name</th>
-                <th style="width:11%">Recovery Type<br>(Damage/loss/fine/<br>advance/loans)</th>
+                <th style="width:14%">Name</th>
+                <th style="width:9%">Recovery Type<br>(Damage/loss/fine/<br>advance/loans)</th>
                 <th style="width:7%">Particulars</th>
                 <th style="width:8%">Date of<br>damage/loss *</th>
                 <th style="width:6%">Amount</th>
                 <th style="width:8%">Whether show<br>cause issued*</th>
-                <th style="width:11%">Explanation heard in<br>presence of *</th>
-                <th style="width:7%">Number of<br>Instalments</th>
+                <th style="width:9%">Explanation heard in<br>presence of *</th>
+                <th style="width:6%">Number of<br>Instalments</th>
                 <th style="width:7%">First<br>Month/Year</th>
                 <th style="width:7%">Last<br>Month/Year</th>
-                <th style="width:8%">Date of Complete<br>Recovery</th>
-                <th style="width:5%">Remarks</th>
+                <th style="width:8%">Date of<br>Complete<br>Recovery</th>
+                <th style="width:6%">Remarks</th>
             </tr>
             <tr class="col-nums">
                 <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
@@ -85,6 +85,7 @@
             @endforelse
         </tbody>
     </table>
+    </div>
     <div style="height: 30px;"></div>
     <div class="footer-note">*Applicable only in case of damage/loss/fine</div>
 
