@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>FORM XX - Register of Deductions for Damage or Loss</title>
+    <style>
+        @page {
+            size: A4 portrait;
+            margin: 10mm;
+        }
+        * {
+            margin: 0;
+            line-height: 1;
+            padding: 1.5px 2px;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10px;
+            line-height: 1;
+            color: #000;
+        }
+        .form-container {
+            border: 1px solid #000;
+            padding: 0;
+        }
+        .form-header {
+            text-align: center;
+            border-bottom: 1px solid #000;
+            padding: 4px 0;
+        }
+        .form-header-title {
+            font-size: 10px;
+            font-weight: bold;
+            margin: 2px 0;
+        }
+        .form-header-subtitle {
+            font-size: 10px;
+            margin: 1px 0;
+        }
+        .info-grid {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .info-grid tr {
+            border-bottom: 1px solid #000;
+        }
+        .info-grid td {
+            border-right: 1px solid #000;
+            padding: 2px 4px;
+            font-size: 10px;
+            vertical-align: top;
+        }
+        .info-grid td:last-child {
+            border-right: none;
+        }
+        .info-label {
+            font-weight: bold;
+            width: 35%;
+        }
+        .info-value {
+            width: 65%;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 10px;
+        }
+        .data-table th {
+            border: 1px solid #000;
+            padding: 2px 3px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 10px;
+            vertical-align: middle;
+            word-wrap: break-word;
+            line-height: 1.2;
+        }
+        .data-table td {
+            border: 1px solid #000;
+            padding: 2px 3px;
+            font-size: 10px;
+            vertical-align: top;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .nil-row {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px 3px;
+        }
+        .footer-note {
+            border-top: 1px solid #000;
+            border-bottom: 1px solid #000;
+            padding: 2px 4px;
+            font-size: 10px;
+            text-align: center;
+        }
+        .footer-section {
+            border-top: 1px solid #000;
+            padding: 30px 10px;
+            text-align: right;
+            font-size: 10px;
+            min-height: 80px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="form-header">
+            <div class="form-header-title">FORM XX</div>
+            <div class="form-header-subtitle">[See Rule 78(2)(d)]</div>
+            <div class="form-header-subtitle">Register of Deductions for Damage or Loss</div>
+        </div>
+
+        <table class="info-grid">
+            <tr>
+                <td class="info-label">NAME AND ADDRESS OF CONTRACTOR :</td>
+                <td class="info-value">{{ $header['contractor_name'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">NATURE AND LOCATION OF WORK :</td>
+                <td class="info-value">{{ $header['work_nature'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
+                <td class="info-value">{{ $header['establishment_name'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
+                <td class="info-value">{{ $header['principal_employer'] ?? 'N/A' }}</td>
+            </tr>
+            <tr>
+                <td class="info-label">Month & Year:</td>
+                <td class="info-value">{{ $header['period'] ?? 'N/A' }}</td>
+            </tr>
+        </table>
+
+        @if($is_nil)
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">1</th>
+                        <th style="width: 12%;">2</th>
+                        <th style="width: 12%;">3</th>
+                        <th style="width: 10%;">4</th>
+                        <th style="width: 10%;">5</th>
+                        <th style="width: 8%;">6</th>
+                        <th style="width: 10%;">7</th>
+                        <th style="width: 12%;">8</th>
+                        <th style="width: 8%;">9</th>
+                        <th style="width: 6%;">10</th>
+                        <th style="width: 8%;">11</th>
+                        <th style="width: 8%;">12</th>
+                        <th style="width: 5%;">13</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 5%;">SL NO</th>
+                        <th style="width: 12%;">Name of workmen</th>
+                        <th style="width: 12%;">Father's/Husband's name</th>
+                        <th style="width: 10%;">Designation/Nature of employment</th>
+                        <th style="width: 10%;">Particulars of damage or loss</th>
+                        <th style="width: 8%;">Date of damage/loss</th>
+                        <th style="width: 10%;">Whether workmen showed cause against deduction</th>
+                        <th style="width: 12%;">Name of person in whose presence employee's explanation was heard</th>
+                        <th style="width: 8%;">Amount of deduction imposed</th>
+                        <th style="width: 6%;">No. of instalments</th>
+                        <th style="width: 8%;">First Month/Year</th>
+                        <th style="width: 8%;">Last Month/Year</th>
+                        <th style="width: 5%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="13" class="nil-row">Nil for the month of {{ strtoupper($header['period'] ?? '') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        @else
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th style="width: 5%;">1</th>
+                        <th style="width: 12%;">2</th>
+                        <th style="width: 12%;">3</th>
+                        <th style="width: 10%;">4</th>
+                        <th style="width: 10%;">5</th>
+                        <th style="width: 8%;">6</th>
+                        <th style="width: 10%;">7</th>
+                        <th style="width: 12%;">8</th>
+                        <th style="width: 8%;">9</th>
+                        <th style="width: 6%;">10</th>
+                        <th style="width: 8%;">11</th>
+                        <th style="width: 8%;">12</th>
+                        <th style="width: 5%;">13</th>
+                    </tr>
+                    <tr>
+                        <th style="width: 5%;">SL NO</th>
+                        <th style="width: 12%;">Name of workmen</th>
+                        <th style="width: 12%;">Father's/Husband's name</th>
+                        <th style="width: 10%;">Designation/Nature of employment</th>
+                        <th style="width: 10%;">Particulars of damage or loss</th>
+                        <th style="width: 8%;">Date of damage/loss</th>
+                        <th style="width: 10%;">Whether workmen showed cause against deduction</th>
+                        <th style="width: 12%;">Name of person in whose presence employee's explanation was heard</th>
+                        <th style="width: 8%;">Amount of deduction imposed</th>
+                        <th style="width: 6%;">No. of instalments</th>
+                        <th style="width: 8%;">First Month/Year</th>
+                        <th style="width: 8%;">Last Month/Year</th>
+                        <th style="width: 5%;">Remarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($rows as $index => $row)
+                    <tr>
+                        <td class="text-center">{{ $index + 1 }}</td>
+                        <td>{{ $row['employee_name'] ?? '' }}</td>
+                        <td>{{ $row['father_name'] ?? '' }}</td>
+                        <td>{{ $row['designation'] ?? '' }}</td>
+                        <td>{{ $row['damage_particulars'] ?? '' }}</td>
+                        <td class="text-center">{{ $row['damage_date'] ?? '' }}</td>
+                        <td class="text-center">{{ $row['showed_cause'] ?? '' }}</td>
+                        <td>{{ $row['witness_name'] ?? '' }}</td>
+                        <td class="text-right">{{ number_format($row['deduction_amount'] ?? 0, 2) }}</td>
+                        <td class="text-center">{{ $row['instalments'] ?? '' }}</td>
+                        <td class="text-center">{{ $row['first_month'] ?? '' }}</td>
+                        <td class="text-center">{{ $row['last_month'] ?? '' }}</td>
+                        <td>{{ $row['remarks'] ?? '' }}</td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
+
+        <div class="footer-note">
+            *Applicable only in case of damage/loss/fine
+            <span style="float: right;">Nil for the month of {{ strtoupper($header['period'] ?? '') }}</span>
+        </div>
+
+        <div class="footer-section">
+            <div>Seal Signature of the Contractor</div>
+        </div>
+    </div>
+</body>
+</html>
