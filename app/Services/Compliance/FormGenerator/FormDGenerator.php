@@ -85,59 +85,89 @@ class FormDGenerator extends BaseFormGenerator
     {
         $row = [
             'employee_name' => $records[0]['name'] ?? '',
-            'designation' => '',
-            'remarks' => '',
+            'designation'   => $records[0]['designation'] ?? '',
+            'remarks'       => '',
         ];
 
+        // Default all 31 days to 'A'
         for ($day = 1; $day <= 31; $day++) {
-            $row["day_{$day}"] = '';
+            $row["day_{$day}"] = 'A';
         }
 
         $counts = [
-            'present' => 0,
-            'holiday' => 0,
-            'leave' => 0,
+            'present'    => 0,
+            'holiday'    => 0,
+            'leave'      => 0,
             'weekly_off' => 0,
-            'absent' => 0,
+            'absent'     => 0,
+            'half_day'   => 0,
         ];
 
         foreach ($records as $record) {
-            $date = $record['attendance_date'] ?? '';
-            $status = strtolower($record['status'] ?? '');
+            $date   = $record['attendance_date'] ?? '';
+            $status = strtolower(trim($record['status'] ?? ''));
 
             if ($date) {
                 try {
-                    $day = (int)date('d', strtotime($date));
-                    $row["day_{$day}"] = $this->formatStatus($status);
+                    $day = (int) date('d', strtotime($date));
+                    if ($day >= 1 && $day <= 31) {
+                        $row["day_{$day}"] = $this->formatStatus($status);
+                    }
                 } catch (\Exception $e) {
                     Log::warning("FormDGenerator: Error parsing date {$date}", ['error' => $e->getMessage()]);
                 }
             }
 
-            if (isset($counts[$status])) {
-                $counts[$status]++;
-            }
+            // Map normalised status to count bucket
+            $bucket = match($status) {
+                'present', 'p'                          => 'present',
+                'absent', 'a'                           => 'absent',
+                'half_day', 'halfday', 'hd', 'half day' => 'half_day',
+                'leave', 'pl', 'paid_leave'             => 'leave',
+                'holiday', 'ph', 'paid_holiday'         => 'holiday',
+                'weekly_off', 'weeklyoff', 'wo', 'w/o'  => 'weekly_off',
+                default                                 => 'absent',
+            };
+            $counts[$bucket]++;
         }
 
-        $row['total_present'] = $counts['present'];
+        $presentDays = $counts['present'] + ($counts['half_day'] * 0.5);
+
+        $row['total_present'] = $presentDays;
         $row['paid_holidays'] = $counts['holiday'];
-        $row['paid_leave'] = $counts['leave'];
-        $row['weekly_off'] = $counts['weekly_off'];
-        $row['absent_days'] = $counts['absent'];
-        $row['total_days'] = $counts['present'] + $counts['leave'] + $counts['weekly_off'] + $counts['holiday'];
+        $row['paid_leave']    = $counts['leave'];
+        $row['weekly_off']    = $counts['weekly_off'];
+        $row['absent_days']   = $counts['absent'] + ($counts['half_day'] * 0.5);
+        $row['total_days']    = $counts['present'] + $counts['half_day'] + $counts['leave']
+                              + $counts['weekly_off'] + $counts['holiday'] + $counts['absent'];
 
         return $row;
     }
 
     private function formatStatus(string $status): string
     {
-        return match(strtolower($status)) {
-            'present' => 'P',
-            'absent' => 'A',
-            'leave' => 'PL',
-            'holiday' => 'PH',
-            default => ''
+        return match(strtolower(trim($status))) {
+            'present', 'p'                           => 'P',
+            'absent', 'a'                            => 'A',
+            'half_day', 'halfday', 'hd', 'half day'  => 'HD',
+            'leave', 'pl', 'paid_leave'              => 'PL',
+            'holiday', 'ph', 'paid_holiday'          => 'PH',
+            'weekly_off', 'weeklyoff', 'wo', 'w/o'   => 'W/O',
+            default                                  => 'A',
         };
+    }
+
+    public function generatePdf(array $formData): string
+    {
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView($this->view, $formData)
+            ->setPaper('A4', 'landscape')
+            ->setOption('isHtml5ParserEnabled', false)
+            ->setOption('isRemoteEnabled', false)
+            ->setOption('dpi', 96)
+            ->setOption('defaultFont', 'DejaVu Sans')
+            ->setOption('chroot', [public_path()]);
+
+        return $pdf->output();
     }
 
     private function getMonthName(int $month): string

@@ -11,37 +11,65 @@ class FormXXIIApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('workforce_payroll_entry as pe')
-            ->join('workforce_employee as e', 'e.id', '=', 'pe.employee_id')
-            ->join('workforce_payroll_cycle as pc', 'pc.id', '=', 'pe.payroll_cycle_id')
+        // Step 1: all employees for this branch — no joins that can drop rows
+        $employees = DB::table('workforce_employee as e')
             ->where('e.tenant_id', $tenantId)
             ->where('e.branch_id', $branchId)
-            ->whereYear('pc.period_from', $year)
-            ->whereMonth('pc.period_from', $month)
-            ->where('pe.advances', '>', 0)
+            ->whereNull('e.deleted_at')
             ->select([
+                'e.id',
+                'e.employee_code',
                 'e.name as employee_name',
                 'e.father_name',
                 'e.designation',
-                'pc.period_from as advance_date',
-                'pe.advances as advance_amount',
-                DB::raw('"Salary Advance" as purpose'),
-                DB::raw('1 as installments'),
-                'pc.period_from as installment_repaid',
-                'pc.period_from as last_installment_date',
+                'e.basic_salary',
             ])
             ->orderBy('e.name')
-            ->get()
-            ->map(fn($row) => (array)$row)
-            ->toArray();
+            ->get();
+
+        // Step 2: payroll cycle for the period (may not exist)
+        $cycleId = DB::table('workforce_payroll_cycle')
+            ->where('tenant_id', $tenantId)
+            ->whereYear('period_from', $year)
+            ->whereMonth('period_from', $month)
+            ->value('id');
+
+        // Step 3: payroll entries keyed by employee_id (only if cycle exists)
+        $payrollMap = [];
+        if ($cycleId && $employees->isNotEmpty()) {
+            DB::table('workforce_payroll_entry')
+                ->where('payroll_cycle_id', $cycleId)
+                ->whereIn('employee_id', $employees->pluck('id'))
+                ->select(['employee_id', 'advances', 'payment_date'])
+                ->get()
+                ->each(function ($entry) use (&$payrollMap) {
+                    $payrollMap[$entry->employee_id] = (array) $entry;
+                });
+        }
+
+        // Step 4: merge into records array
+        $records = [];
+        foreach ($employees as $emp) {
+            $emp     = (array) $emp;
+            $payroll = $payrollMap[$emp['id']] ?? [];
+
+            $records[] = array_merge($emp, [
+                'advance_amount'        => (float) ($payroll['advances']    ?? 0),
+                'advance_date'          => $payroll['payment_date']         ?? null,
+                'purpose'               => 'Salary Advance',
+                'installments'          => 1,
+                'installment_repaid'    => null,
+                'last_installment_date' => null,
+            ]);
+        }
 
         return [
-            'records' => $rows,
-            'meta' => [
+            'records' => $records,
+            'meta'    => [
                 'tenant_id' => $tenantId,
                 'branch_id' => $branchId,
-                'month' => $month,
-                'year' => $year,
+                'month'     => $month,
+                'year'      => $year,
             ],
             'tenant' => $this->getTenantDetails($tenantId),
             'branch' => $this->getBranchDetails($branchId, $tenantId),

@@ -4,164 +4,91 @@
     <meta charset="UTF-8">
     <title>FORM C - Register of Loan / Recoveries / Damage / Loss / Fine / Advance</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            padding: 15px;
-            font-size: 11px;
-        }
-        .form-container {
-            border: 2px solid black;
-            padding: 15px;
-            width: 100%;
-        }
-        .form-header {
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 12px;
-        }
-        .form-header div {
-            margin: 3px 0;
-            font-weight: bold;
-        }
-        .establishment-info {
-            margin-bottom: 15px;
-            font-size: 11px;
-        }
-        .info-row {
-            display: flex;
-            margin-bottom: 8px;
-        }
-        .info-label {
-            font-weight: bold;
-            width: 25%;
-        }
-        .info-value {
-            width: 75%;
-            border-bottom: 1px solid black;
-            padding: 2px 5px;
-        }
-        .register-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid black;
-            font-size: 11px;
-            margin-bottom: 20px;
-        }
-        .register-table th,
-        .register-table td {
-            border: 1px solid black;
-            padding: 6px 4px;
-            text-align: left;
-            vertical-align: top;
-        }
-        .register-table th {
-            font-weight: bold;
-            background-color: #fff;
-            word-wrap: break-word;
-            line-height: 1.2;
-            font-size: 10px;
-            height: 35px;
-        }
-        .register-table td {
-            height: 25px;
-            word-wrap: break-word;
-        }
-        .col-1 { width: 4%; text-align: center; }
-        .col-2 { width: 8%; }
-        .col-3 { width: 10%; }
-        .col-4 { width: 8%; }
-        .col-5 { width: 8%; }
-        .col-6 { width: 7%; }
-        .col-7 { width: 8%; }
-        .col-8 { width: 8%; }
-        .col-9 { width: 7%; }
-        .col-10 { width: 7%; }
-        .col-11 { width: 7%; }
-        .col-12 { width: 8%; }
-        .col-13 { width: 8%; }
-        .footer-note {
-            font-size: 10px;
-            margin-bottom: 20px;
-        }
-        .signature-space {
-            margin-top: 40px;
-            height: 60px;
+        @page { size: A4 landscape; margin: 10mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; font-size: 8px; color: #000; background: #ccc; }
+        .page-wrapper { display: block; padding: 15px; box-sizing: border-box; }
+        .page-container { width: 100%; background: #fff; border: 2px solid #000; padding: 20px 25px 25px 25px; box-sizing: border-box; overflow: hidden; }
+        .form-title { text-align: center; font-weight: bold; font-size: 11px; line-height: 1.6; margin-bottom: 16px; }
+        .header-block { margin: 10px 0 14px 0; }
+        .header-block .row { display: flex; margin-bottom: 10px; font-size: 9px; }
+        .header-block .row .label { width: 200px; flex-shrink: 0; }
+        .header-block .row .value { padding-left: 40px; flex: 1; }
+        table.reg-table { width: 100%; border-collapse: collapse; table-layout: fixed; max-width: 100%; }
+        table.reg-table th, table.reg-table td { border: 1px solid #000; font-size: 7px; padding: 2px 1px; text-align: center; vertical-align: middle; overflow: hidden; }
+        table.reg-table th { font-weight: bold; white-space: normal; word-break: break-word; line-height: 1.3; height: 40px; }
+        table.reg-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        table.reg-table td.left { text-align: left; padding: 2px 2px; font-size: 6.5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        table.reg-table tr.col-nums td { font-size: 6.5px; font-weight: bold; background: #f5f5f5; padding: 2px 0; }
+        .footer-note { font-size: 8px; margin-top: 6px; }
+        .signature-box { margin-top: 20px; text-align: right; font-size: 8px; }
+        @media print {
+            body { background: #fff; }
+            .page-wrapper { padding: 0; }
+            .page-container { width: 100%; border: 2px solid #000; }
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-header">
-            <div>FORM C</div>
-            <div>REGISTER OF LOAN / RECOVERIES / Damage / loss / fine / advance</div>
-            <div>[See rule 2(1)]</div>
-        </div>
-
-        <div class="establishment-info">
-            <div class="info-row">
-                <div class="info-label">Name of the Establishment :-</div>
-                <div class="info-value">{{ $establishment_name ?? '' }}</div>
-            </div>
-            <div class="info-row">
-                <div class="info-label">Name of Owner :-</div>
-                <div class="info-value">{{ $owner_name ?? '' }}</div>
-            </div>
-        </div>
-
-        <table class="register-table">
-            <thead>
-                <tr>
-                    <th class="col-1">Sr. No</th>
-                    <th class="col-2">Name</th>
-                    <th class="col-3">Recovery Type (damage / loss / fine / advance / loans)</th>
-                    <th class="col-4">Particulars</th>
-                    <th class="col-5">Date of damage / loss</th>
-                    <th class="col-6">Amount</th>
-                    <th class="col-7">Whether show cause issued</th>
-                    <th class="col-8">Explanation heard in presence of</th>
-                    <th class="col-9">Number of Instalments</th>
-                    <th class="col-10">First Month / Year</th>
-                    <th class="col-11">Last Month / Year</th>
-                    <th class="col-12">Date of Complete Recovery</th>
-                    <th class="col-13">Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if(!empty($rows) && count($rows) > 0)
-                    @foreach($rows as $index => $row)
-                        <tr>
-                            <td class="col-1">{{ $index + 1 }}</td>
-                            <td class="col-2">{{ $row['employee_name'] ?? '' }}</td>
-                            <td class="col-3">{{ $row['recovery_type'] ?? '' }}</td>
-                            <td class="col-4">{{ $row['particulars'] ?? '' }}</td>
-                            <td class="col-5">{{ $row['damage_date'] ?? '' }}</td>
-                            <td class="col-6">{{ $row['amount'] ?? '' }}</td>
-                            <td class="col-7">{{ $row['show_cause'] ?? '' }}</td>
-                            <td class="col-8">{{ $row['explanation'] ?? '' }}</td>
-                            <td class="col-9">{{ $row['installments'] ?? '' }}</td>
-                            <td class="col-10">{{ $row['first_month'] ?? '' }}</td>
-                            <td class="col-11">{{ $row['last_month'] ?? '' }}</td>
-                            <td class="col-12">{{ $row['recovery_date'] ?? '' }}</td>
-                            <td class="col-13">{{ $row['remarks'] ?? '' }}</td>
-                        </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="13" style="text-align:center;">No records found</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
-
-        <div class="footer-note">
-            *Applicable only in case of damage/loss/fine
-        </div>
-
-        <div class="signature-space"></div>
+<div class="page-wrapper">
+<div class="page-container">
+    <div class="form-title">
+        FORM C<br>
+        REGISTER OF LOAN / RECOVERIES / Damage / loss / fine / advance<br>
+        <span style="font-weight:normal; font-size:9px;">[See rule 2(1)]</span>
     </div>
+    <div class="header-block">
+        <div class="row"><span class="label">Name of the Establishment :-</span><span class="value">{{ $establishment_name ?? '' }}</span></div>
+        <div class="row"><span class="label">Name of Owner :-</span><span class="value">{{ $owner_name ?? '' }}</span></div>
+    </div>
+    <table class="reg-table">
+        <thead>
+            <tr>
+                <th style="width:5%">Sr. No.</th>
+                <th style="width:16%">Name</th>
+                <th style="width:11%">Recovery Type<br>(Damage/loss/fine/<br>advance/loans)</th>
+                <th style="width:7%">Particulars</th>
+                <th style="width:8%">Date of<br>damage/loss *</th>
+                <th style="width:6%">Amount</th>
+                <th style="width:8%">Whether show<br>cause issued*</th>
+                <th style="width:11%">Explanation heard in<br>presence of *</th>
+                <th style="width:7%">Number of<br>Instalments</th>
+                <th style="width:7%">First<br>Month/Year</th>
+                <th style="width:7%">Last<br>Month/Year</th>
+                <th style="width:8%">Date of Complete<br>Recovery</th>
+                <th style="width:5%">Remarks</th>
+            </tr>
+            <tr class="col-nums">
+                <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                <td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($rows ?? [] as $index => $row)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td class="left">{{ $row['employee_name'] ?? 'Nil' }}</td>
+                <td>{{ $row['recovery_type'] ?? 'Nil' }}</td>
+                <td>{{ $row['particulars'] ?? 'Nil' }}</td>
+                <td>{{ $row['damage_date'] ?? 'Nil' }}</td>
+                <td>{{ $row['amount'] ?? 'Nil' }}</td>
+                <td>{{ $row['show_cause'] ?? 'Nil' }}</td>
+                <td>{{ $row['explanation'] ?? 'Nil' }}</td>
+                <td>{{ $row['installments'] ?? 'Nil' }}</td>
+                <td>{{ $row['first_month'] ?? 'Nil' }}</td>
+                <td>{{ $row['last_month'] ?? 'Nil' }}</td>
+                <td>{{ $row['recovery_date'] ?? 'Nil' }}</td>
+                <td>{{ $row['remarks'] ?? 'Nil' }}</td>
+            </tr>
+            @empty
+            <tr><td colspan="13" style="text-align:center; padding:4px;">Nil</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+    <div style="height: 30px;"></div>
+    <div class="footer-note">*Applicable only in case of damage/loss/fine</div>
+
+</div>
+</div>
 </body>
 </html>

@@ -4,264 +4,307 @@
     <meta charset="UTF-8">
     <title>ESI FORM 11 - Accident Book</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
+        @page { size: A4 landscape; margin: 8mm; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Times New Roman', Times, serif;
-            padding: 20px;
+            font-size: 8px;
+            color: #000;
+            line-height: 1.2;
+            -webkit-print-color-adjust: exact;
         }
+
         .form-container {
-            border: 2px solid black;
-            padding: 15px;
-            margin: 0 auto;
-            width: 95%;
+            width: 100%;
+            border: 1px solid #000;
         }
-        .form-header {
+
+        /* ── HEADER ── */
+        .header-block {
+            padding: 4px 6px 3px;
+            border-bottom: 0.5px solid #000;
+        }
+
+        .header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 44px;
+        }
+
+        .logo {
+            position: absolute;
+            left: 0;
+            height: 40px;
+        }
+
+        .header-text {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 12px;
+            line-height: 1.4;
         }
-        .logo-placeholder {
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 24px;
-        }
-        .form-header div {
-            margin: 3px 0;
-        }
-        .header-title {
-            font-weight: bold;
-        }
-        .establishment-table {
+
+        .header-text .corp   { font-size: 9px;  font-weight: bold; }
+        .header-text .title  { font-size: 10px; font-weight: bold; }
+        .header-text .reg    { font-size: 8px; }
+        .header-text .formno { font-size: 9px;  font-weight: bold; }
+
+        /* ── INFO TABLE ── */
+        .info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
-            border: 1px solid black;
         }
-        .establishment-table td {
-            border: 1px solid black;
-            padding: 6px 8px;
-            font-size: 11px;
-            vertical-align: top;
+
+        .info-table td {
+            border-bottom: 0.5px solid #000;
+            padding: 2px 6px;
+            font-size: 8px;
+            vertical-align: middle;
         }
-        .establishment-table td:first-child {
+
+        .info-table td:first-child {
+            width: 35%;
             font-weight: bold;
-            width: 30%;
+            white-space: nowrap;
         }
-        .month-display {
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 11px;
-            font-weight: bold;
+
+        .info-table td:last-child {
+            width: 65%;
         }
-        .column-numbers {
+
+        /* ── DATA TABLE ── */
+        .data-table {
             width: 100%;
             border-collapse: collapse;
-            border: 1px solid black;
-            margin-bottom: 0;
+            table-layout: fixed;
         }
-        .column-numbers td {
-            border: 1px solid black;
-            padding: 4px 2px;
+
+        .data-table th,
+        .data-table td {
+            border: 0.5px solid #000;
+            font-size: 7px;
             text-align: center;
-            font-size: 10px;
-            font-weight: bold;
-            height: 18px;
+            vertical-align: middle;
+            padding: 2px 1px;
+            word-wrap: break-word;
+            line-height: 1.15;
         }
-        .register-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid black;
-            font-size: 10px;
-        }
-        .register-table th,
-        .register-table td {
-            border: 1px solid black;
-            padding: 4px 3px;
-            text-align: left;
-            vertical-align: top;
-        }
-        .register-table th {
+
+        .data-table th {
             font-weight: bold;
             background-color: #fff;
-            word-wrap: break-word;
-            line-height: 1.1;
-            font-size: 9px;
         }
-        .register-table td {
-            height: 25px;
+
+        .data-table td {
+            height: 18px;
         }
-        .col-1 { width: 3%; text-align: center; }
-        .col-2 { width: 5%; }
-        .col-3 { width: 5%; }
-        .col-4 { width: 7%; }
-        .col-5 { width: 3%; }
-        .col-6 { width: 3%; }
-        .col-7 { width: 5%; }
-        .col-8 { width: 7%; }
-        .col-9 { width: 5%; }
-        .col-10 { width: 5%; }
-        .col-11 { width: 5%; }
-        .col-12 { width: 5%; }
-        .col-13 { width: 5%; }
-        .col-14 { width: 8%; }
-        .col-15 { width: 8%; }
-        .col-16 { width: 8%; }
-        .col-17 { width: 8%; }
-        .col-18 { width: 6%; }
-        .footer-section {
-            margin-top: 20px;
-            text-align: right;
-            font-size: 11px;
+
+        /* ── COLUMN NUMBERS ROW ── */
+        .col-numbers td {
+            font-size: 7px;
+            text-align: center;
+            padding: 1px;
+            font-weight: bold;
         }
-        .signature-space {
-            margin-top: 40px;
-            height: 50px;
+
+        /* ── NIL ROW ── */
+        .nil-row {
+            text-align: center;
+            font-weight: bold;
+            font-size: 8px;
+            padding: 4px 0;
+        }
+
+        /* ── SIGNATURE ── */
+        .signature-area {
+            height: 60px;
+            position: relative;
+            border-top: 0.5px solid #000;
+            padding: 4px 6px;
+        }
+
+        .signature-block {
+            position: absolute;
+            right: 20px;
+            bottom: 6px;
+            text-align: center;
+        }
+
+        .signature-block img {
+            height: 30px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .signature-text {
+            font-size: 8px;
+            margin-top: 2px;
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <div class="logo-placeholder">⊙</div>
-        
-        <div class="form-header">
-            <div class="header-title">EMPLOYEES' STATE INSURANCE CORPORATION</div>
-            <div class="header-title">ACCIDENT BOOK</div>
-            <div>(Regulation 66)</div>
-            <div class="header-title">REG. FORM 11</div>
-        </div>
+<div class="form-container">
 
-        <table class="establishment-table">
-            <tr>
-                <td>Name of the Company</td>
-                <td>{{ $company_name ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>Name of the Contractor</td>
-                <td>{{ $contractor_name ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>Total number of workers employed</td>
-                <td>{{ $total_workers ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>Work location</td>
-                <td>{{ $work_location ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>Name of the Principal Employer</td>
-                <td>{{ $principal_employer ?? '' }}</td>
-            </tr>
-        </table>
-
-        <div class="month-display">{{ $month_year ?? '' }}</div>
-
-        <table class="column-numbers">
-            <tr>
-                <td style="width: 3%;">1</td>
-                <td style="width: 5%;">2</td>
-                <td style="width: 5%;">3</td>
-                <td style="width: 7%;">4</td>
-                <td style="width: 3%;">5</td>
-                <td style="width: 3%;">6</td>
-                <td style="width: 5%;">7</td>
-                <td style="width: 7%;">8</td>
-                <td style="width: 5%;">9</td>
-                <td style="width: 5%;">10</td>
-                <td style="width: 5%;">11</td>
-                <td style="width: 5%;">12</td>
-                <td style="width: 5%;">13</td>
-                <td style="width: 8%;">14</td>
-                <td style="width: 8%;">15</td>
-                <td style="width: 8%;">16</td>
-                <td style="width: 8%;">17</td>
-                <td style="width: 6%;">18</td>
-            </tr>
-        </table>
-
-        <table class="register-table">
-            <thead>
-                <tr>
-                    <th class="col-1" rowspan="2">Sl. No</th>
-                    <th class="col-2" rowspan="2">Date of Notice</th>
-                    <th class="col-3" rowspan="2">Time of Notice</th>
-                    <th class="col-4" rowspan="2">Name & Address of injured person</th>
-                    <th class="col-5" rowspan="2">Sex</th>
-                    <th class="col-6" rowspan="2">Age</th>
-                    <th class="col-7" rowspan="2">Insurance No</th>
-                    <th class="col-8" rowspan="2">Shift, department and occupation of the employee</th>
-                    <th colspan="5" style="text-align: center;">Details of Injury</th>
-                    <th class="col-14" rowspan="2">What exactly injured person was doing at the time of accident</th>
-                    <th class="col-15" rowspan="2">Name, occupation & address of the person giving first aid</th>
-                    <th class="col-16" rowspan="2">Signature and thumb impression of the injured person</th>
-                    <th class="col-17" rowspan="2">Name, address & occupation of witnesses</th>
-                    <th class="col-18" rowspan="2">Remarks</th>
-                </tr>
-                <tr>
-                    <th class="col-9">Cause</th>
-                    <th class="col-10">Nature</th>
-                    <th class="col-11">Date</th>
-                    <th class="col-12">Time</th>
-                    <th class="col-13">Place</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if(isset($rows) && count($rows) > 0)
-                    @foreach($rows as $index => $row)
-                        <tr>
-                            <td class="col-1">{{ $index + 1 }}</td>
-                            <td class="col-2">{{ $row['date_of_notice'] ?? 'NIL' }}</td>
-                            <td class="col-3">{{ $row['time_of_notice'] ?? 'NIL' }}</td>
-                            <td class="col-4">{{ $row['injured_person'] ?? 'NIL' }}</td>
-                            <td class="col-5">{{ $row['sex'] ?? 'NIL' }}</td>
-                            <td class="col-6">{{ $row['age'] ?? 'NIL' }}</td>
-                            <td class="col-7">{{ $row['insurance_no'] ?? 'NIL' }}</td>
-                            <td class="col-8">{{ $row['occupation'] ?? 'NIL' }}</td>
-                            <td class="col-9">{{ $row['cause'] ?? 'NIL' }}</td>
-                            <td class="col-10">{{ $row['nature'] ?? 'NIL' }}</td>
-                            <td class="col-11">{{ $row['injury_date'] ?? 'NIL' }}</td>
-                            <td class="col-12">{{ $row['injury_time'] ?? 'NIL' }}</td>
-                            <td class="col-13">{{ $row['place'] ?? 'NIL' }}</td>
-                            <td class="col-14">{{ $row['activity'] ?? 'NIL' }}</td>
-                            <td class="col-15">{{ $row['first_aid_person'] ?? 'NIL' }}</td>
-                            <td class="col-16">{{ $row['signature'] ?? 'NIL' }}</td>
-                            <td class="col-17">{{ $row['witnesses'] ?? 'NIL' }}</td>
-                            <td class="col-18">{{ $row['remarks'] ?? 'NIL' }}</td>
-                        </tr>
-                    @endforeach
-                @else
-                    @for($i = 0; $i < 9; $i++)
-                        <tr>
-                            <td class="col-1">{{ $i + 1 }}</td>
-                            <td class="col-2">NIL</td>
-                            <td class="col-3">NIL</td>
-                            <td class="col-4">NIL</td>
-                            <td class="col-5">NIL</td>
-                            <td class="col-6">NIL</td>
-                            <td class="col-7">NIL</td>
-                            <td class="col-8">NIL</td>
-                            <td class="col-9">NIL</td>
-                            <td class="col-10">NIL</td>
-                            <td class="col-11">NIL</td>
-                            <td class="col-12">NIL</td>
-                            <td class="col-13">NIL</td>
-                            <td class="col-14">NIL</td>
-                            <td class="col-15">NIL</td>
-                            <td class="col-16">NIL</td>
-                            <td class="col-17">NIL</td>
-                            <td class="col-18">NIL</td>
-                        </tr>
-                    @endfor
-                @endif
-            </tbody>
-        </table>
-
-        <div class="footer-section">
-            <div>Authorized Signatory</div>
-            <div class="signature-space"></div>
+    {{-- HEADER --}}
+    <div class="header-block">
+        <div class="header-flex">
+            @if(!empty($logo_path))
+                <img src="{{ $logo_path }}" class="logo" alt="ESI Logo">
+            @else
+                <div style="position:absolute;left:0;font-size:22px;line-height:1;">&#9737;</div>
+            @endif
+            <div class="header-text">
+                <div class="corp">EMPLOYEES' STATE INSURANCE CORPORATION</div>
+                <div class="title">ACCIDENT BOOK</div>
+                <div class="reg">(Regulation 66)</div>
+                <div class="formno">REG. FORM 11</div>
+            </div>
         </div>
     </div>
+
+    {{-- INFO SECTION --}}
+    <table class="info-table">
+        <tr>
+            <td>Name of the Company</td>
+            <td>: {{ $company_name ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td>Name of the Contractor</td>
+            <td>: {{ $contractor_name ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td>Total number of workers employed</td>
+            <td>: {{ $total_workers ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td>Work location</td>
+            <td>: {{ $work_location ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td>Name of the Principal Employer</td>
+            <td>: {{ $principal_employer ?? 'N/A' }}</td>
+        </tr>
+        <tr>
+            <td>Month</td>
+            <td>: {{ $month_year ?? 'N/A' }}</td>
+        </tr>
+    </table>
+
+    {{-- DATA TABLE --}}
+    @php $rows = $rows ?? $entries ?? []; @endphp
+
+    <table class="data-table">
+        <colgroup>
+            <col style="width:4%">
+            <col style="width:5%">
+            <col style="width:5%">
+            <col style="width:10%">
+            <col style="width:3%">
+            <col style="width:3%">
+            <col style="width:6%">
+            <col style="width:8%">
+            <col style="width:5%">
+            <col style="width:5%">
+            <col style="width:5%">
+            <col style="width:5%">
+            <col style="width:5%">
+            <col style="width:8%">
+            <col style="width:10%">
+            <col style="width:7%">
+            <col style="width:7%">
+            <col style="width:4%">
+        </colgroup>
+        <thead>
+            <tr>
+                <th rowspan="2">Sl. No</th>
+                <th rowspan="2">Date of Notice</th>
+                <th rowspan="2">Time of Notice</th>
+                <th rowspan="2">Name &amp; Address of Injured Person</th>
+                <th rowspan="2">Sex</th>
+                <th rowspan="2">Age</th>
+                <th rowspan="2">Insurance No</th>
+                <th rowspan="2">Shift, Department &amp; Occupation</th>
+                <th colspan="5">Details of Injury</th>
+                <th rowspan="2">What exactly was the injured person doing</th>
+                <th rowspan="2">Name, Occupation, Address &amp; Thumb Impression</th>
+                <th rowspan="2">Signature of Person Making Entry</th>
+                <th rowspan="2">Witness Details</th>
+                <th rowspan="2">Remarks</th>
+            </tr>
+            <tr>
+                <th>Cause</th>
+                <th>Nature</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Place</th>
+            </tr>
+            <tr class="col-numbers">
+                <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                <td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td>
+                <td>13</td><td>14</td><td>15</td><td>16</td><td>17</td><td>18</td>
+            </tr>
+        </thead>
+        <tbody>
+            @if(count($rows) > 0)
+                @foreach($rows as $index => $row)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $row['date_of_notice'] ?? '' }}</td>
+                    <td>{{ $row['time_of_notice'] ?? '' }}</td>
+                    <td style="text-align:left;">{{ $row['injured_person'] ?? '' }}</td>
+                    <td>{{ $row['sex'] ?? '' }}</td>
+                    <td>{{ $row['age'] ?? '' }}</td>
+                    <td>{{ $row['insurance_no'] ?? '' }}</td>
+                    <td style="text-align:left;">{{ $row['occupation'] ?? '' }}</td>
+                    <td>{{ $row['cause'] ?? '' }}</td>
+                    <td>{{ $row['nature'] ?? '' }}</td>
+                    <td>{{ $row['injury_date'] ?? '' }}</td>
+                    <td>{{ $row['injury_time'] ?? '' }}</td>
+                    <td>{{ $row['place'] ?? '' }}</td>
+                    <td style="text-align:left;">{{ $row['activity'] ?? '' }}</td>
+                    <td style="text-align:left;">{{ $row['first_aid_person'] ?? '' }}</td>
+                    <td>{{ $row['signature'] ?? '' }}</td>
+                    <td style="text-align:left;">{{ $row['witnesses'] ?? '' }}</td>
+                    <td>{{ $row['remarks'] ?? '' }}</td>
+                </tr>
+                @endforeach
+            @else
+                <tr>
+                    <td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                    <td></td><td></td><td></td><td></td><td></td><td></td>
+                </tr>
+                <tr>
+                    <td colspan="18" class="nil-row">NIL</td>
+                </tr>
+            @endif
+        </tbody>
+    </table>
+
+    {{-- SIGNATURE --}}
+    <div class="signature-area">
+        <div class="signature-block">
+            @if(!empty($batch_signature))
+                @if(!empty($batch_signature['seal_path']))
+                    <img src="{{ storage_path('app/' . $batch_signature['seal_path']) }}" style="height:28px;">
+                @endif
+                <img src="{{ storage_path('app/' . $batch_signature['signature_path']) }}" style="height:20px;">
+                <div class="signature-text">
+                    {{ $batch_signature['signatory_name'] ?? 'Authorized Signatory' }}<br>
+                    {{ $batch_signature['signatory_designation'] ?? '' }}
+                </div>
+            @elseif(!empty($company_signature))
+                <img src="{{ storage_path('app/' . $company_signature) }}" style="height:20px;">
+                <div class="signature-text">Authorized Signatory</div>
+            @else
+                <div style="height:30px;"></div>
+                <div class="signature-text">Authorized Signatory</div>
+            @endif
+        </div>
+    </div>
+
+</div>
 </body>
 </html>

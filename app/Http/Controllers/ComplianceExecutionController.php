@@ -47,16 +47,21 @@ class ComplianceExecutionController extends Controller
     {
         try {
             $user = Auth::user();
-            if (!$user || !$user->tenant) {
-                abort(500, 'User not authenticated or tenant not assigned');
+            if (! $user) {
+                return redirect()->route('login');
+            }
+
+            // Tenant may be null if user was created without one
+            if (! $user->tenant_id || ! $user->tenant) {
+                return view('compliance.dashboard', $this->dashboardDefaults(
+                    Auth::user(), 'Your account is not linked to a tenant. Contact your administrator.'
+                ));
             }
 
             $subscription = $this->subscription();
-            $tenantId = $user->tenant_id;
-            $branch = \App\Models\Branch::where('tenant_id', $tenantId)->first();
-            $sections = ComplianceSection::where('is_active', true)->get();
-            $statutorySections = config('statutory_form_grouping.sections');
-            $formCodeToId = ComplianceFormsMaster::pluck('id', 'form_code')->toArray();
+            $tenantId     = $user->tenant_id;
+            $branch       = \App\Models\Branch::where('tenant_id', $tenantId)->first();
+            $sections     = ComplianceSection::where('is_active', true)->get();
 
             $batches = ComplianceExecutionBatch::with('section')
                 ->where('tenant_id', $tenantId)
@@ -69,54 +74,65 @@ class ComplianceExecutionController extends Controller
                     ->where('batch_id', $batch->id)
                     ->pluck('status');
 
-                if ($logs->isEmpty()) {
-                    $batch->display_status = 'Pending';
-                } elseif ($logs->contains('processing')) {
-                    $batch->display_status = 'Processing';
-                } elseif ($logs->every(fn($status) => in_array($status, ['success', 'completed']))) {
-                    $batch->display_status = 'Completed';
-                } elseif ($logs->every(fn($status) => $status === 'failed')) {
-                    $batch->display_status = 'Failed';
-                } else {
-                    $batch->display_status = 'Partially Completed';
-                }
+                $batch->display_status = match (true) {
+                    $logs->isEmpty()                                                          => 'Pending',
+                    $logs->contains('processing')                                             => 'Processing',
+                    $logs->every(fn($s) => in_array($s, ['success', 'completed']))            => 'Completed',
+                    $logs->every(fn($s) => $s === 'failed')                                   => 'Failed',
+                    default                                                                   => 'Partially Completed',
+                };
 
                 $auditLogs = \App\Models\ComplianceAuditLog::where('batch_id', $batch->id)->get();
                 if ($auditLogs->isNotEmpty()) {
-                    $batch->audit_score = round($auditLogs->avg('audit_score'));
-                    $passedCount = $auditLogs->where('status', 'passed')->count();
-                    $totalCount = $auditLogs->count();
-                    $batch->audit_status = $passedCount === $totalCount ? 'Passed' : ($passedCount === 0 ? 'Failed' : 'Partial');
-                    $batch->audit_logs = $auditLogs;
+                    $passedCount        = $auditLogs->where('status', 'passed')->count();
+                    $batch->audit_score  = round($auditLogs->avg('audit_score'));
+                    $batch->audit_status = $passedCount === $auditLogs->count() ? 'Passed'
+                        : ($passedCount === 0 ? 'Failed' : 'Partial');
+                    $batch->audit_logs   = $auditLogs;
                 } else {
-                    $batch->audit_score = null;
+                    $batch->audit_score  = null;
                     $batch->audit_status = 'Not Audited';
-                    $batch->audit_logs = collect();
+                    $batch->audit_logs   = collect();
                 }
-
-
             }
 
-            $healthService = app(\App\Services\Compliance\ComplianceHealthService::class);
-            $healthScore = $healthService->calculateScore($tenantId, now()->month, now()->year);
-            $timelineMetrics = $this->timelineService->getTimelineMetrics($tenantId, now()->month, now()->year);
+            $healthScore      = app(\App\Services\Compliance\ComplianceHealthService::class)
+                ->calculateScore($tenantId, now()->month, now()->year);
+            $timelineMetrics  = $this->timelineService
+                ->getTimelineMetrics($tenantId, now()->month, now()->year);
+            $statutorySections = config('statutory_form_grouping.sections');
+            $formCodeToId      = ComplianceFormsMaster::pluck('id', 'form_code')->toArray();
 
-            return view('compliance.dashboard', compact('sections', 'batches', 'subscription', 'branch', 'user', 'healthScore', 'timelineMetrics', 'statutorySections', 'formCodeToId'));
-        } catch (\Exception $e) {
-            logger()->error('Dashboard Error', ['error' => $e->getMessage()]);
-            return view('compliance.dashboard', [
-                'sections' => [],
-                'batches' => [],
-                'subscription' => 'MINIMAL',
-                'branch' => null,
-                'user' => Auth::user(),
-                'healthScore' => null,
-                'timelineMetrics' => null,
-                'statutorySections' => config('statutory_form_grouping.sections'),
-                'formCodeToId' => ComplianceFormsMaster::pluck('id', 'form_code')->toArray(),
-                'error' => 'Failed to load dashboard: ' . $e->getMessage()
+            return view('compliance.dashboard', compact(
+                'sections', 'batches', 'subscription', 'branch', 'user',
+                'healthScore', 'timelineMetrics', 'statutorySections', 'formCodeToId'
+            ));
+
+        } catch (\Throwable $e) {
+            logger()->error('Dashboard Error', [
+                'error' => $e->getMessage(),
+                'file'  => $e->getFile() . ':' . $e->getLine(),
             ]);
+            return view('compliance.dashboard', $this->dashboardDefaults(
+                Auth::user(), 'Failed to load dashboard: ' . $e->getMessage()
+            ));
         }
+    }
+
+    private function dashboardDefaults(?\App\Models\User $user, string $error = ''): array
+    {
+        return [
+            'sections'          => collect(),
+            'batches'           => collect(),
+            'subscription'      => 'MINIMAL',
+            'branch'            => null,
+            'user'              => $user,
+            'healthScore'       => null,
+            'timelineMetrics'   => null,
+            'statutorySections' => config('statutory_form_grouping.sections', []),
+            'formCodeToId'      => [],
+            'error'             => $error,
+        ];
     }
 
     public function forms(string $section)

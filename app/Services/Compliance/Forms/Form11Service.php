@@ -18,32 +18,32 @@ class Form11Service extends BaseFormService
 
         [$startDate, $endDate] = $this->getDateRange();
 
-        $rows = DB::table('incident_documents as id')
-            ->join('workforce_employee as e', 'e.id', '=', 'id.employee_id')
-            ->where('id.tenant_id', $tenantId)
-            ->where('id.branch_id', $branchId)
-            ->where('id.incident_type', 'accident')
-            ->whereBetween('id.incident_date', [$startDate, $endDate])
+        $rows = DB::table('incidents as i')
+            ->join('workforce_employee as e', 'e.id', '=', 'i.employee_id')
+            ->where('i.tenant_id', $tenantId)
+            ->where('i.branch_id', $branchId)
+            ->whereYear('i.incident_date', $year)
+            ->whereMonth('i.incident_date', $month)
             ->select([
-                DB::raw("DATE(id.incident_date, '%Y-%m-%d') as date_of_notice"),
+                DB::raw("DATE_FORMAT(i.incident_date, '%Y-%m-%d') as date_of_notice"),
                 DB::raw("'' as time_of_notice"),
                 'e.name as injured_person',
                 DB::raw("'' as sex"),
                 DB::raw("0 as age"),
                 DB::raw("'' as insurance_no"),
                 DB::raw("'' as occupation"),
-                'id.description as cause',
+                'i.cause',
                 DB::raw("'' as nature"),
-                'id.incident_date as injury_date',
+                'i.incident_date as injury_date',
                 DB::raw("'' as injury_time"),
-                DB::raw("'' as place"),
-                'id.description as activity',
-                DB::raw("'' as first_aid_person"),
+                'i.location as place',
+                'i.activity',
+                'i.first_aid_by as first_aid_person',
                 DB::raw("'' as signature"),
-                DB::raw("'' as witnesses"),
-                'id.action_taken as remarks',
+                'i.witness as witnesses',
+                'i.remarks',
             ])
-            ->orderBy('id.incident_date')
+            ->orderBy('i.incident_date')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();

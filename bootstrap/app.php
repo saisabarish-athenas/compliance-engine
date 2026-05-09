@@ -17,5 +17,26 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Return JSON only for genuine AJAX/API requests (fetch with Accept: application/json
+        // or X-Requested-With header). Never intercept browser page navigations.
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            if (! $request->expectsJson()) {
+                return null; // let Laravel render the normal HTML error page
+            }
+
+            $status = method_exists($e, 'getStatusCode') ? $e->getStatusCode() : 500;
+
+            if ($e instanceof \Illuminate\Validation\ValidationException) {
+                return response()->json([
+                    'status'  => 'error',
+                    'message' => $e->getMessage(),
+                    'errors'  => $e->errors(),
+                ], 422);
+            }
+
+            return response()->json([
+                'status'  => 'error',
+                'message' => $e->getMessage() ?: 'An unexpected error occurred.',
+            ], $status >= 400 ? $status : 500);
+        });
     })->create();

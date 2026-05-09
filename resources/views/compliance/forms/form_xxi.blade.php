@@ -4,205 +4,273 @@
     <meta charset="UTF-8">
     <title>FORM XXI - Register of Fines</title>
     <style>
-        * {
-            margin: 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        @page { size: A4 landscape; margin: 8mm; }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8px;
+            color: #000;
+            background: #fff;
+        }
+
+        /* ── OUTER WRAPPER ── */
+        .form-wrapper {
+            width: 820px;
+            max-width: 820px;
+            margin: 40px auto 20px;
+            border: 1.5px solid #000;
             padding: 0;
         }
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            padding: 20px;
-        }
-        .form-container {
-            border: 2px solid black;
-            padding: 15px;
-        }
-        .form-header {
+
+        /* ── TITLE BLOCK ── */
+        .title-block {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 12px;
+            padding: 4px 0 3px;
+            border-bottom: 1px solid #000;
+            line-height: 1.5;
         }
-        .form-header div {
-            margin: 3px 0;
-        }
-        .header-title {
-            font-weight: bold;
-        }
-        .establishment-table {
+        .title-block .t1 { font-size: 9px; font-weight: bold; }
+        .title-block .t2 { font-size: 8px; font-weight: normal; }
+        .title-block .t3 { font-size: 9px; font-weight: bold; }
+
+        /* ── HEADER TABLE ── */
+        .header-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
-            border: 1px solid black;
+            table-layout: fixed;
         }
-        .establishment-table td {
-            border: 1px solid black;
-            padding: 6px 8px;
-            font-size: 11px;
-            vertical-align: top;
+        .header-table tr td {
+            border-bottom: 1px solid #000;
+            padding: 2px 5px;
+            font-size: 8px;
+            vertical-align: middle;
+            line-height: 1.3;
         }
-        .establishment-table td:first-child {
+        .header-table tr td:first-child {
+            width: 28%;
             font-weight: bold;
-            width: 45%;
+            border-right: none;
         }
-        .register-table {
+        .header-table tr td:last-child {
+            width: 72%;
+        }
+
+        /* ── MAIN REGISTER TABLE ── */
+        .main-table {
             width: 100%;
             border-collapse: collapse;
-            border: 1px solid black;
-            font-size: 11px;
+            table-layout: fixed;
         }
-        .register-table th,
-        .register-table td {
-            border: 1px solid black;
-            padding: 5px 4px;
+
+        /* column-number row */
+        .main-table thead tr.col-num th {
+            border: 1px solid #000;
+            font-size: 7px;
+            font-weight: normal;
+            text-align: center;
+            padding: 1px 0;
+            height: 12px;
+            background: #fff;
+        }
+
+        /* column header row */
+        .main-table thead tr.col-hdr th {
+            border: 1px solid #000;
+            font-size: 7.5px;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+            word-break: normal;
+            overflow-wrap: break-word;
+            white-space: normal;
+            line-height: 1.2;
+            padding: 2px 2px;
+            height: 46px;
+            background: #fff;
+        }
+        .main-table thead tr.col-hdr th:nth-child(2),
+        .main-table thead tr.col-hdr th:nth-child(3),
+        .main-table thead tr.col-hdr th:nth-child(4) {
             text-align: left;
-            vertical-align: top;
+            padding-left: 3px;
         }
-        .register-table th {
-            font-weight: bold;
-            background-color: #fff;
-            font-size: 10px;
-        }
-        .register-table td {
-            height: 20px;
-        }
-        .col-sl {
-            width: 4%;
+
+        /* data rows */
+        .main-table tbody td {
+            border: 1px solid #000;
+            font-size: 7.5px;
+            padding: 1px 3px;
             text-align: center;
+            vertical-align: middle;
+            height: 15px;
+            line-height: 1.2;
         }
-        .col-name {
-            width: 8%;
+        .main-table tbody td:nth-child(2),
+        .main-table tbody td:nth-child(3),
+        .main-table tbody td:nth-child(4) {
+            text-align: left;
         }
-        .col-father {
-            width: 8%;
+
+        /* footer split row */
+        .main-table tbody tr.footer-row td {
+            border: 1px solid #000;
+            font-size: 7.5px;
+            padding: 2px 5px;
+            vertical-align: middle;
+            height: auto;
         }
-        .col-designation {
-            width: 9%;
-        }
-        .col-act {
-            width: 9%;
-        }
-        .col-date-offence {
-            width: 7%;
-        }
-        .col-showed-cause {
-            width: 9%;
-        }
-        .col-heard-by {
-            width: 10%;
-        }
-        .col-wage {
-            width: 8%;
-        }
-        .col-amount {
-            width: 8%;
-        }
-        .col-date-realised {
-            width: 8%;
-        }
-        .col-remarks {
-            width: 8%;
-        }
-        .footer-section {
-            margin-top: 10px;
-            font-size: 11px;
-        }
-        .footer-note {
-            margin-bottom: 8px;
-        }
-        .nil-footer {
-            text-align: center;
-            margin: 15px 0;
-            font-weight: bold;
-            font-size: 11px;
-        }
-        .signature-section {
-            text-align: right;
+        .fn-note { text-align: left; font-style: italic; }
+        .fn-nil  { text-align: center; font-weight: bold; }
+
+        /* ── SIGNATURE BLOCK ── */
+        .sig-area {
+            padding: 6px 8px 10px 0;
             margin-top: 30px;
-            font-size: 11px;
+            text-align: right;
+            font-size: 8px;
+        }
+        .sig-content {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .sig-content .seal-img {
+            width: 60px;
+            height: auto;
+            display: block;
+        }
+        .sig-content .sign-img {
+            width: 100px;
+            height: auto;
+            display: block;
+        }
+        .sig-label {
+            margin-top: 4px;
+            font-size: 8px;
+            text-align: right;
+        }
+
+        @media print {
+            body  { margin: 0; }
+            .form-wrapper { width: 100%; max-width: 100%; margin: 0; border: 1.5px solid #000; }
         }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-header">
-            <div class="header-title">FORM XXI</div>
-            <div>[See Rule 78(2)(d)]</div>
-            <div class="header-title">Register of Fines</div>
-        </div>
+<div class="form-wrapper">
 
-        <table class="establishment-table">
-            <tr>
-                <td>NAME AND ADDRESS OF CONTRACTOR :</td>
-                <td>{{ $header['contractor_name'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>NATURE AND LOCATION OF WORK :</td>
-                <td>{{ $header['work_nature'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
-                <td>{{ $header['establishment_name'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
-                <td>{{ $header['principal_employer'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>Month & Year:</td>
-                <td>{{ $header['month_year'] ?? '' }}</td>
-            </tr>
-        </table>
-
-        <table class="register-table">
-            <thead>
-                <tr>
-                    <th class="col-sl">SL NO</th>
-                    <th class="col-name">Name of workmen</th>
-                    <th class="col-father">Father's/Husband's name</th>
-                    <th class="col-designation">Designation/Nature of employment</th>
-                    <th class="col-act">Act/Omission for which fine imposed</th>
-                    <th class="col-date-offence">Date of offence</th>
-                    <th class="col-showed-cause">Whether workmen showed against fine</th>
-                    <th class="col-heard-by">Name of person in whose presence employee's explanation was heard</th>
-                    <th class="col-wage">Wage period and wages payable</th>
-                    <th class="col-amount">Amount of fine imposed</th>
-                    <th class="col-date-realised">Date on which fine realised</th>
-                    <th class="col-remarks">Remarks</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if(!empty($rows) && count($rows) > 0)
-                    @foreach($rows as $index => $row)
-                        <tr>
-                            <td class="col-sl">{{ $index + 1 }}</td>
-                            <td class="col-name">{{ $row['name'] ?? '' }}</td>
-                            <td class="col-father">{{ $row['father_name'] ?? '' }}</td>
-                            <td class="col-designation">{{ $row['designation'] ?? '' }}</td>
-                            <td class="col-act">{{ $row['act_or_omission'] ?? '' }}</td>
-                            <td class="col-date-offence">{{ $row['date_of_offence'] ?? '' }}</td>
-                            <td class="col-showed-cause">{{ $row['showed_cause'] ?? '' }}</td>
-                            <td class="col-heard-by">{{ $row['heard_by'] ?? '' }}</td>
-                            <td class="col-wage">{{ $row['wage_period'] ?? '' }}</td>
-                            <td class="col-amount">{{ $row['fine_amount'] ?? '' }}</td>
-                            <td class="col-date-realised">{{ $row['fine_realised'] ?? '' }}</td>
-                            <td class="col-remarks"></td>
-                        </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="12" style="text-align:center;">No records found</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
-
-        <div class="footer-section">
-            <div class="footer-note">*Applicable only in case of damage/loss/fine</div>
-
-        </div>
-
-        <div class="signature-section">
-            <div>Seal Signature of The Contractor</div>
-        </div>
+    {{-- ── TITLE ── --}}
+    <div class="title-block">
+        <div class="t1">FORM XXI</div>
+        <div class="t2">[See Rule 78(2)(d)]</div>
+        <div class="t3">Register of Fines</div>
     </div>
+
+    {{-- ── HEADER TABLE (bordered rows, 2-col) ── --}}
+    <table class="header-table">
+        <tr>
+            <td>NAME AND ADDRESS OF CONTRACTOR :</td>
+            <td>{{ $header['contractor_name'] ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>NATURE AND LOCATION OF WORK :</td>
+            <td>{{ $header['work_nature'] ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
+            <td>{{ $header['establishment_name'] ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
+            <td>{{ $header['principal_employer'] ?? '' }}</td>
+        </tr>
+        <tr>
+            <td>Month &amp; Year:</td>
+            <td>{{ $header['month_year'] ?? '' }}</td>
+        </tr>
+    </table>
+
+    {{-- ── MAIN REGISTER TABLE ── --}}
+    <table class="main-table">
+        <colgroup>
+            <col style="width:4%">
+            <col style="width:13%">
+            <col style="width:13%">
+            <col style="width:13%">
+            <col style="width:9%">
+            <col style="width:7%">
+            <col style="width:9%">
+            <col style="width:13%">
+            <col style="width:8%">
+            <col style="width:7%">
+            <col style="width:7%">
+            <col style="width:5%">
+        </colgroup>
+
+        <thead>
+            <tr class="col-num">
+                <th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th>
+                <th>7</th><th>8</th><th>9</th><th>10</th><th>11</th><th>12</th>
+            </tr>
+            <tr class="col-hdr">
+                <th>SL<br>NO</th>
+                <th>Name of workmen</th>
+                <th>Father's/Husband's<br>name</th>
+                <th>Designation/Nature<br>of employment</th>
+                <th>Act/Omission<br>for which fine<br>imposed</th>
+                <th>Date of<br>offence</th>
+                <th>Whether workmen<br>showed against<br>fine</th>
+                <th>Name of person in whose<br>presence employer's<br>explanation was heard</th>
+                <th>Wage period<br>and wages<br>payable</th>
+                <th>Amount of<br>fine imposed</th>
+                <th>Date on which<br>fine realised</th>
+                <th>Re-<br>marks</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse($rows ?? [] as $index => $row)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $row['name'] ?? '' }}</td>
+                <td>{{ $row['father_name'] ?? '' }}</td>
+                <td>{{ $row['designation'] ?? '' }}</td>
+                <td>{{ $row['act_or_omission'] ?? 'NIL' }}</td>
+                <td>{{ $row['date_of_offence'] ?? 'NIL' }}</td>
+                <td>{{ $row['showed_cause'] ?? 'NIL' }}</td>
+                <td>{{ $row['heard_by'] ?? 'NIL' }}</td>
+                <td>{{ $row['wage_period'] ?? 'NIL' }}</td>
+                <td>{{ $row['fine_amount'] ?? 'NIL' }}</td>
+                <td>{{ $row['fine_realised'] ?? 'NIL' }}</td>
+                <td>{{ $row['remarks'] ?? '-' }}</td>
+            </tr>
+            @empty
+            @endforelse
+
+            {{-- footer: note left | nil right ── --}}
+            <tr class="footer-row">
+                <td colspan="4" class="fn-note">*Applicable only in case of damage/loss/fine</td>
+                <td colspan="8" class="fn-nil">Nil for the month of &nbsp;{{ $header['month_year'] ?? '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {{-- ── SIGNATURE ── --}}
+    <div class="sig-area">
+        <div class="sig-content">
+            @if(!empty($seal_path))
+                <img src="{{ $seal_path }}" class="seal-img" alt="seal">
+            @endif
+            @if(!empty($signature_path))
+                <img src="{{ $signature_path }}" class="sign-img" alt="signature">
+            @endif
+        </div>
+        <div class="sig-label">Seal Signature of The Contractor</div>
+    </div>
+
+</div>
 </body>
 </html>

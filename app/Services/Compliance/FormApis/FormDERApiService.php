@@ -24,7 +24,9 @@ class FormDERApiService extends BaseFormApiService
                 'e.gender',
                 'e.designation',
                 'pe.basic_earned',
-                'pe.da_earned',
+                DB::raw('COALESCE(pe.da_earned, 0) as da_earned'),
+                DB::raw('COALESCE(pe.hra_earned, 0) as hra_earned'),
+                DB::raw('COALESCE(pe.other_allowances, 0) as other_allowances'),
                 'pe.gross_salary',
             ])
             ->orderBy('e.employee_code')

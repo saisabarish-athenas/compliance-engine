@@ -49,6 +49,17 @@ class Form10Service extends BaseFormService
 
         FormDebugger::end('FORM_10', $rows);
 
+        \Illuminate\Support\Facades\Log::info('FORM_10 service', [
+            'tenant_id' => $tenantId,
+            'branch_id' => $branchId,
+            'period'    => "{$month}/{$year}",
+            'rows_raw'  => count($rows),
+        ]);
+
+        $rows = array_values(array_filter($rows, fn($r) => ($r['overtime_hours'] ?? 0) > 0));
+
+        \Illuminate\Support\Facades\Log::info('FORM_10 after OT filter', ['rows_filtered' => count($rows)]);
+
         if (empty($rows)) {
             return $this->nilResponse();
         }

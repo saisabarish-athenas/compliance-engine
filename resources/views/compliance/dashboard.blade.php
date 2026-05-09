@@ -585,42 +585,83 @@
         }
 
         function showCsvUploadModal(batchId) {
+            // Remove stale modal if re-opened
+            document.getElementById('csvUploadModal')?.remove();
+
             const modal = document.createElement('div');
             modal.className = 'modal fade';
             modal.id = 'csvUploadModal';
             modal.innerHTML = `
-                <div class="modal-dialog">
+                <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title">📊 CSV Upload</h5>
+                            <h5 class="modal-title">📊 CSV Upload — All 3 Datasets</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="csvUploadForm">
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Data Type</strong></label>
-                                    <select class="form-control" id="csvDataType" required>
-                                        <option value="">-- Select data type --</option>
-                                        <option value="employees">Employees</option>
-                                        <option value="payroll">Payroll</option>
-                                        <option value="attendance">Attendance</option>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Upload CSV File</strong></label>
-                                    <input type="file" class="form-control" id="csvFile" accept=".csv,.txt" required>
-                                    <small class="text-muted">Maximum file size: 10MB</small>
+                            <div id="csv-upload-result" class="mb-3" style="display:none;"></div>
+                            <form id="csvUploadForm" novalidate>
+                                <div class="row g-3">
+
+                                    <div class="col-md-4">
+                                        <div class="p-3 border rounded h-100">
+                                            <label class="form-label"><strong>👥 Employees CSV</strong> <span class="text-danger">*</span></label>
+                                            <input type="file" class="form-control csv-file-input" id="csvEmployees"
+                                                   data-type="employees" accept=".csv,.txt" required>
+                                            <div class="form-text">Required: <code>employee_code, name</code></div>
+                                            <div class="mt-2" id="csv-status-employees"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="p-3 border rounded h-100">
+                                            <label class="form-label"><strong>💰 Payroll CSV</strong> <span class="text-danger">*</span></label>
+                                            <input type="file" class="form-control csv-file-input" id="csvPayroll"
+                                                   data-type="payroll" accept=".csv,.txt" required>
+                                            <div class="form-text">Required: <code>employee_code, gross_salary, net_salary</code></div>
+                                            <div class="mt-2" id="csv-status-payroll"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <div class="p-3 border rounded h-100">
+                                            <label class="form-label"><strong>📅 Attendance CSV</strong> <span class="text-danger">*</span></label>
+                                            <input type="file" class="form-control csv-file-input" id="csvAttendance"
+                                                   data-type="attendance" accept=".csv,.txt" required>
+                                            <div class="form-text">Required: <code>employee_code, working_days</code></div>
+                                            <div class="mt-2" id="csv-status-attendance"></div>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </form>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" onclick="submitCsvUpload(${batchId})">Upload & Process</button>
+                            <button type="button" class="btn btn-primary" id="csvSubmitBtn"
+                                    onclick="submitCsvUpload(${batchId})">
+                                ⬆️ Upload All 3 Files
+                            </button>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
+
             document.body.appendChild(modal);
+
+            // File-picker feedback
+            modal.querySelectorAll('.csv-file-input').forEach(input => {
+                input.addEventListener('change', function () {
+                    const type   = this.dataset.type;
+                    const status = document.getElementById('csv-status-' + type);
+                    if (this.files.length) {
+                        const kb = (this.files[0].size / 1024).toFixed(1);
+                        status.innerHTML = `<span class="badge bg-success">✓ ${escapeHtml(this.files[0].name)} (${kb} KB)</span>`;
+                    } else {
+                        status.innerHTML = '';
+                    }
+                });
+            });
+
             new bootstrap.Modal(modal).show();
         }
 
@@ -654,36 +695,125 @@
             .catch(err => alert('Error: ' + err.message));
         }
 
-        function submitCsvUpload(batchId) {
-            const dataType = document.getElementById('csvDataType').value;
-            const file     = document.getElementById('csvFile').files[0];
+        async function submitCsvUpload(batchId) {
+            const inputs = [
+                { id: 'csvEmployees',  type: 'employees'  },
+                { id: 'csvPayroll',    type: 'payroll'    },
+                { id: 'csvAttendance', type: 'attendance' },
+            ];
 
-            if (!dataType || !file) { alert('Please select both data type and file'); return; }
+            // Validate all 3 files are selected
+            const missing = inputs.filter(i => !document.getElementById(i.id)?.files[0]);
+            if (missing.length) {
+                _csvShowResult('error', '⚠️ Please select all 3 CSV files: ' +
+                    missing.map(i => i.type).join(', '));
+                return;
+            }
 
-            const formData = new FormData();
-            formData.append('file', file);
-            formData.append('dataset_type', dataType);
+            const btn = document.getElementById('csvSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Uploading…';
+            _csvShowResult('', '');
 
-            fetch(`/compliance/batch/${batchId}/upload-csv`, {
-                method: 'POST',
-                headers: { 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content },
-                body: formData
-            })
-            .then(r => r.json())
-            .then(data => {
-                if (data.status === 'success') {
-                    bootstrap.Modal.getInstance(document.getElementById('csvUploadModal'))?.hide();
-                    if (!IS_FULL) {
-                        _minimalDataProvided[dataType] = true;
-                        refreshMinimalProceedBtn();
-                    } else {
-                        location.reload();
+            const results = { success: [], failed: [], generationResult: null };
+
+            // Upload each file sequentially so employees exist before payroll/attendance
+            for (const { id, type } of inputs) {
+                const file = document.getElementById(id).files[0];
+                const fd   = new FormData();
+                fd.append('file', file);
+                fd.append('dataset_type', type);
+
+                try {
+                    const res = await fetch(`/compliance/batch/${batchId}/upload-csv`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                        },
+                        body: fd,
+                    });
+
+                    // Guard: always read as text first, then parse — prevents
+                    // JSON.parse crash when server returns HTML on fatal errors.
+                    const rawText = await res.text();
+                    let data;
+                    try {
+                        data = JSON.parse(rawText);
+                    } catch (_) {
+                        console.error(`[CSV Upload] Non-JSON response for ${type} (HTTP ${res.status}):`, rawText.slice(0, 400));
+                        data = { status: 'error', message: `Server error (HTTP ${res.status}) — check browser console for details` };
                     }
-                } else {
-                    alert('Error: ' + (data.message || 'Failed to upload CSV'));
+
+                    if (data.status === 'success') {
+                        results.success.push(`${type} (${data.records_inserted} records)`);
+                        document.getElementById('csv-status-' + type).innerHTML =
+                            `<span class="badge bg-success">✅ ${data.records_inserted} records imported</span>`;
+                        // Capture generation result from the last file (attendance triggers it)
+                        if (data.generation) results.generationResult = data.generation;
+                    } else {
+                        const hint = data.hint ? ` <em style="font-size:11px;">(${escapeHtml(data.hint)})</em>` : '';
+                        results.failed.push(`${type}: ${data.message}`);
+                        document.getElementById('csv-status-' + type).innerHTML =
+                            `<span class="badge bg-danger">❌ ${escapeHtml(data.message)}</span>${hint}`;
+                    }
+                } catch (err) {
+                    results.failed.push(`${type}: ${err.message}`);
+                    document.getElementById('csv-status-' + type).innerHTML =
+                        `<span class="badge bg-danger">❌ ${escapeHtml(err.message)}</span>`;
                 }
-            })
-            .catch(err => alert('Error: ' + err.message));
+            }
+
+            btn.disabled = false;
+            btn.textContent = '⬆️ Upload All 3 Files';
+
+            if (results.failed.length === 0) {
+                // All 3 succeeded — check if generation was auto-triggered
+                const gen = results.generationResult;
+
+                let successMsg = `<strong>✅ All 3 datasets uploaded successfully.</strong>`;
+
+                if (gen && gen.triggered) {
+                    successMsg += `<br><span class="badge bg-success mt-1">🚀 Forms generated automatically: ${gen.generated_forms} generated, ${gen.failed_forms} failed</span>`;
+                } else if (gen && !gen.triggered) {
+                    successMsg += `<br><span class="badge bg-warning text-dark mt-1">⏳ ${escapeHtml(gen.reason)}</span>`;
+                }
+
+                _csvShowResult('success', successMsg);
+
+                setTimeout(() => {
+                    bootstrap.Modal.getInstance(document.getElementById('csvUploadModal'))?.hide();
+
+                    // If generation ran, trigger the batch processing UI so the
+                    // dashboard reflects the new state without a page reload
+                    if (gen && gen.triggered && gen.generated_forms > 0) {
+                        BatchProcessor.showComplete(batchId);
+                    }
+                }, 1200);
+
+                if (!IS_FULL) {
+                    _minimalDataProvided.employees  = true;
+                    _minimalDataProvided.payroll    = true;
+                    _minimalDataProvided.attendance = true;
+                    refreshMinimalProceedBtn();
+                }
+
+                if (ManualPanel.batchId) ManualPanel.loadItems();
+
+            } else {
+                _csvShowResult('error',
+                    '❌ Some uploads failed:<br>' + results.failed.map(escapeHtml).join('<br>') +
+                    (results.success.length ? '<br>✅ Succeeded: ' + results.success.join(', ') : ''));
+            }
+        }
+
+        function _csvShowResult(type, msg) {
+            const el = document.getElementById('csv-upload-result');
+            if (!el) return;
+            if (!type) { el.style.display = 'none'; return; }
+            el.className = type === 'error' ? 'alert alert-danger' : 'alert alert-success';
+            el.innerHTML = msg;
+            el.style.display = '';
         }
 
         document.addEventListener('click', function(e) {

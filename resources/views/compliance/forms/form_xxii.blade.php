@@ -4,231 +4,249 @@
     <meta charset="UTF-8">
     <title>FORM XXII - Register of Advances</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Times New Roman', Times, serif;
-            padding: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 6px;
+            padding: 0;
+            margin: 0;
+            background: #fff;
+            color: #000;
         }
         .form-container {
-            border: 2px solid black;
-            padding: 15px;
-            margin: 0 auto;
-            width: 95%;
+            border: 1.5px solid #000;
+            width: 110%;
+            transform: scale(0.55);
+            transform-origin: top center;
+            margin: 40px auto 0;
         }
-        .form-header {
+
+        /* Title */
+        .form-title {
             text-align: center;
-            margin-bottom: 15px;
-            font-size: 12px;
+            padding: 2px 1px;
+            border-bottom: 1px solid #000;
+            line-height: 1.4;
         }
-        .form-header div {
-            margin: 3px 0;
-        }
-        .header-title {
-            font-weight: bold;
-        }
-        .establishment-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 10px;
-            border: 1px solid black;
-        }
-        .establishment-table td {
-            border: 1px solid black;
-            padding: 6px 8px;
-            font-size: 11px;
-            vertical-align: top;
-        }
-        .establishment-table td:first-child {
-            font-weight: bold;
-            width: 35%;
-        }
-        .month-year-row {
-            display: flex;
-            margin-bottom: 10px;
-            font-size: 11px;
-        }
-        .month-year-row span:first-child {
-            font-weight: bold;
-            width: 35%;
-        }
-        .month-year-row span:last-child {
-            width: 65%;
-        }
-        .column-numbers {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid black;
-            margin-bottom: 0;
-        }
-        .column-numbers td {
-            border: 1px solid black;
-            padding: 4px 2px;
-            text-align: center;
-            font-size: 11px;
-            font-weight: bold;
-            height: 20px;
-        }
-        .register-table {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid black;
-            font-size: 11px;
-        }
-        .register-table th,
-        .register-table td {
-            border: 1px solid black;
-            padding: 5px 4px;
-            text-align: left;
-            vertical-align: top;
-            font-size: 10px;
-        }
-        .register-table th {
-            font-weight: bold;
-            background-color: #fff;
+        .form-title .t1 { font-size: 8px; font-weight: bold; }
+        .form-title .t2 { font-size: 6px; }
+        .form-title .t3 { font-size: 7px; font-weight: bold; }
+
+        /* All tables */
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        td, th {
+            border: 1px solid #000;
+            padding: 1px 2px;
+            font-size: 6px;
+            vertical-align: middle;
             word-wrap: break-word;
-            line-height: 1.2;
+            overflow-wrap: break-word;
+            overflow: hidden;
         }
-        .register-table td {
-            height: 25px;
+
+        /* Info rows 1 & 2 — two-cell */
+        .info-table tr.two-cell td {
+            border-top: none; border-left: none; border-right: none;
+            border-bottom: 1px solid #000;
+            padding: 1px 2px; white-space: normal; vertical-align: middle;
         }
-        .col-1 { width: 4%; text-align: center; }
-        .col-2 { width: 8%; }
-        .col-3 { width: 8%; }
-        .col-4 { width: 9%; }
-        .col-5 { width: 9%; }
-        .col-6 { width: 9%; }
-        .col-7 { width: 9%; }
-        .col-8 { width: 8%; }
-        .col-9 { width: 9%; }
-        .col-10 { width: 9%; }
-        .col-11 { width: 9%; }
-        .footer-section {
-            margin-top: 15px;
-            font-size: 11px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .info-table tr.two-cell td.lbl {
+            font-weight: bold; font-size: 6px; width: 32%;
+            border-right: 1px solid #000;
         }
-        .footer-left {
-            flex: 1;
+        .info-table tr.two-cell td.val { font-size: 6px; width: 68%; }
+
+        /* Info rows 3 & 4 — full-width single cell */
+        .info-table tr.one-cell td {
+            border-top: none; border-left: none; border-right: none;
+            border-bottom: 1px solid #000;
+            padding: 1px 2px; white-space: normal; font-size: 6px;
         }
-        .footer-center {
-            flex: 1;
-            text-align: center;
-            font-weight: bold;
+        .info-table tr.one-cell td span.lbl { font-weight: bold; }
+
+        /* Month & Year */
+        .month-table td {
+            border-top: none; border-left: none; border-right: none;
+            border-bottom: 1px solid #000;
+            padding: 1px 2px; font-size: 6px; vertical-align: middle;
         }
-        .footer-right {
-            flex: 1;
-            text-align: right;
+        .month-table td.lbl { font-weight: bold; width: 18%; white-space: nowrap; }
+        .month-table td.val { width: 82%; }
+
+        /* Register table */
+        .reg-table { border-top: none; }
+        .reg-table td, .reg-table th {
+            border: 1px solid #000; padding: 1px 2px;
+            font-size: 6px; vertical-align: middle;
+            overflow: hidden; word-wrap: break-word;
         }
-        .signature-space {
-            margin-top: 40px;
-            text-align: right;
-            font-size: 11px;
+
+        /* Column number row */
+        .reg-table .num-row td {
+            text-align: center; font-weight: bold; font-size: 6px;
+            padding: 1px; height: 10px; color: #000; background: #fff;
         }
+
+        /* Column heading row */
+        .reg-table .hdr-row th {
+            text-align: center; font-weight: bold; font-size: 5.5px;
+            white-space: normal; line-height: 1.2; padding: 1px;
+            color: #000; background: #fff; vertical-align: middle;
+        }
+
+        /* Data rows */
+        .reg-table tbody td {
+            font-size: 6px; height: 11px;
+            white-space: normal; overflow: hidden;
+            word-wrap: break-word;
+        }
+
+        /* Cell alignment */
+        .td-sl   { text-align: center; font-weight: bold; color: #000; }
+        .td-name { text-align: left; font-weight: bold; color: #000; white-space: normal; }
+        .td-left { text-align: left; color: #000; white-space: normal; }
+        .td-ctr  { text-align: center; color: #000; font-weight: bold; white-space: normal; }
+
+        /* Empty state */
+        .nil-row td { text-align: center; font-weight: bold; font-size: 6px; height: 11px; color: #000; }
+
+        /* Column widths — total 100% */
+        .c1  { width: 1%;  max-width: 1%; }
+        .c2  { width: 30%; }
+        .c3  { width: 11%; }
+        .c4  { width: 11%; }
+        .c5  { width: 8%;  }
+        .c6  { width: 8%;  }
+        .c7  { width: 8%;  }
+        .c8  { width: 8%;  }
+        .c9  { width: 8%;  }
+        .c10 { width: 5%;  }
+        .c11 { width: 2%;  }
+
+        /* Footer rows inside reg-table tfoot */
+        .tfoot-note { text-align: left; font-style: italic; padding: 3px 6px; border: 1px solid #000; font-size: 6px; vertical-align: middle; }
+        .tfoot-nil  { text-align: center; font-weight: bold; padding: 3px 6px; border: 1px solid #000; font-size: 6px; vertical-align: middle; }
+        .tfoot-sig  { text-align: right; padding: 3px 6px; border: 1px solid #000; font-size: 6px; vertical-align: bottom; height: 70px; }
+        .sig-label  { font-size: 6px; font-weight: bold; color: #000; text-align: right; display: block; }
     </style>
 </head>
 <body>
-    <div class="form-container">
-        <div class="form-header">
-            <div class="header-title">FORM XXII</div>
-            <div>[See Rule 78(2)(d)]</div>
-            <div class="header-title">Register of Advances</div>
-        </div>
+<div class="form-container">
 
-        <table class="establishment-table">
-            <tr>
-                <td>NAME AND ADDRESS OF CONTRACTOR :</td>
-                <td>{{ $header['contractor_name'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>NATURE AND LOCATION OF WORK :</td>
-                <td>{{ $header['work_nature'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</td>
-                <td>{{ $header['establishment_name'] ?? '' }}</td>
-            </tr>
-            <tr>
-                <td>NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</td>
-                <td>{{ $header['principal_employer'] ?? '' }}</td>
-            </tr>
-        </table>
-
-        <div class="month-year-row">
-            <span>Month & Year:</span>
-            <span>{{ $header['month_year'] ?? '' }}</span>
-        </div>
-
-        <table class="column-numbers">
-            <tr>
-                <td style="width: 4%;">1</td>
-                <td style="width: 8%;">2</td>
-                <td style="width: 8%;">3</td>
-                <td style="width: 9%;">4</td>
-                <td style="width: 9%;">5</td>
-                <td style="width: 9%;">6</td>
-                <td style="width: 9%;">7</td>
-                <td style="width: 8%;">8</td>
-                <td style="width: 9%;">9</td>
-                <td style="width: 9%;">10</td>
-                <td style="width: 9%;">11</td>
-            </tr>
-        </table>
-
-        <table class="register-table">
-            <thead>
-                <tr>
-                    <th class="col-1">SL NO</th>
-                    <th class="col-2">Name of workman</th>
-                    <th class="col-3">Father's/Husband's name</th>
-                    <th class="col-4">Designation/Nature of employment</th>
-                    <th class="col-5">Date and Amount of Advance Given</th>
-                    <th class="col-6">Date and Amount of Advance Given</th>
-                    <th class="col-7">Purpose(s) for Which Advance Made</th>
-                    <th class="col-8">No. of Installments by Which Advance to be Repaid</th>
-                    <th class="col-9">Date and Amount of Each Installment Repaid</th>
-                    <th class="col-10">Date on Which Last Installment Was Repaid</th>
-                    <th class="col-11">Signature or Thumb Impression of Workman</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if(isset($rows) && count($rows) > 0)
-                    @foreach($rows as $index => $row)
-                        <tr>
-                            <td class="col-1">{{ $index + 1 }}</td>
-                            <td class="col-2">{{ $row['name'] ?? '' }}</td>
-                            <td class="col-3">{{ $row['father_name'] ?? '' }}</td>
-                            <td class="col-4">{{ $row['designation'] ?? '' }}</td>
-                            <td class="col-5">{{ $row['advance_date_amount_1'] ?? '' }}</td>
-                            <td class="col-6">{{ $row['advance_date_amount_2'] ?? '' }}</td>
-                            <td class="col-7">{{ $row['purpose'] ?? '' }}</td>
-                            <td class="col-8">{{ $row['installments'] ?? '' }}</td>
-                            <td class="col-9">{{ $row['installment_repaid'] ?? '' }}</td>
-                            <td class="col-10">{{ $row['last_installment_date'] ?? '' }}</td>
-                            <td class="col-11"></td>
-                        </tr>
-                    @endforeach
-                @else
-                    <tr>
-                        <td colspan="11" style="text-align:center;">No records found</td>
-                    </tr>
-                @endif
-            </tbody>
-        </table>
-
-        <div class="footer-section">
-            <div class="footer-left">*Applicable only in case of damage/loss/fine</div>
-
-            <div class="footer-right">Seal Signature of The Contractor</div>
-        </div>
-
-        <div class="signature-space">
-            <div style="margin-top: 50px; height: 60px;"></div>
-        </div>
+    {{-- TITLE --}}
+    <div class="form-title">
+        <div class="t1">FORM XXII</div>
+        <div class="t2">[See Rule 78(2)(d)]</div>
+        <div class="t3">Register of Advances</div>
     </div>
+
+    {{-- INFO ROWS --}}
+    <table class="info-table">
+        <tbody>
+            <tr class="two-cell">
+                <td class="lbl">NAME AND ADDRESS OF CONTRACTOR :</td>
+                <td class="val">{{ $header['contractor_name'] ?? '' }}</td>
+            </tr>
+            <tr class="two-cell">
+                <td class="lbl">NATURE AND LOCATION OF WORK :</td>
+                <td class="val">{{ $header['work_nature'] ?? '' }}</td>
+            </tr>
+            <tr class="one-cell">
+                <td colspan="2">
+                    <span class="lbl">NAME AND ADDRESS OF ESTABLISHMENT IN/UNDER WHICH CONTRACT IS CARRIED ON :</span>
+                    {{ $header['establishment_name'] ?? '' }}
+                </td>
+            </tr>
+            <tr class="one-cell">
+                <td colspan="2">
+                    <span class="lbl">NAME AND ADDRESS OF PRINCIPAL EMPLOYER :</span>
+                    {{ $header['principal_employer'] ?? '' }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    {{-- MONTH & YEAR --}}
+    <table class="month-table">
+        <tbody>
+            <tr>
+                <td class="lbl">Month &amp; Year:</td>
+                <td class="val">{{ $header['month_year'] ?? '' }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    {{-- REGISTER TABLE --}}
+    <table class="reg-table">
+        <colgroup>
+            <col class="c1"><col class="c2"><col class="c3"><col class="c4">
+            <col class="c5"><col class="c6"><col class="c7"><col class="c8">
+            <col class="c9"><col class="c10"><col class="c11">
+        </colgroup>
+        <thead>
+            <tr class="num-row">
+                <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                <td>7</td><td>8</td><td>9</td><td>10</td><td>11</td>
+            </tr>
+            <tr class="hdr-row">
+                <th>SL NO</th>
+                <th>Name of workman</th>
+                <th>Father's/Husban d's name</th>
+                <th>Designation/<br>Nature of<br>employment</th>
+                <th>Date and<br>Amount of<br>Advance Given</th>
+                <th>Date and<br>Amount of<br>Advance Given</th>
+                <th>Purpose (S) for<br>Which Advance<br>Made</th>
+                <th>No. Of<br>Instalments by<br>Which Advance to<br>Be Repaid</th>
+                <th>Date and<br>Amount of Each<br>Instalment<br>Repaid</th>
+                <th>Date on Which Last<br>Instalment Was<br>Repaid</th>
+                <th>Signature of<br>Thumb Impresion<br>of Workman</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if(!empty($rows) && count($rows) > 0)
+                @foreach($rows as $i => $row)
+                <tr>
+                    <td class="td-sl">{{ $i + 1 }}</td>
+                    <td class="td-name">{{ strtoupper($row['name'] ?? 'NIL') }}</td>
+                    <td class="td-left">{{ strtoupper($row['father_name'] ?? 'NIL') }}</td>
+                    <td class="td-left">{{ strtoupper($row['designation'] ?? 'NIL') }}</td>
+                    <td class="td-ctr">{{ $row['advance_date_amount_1'] ?? 'NIL' }}</td>
+                    <td class="td-ctr">{{ $row['advance_date_amount_2'] ?? 'NIL' }}</td>
+                    <td class="td-ctr">{{ $row['purpose'] ?? 'NIL' }}</td>
+                    <td class="td-ctr">{{ $row['installments'] ?? 'NIL' }}</td>
+                    <td class="td-ctr">{{ $row['installment_repaid'] ?? 'NIL' }}</td>
+                    <td class="td-ctr">{{ $row['last_installment_date'] ?? 'NIL' }}</td>
+                    <td class="td-ctr"></td>
+                </tr>
+                @endforeach
+            @else
+                <tr class="nil-row">
+                    <td colspan="11">NIL</td>
+                </tr>
+            @endif
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" class="tfoot-note">*Applicable only in case of damage/loss/fine</td>
+                <td colspan="6" class="tfoot-nil">
+                    @if((isset($is_nil) && $is_nil) || (isset($all_nil_advances) && $all_nil_advances))
+                        Nil for the month of {{ $header['month_year'] ?? '' }}
+                    @endif
+                </td>
+            </tr>
+            <tr>
+                <td colspan="11" class="tfoot-sig">
+                    @if(isset($company_signature) && $company_signature)
+                        <img src="{{ storage_path('app/' . $company_signature) }}" style="width:45px;height:45px;object-fit:contain;" alt="Seal">
+                    @endif
+                    <span class="sig-label">Seal Signature of The Contractor</span>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    {{-- FOOTER (inside reg-table as tfoot) --}}
+
+</div>
 </body>
 </html>

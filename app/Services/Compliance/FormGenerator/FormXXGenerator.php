@@ -9,47 +9,50 @@ class FormXXGenerator extends BaseFormGenerator
 
     protected function prepareData(array $rawData): array
     {
-        $rows = [];
         $records = $rawData['records'] ?? [];
-        
+
         if (is_object($records)) {
             $records = $records->toArray();
         }
 
-        foreach ($records as $record) {
+        $tenant = $rawData['tenant'] ?? [];
+        $branch = $rawData['branch'] ?? [];
+        $month  = $rawData['meta']['month'] ?? 1;
+        $year   = $rawData['meta']['year']  ?? date('Y');
+
+        $rows = [];
+        foreach ($records as $i => $record) {
             $record = $this->normalizeRecord($record);
             $rows[] = [
-                'employee_name' => $record['employee_name'] ?? '',
-                'father_name' => $record['father_name'] ?? '',
-                'designation' => $record['designation'] ?? '',
-                'damage_particulars' => $record['damage_particulars'] ?? '',
-                'damage_date' => $record['damage_date'] ?? '',
-                'showed_cause' => $record['showed_cause'] ?? false,
-                'witness_name' => $record['witness_name'] ?? '',
-                'deduction_amount' => (float)($record['deduction_amount'] ?? 0),
-                'instalments' => $record['instalments'] ?? '',
-                'first_month' => $record['first_month'] ?? '',
-                'last_month' => $record['last_month'] ?? '',
-                'remarks' => $record['remarks'] ?? '',
+                'employee_name'      => $record['employee_name'] ?? '',
+                'father_name'        => 'Nil',
+                'designation'        => 'Nil',
+                'damage_particulars' => 'Nil',
+                'damage_date'        => 'Nil',
+                'showed_cause'       => 'Nil',
+                'witness_name'       => 'Nil',
+                'deduction_amount'   => 'Nil',
+                'instalments'        => 'Nil',
+                'first_month'        => 'Nil',
+                'last_month'         => 'Nil',
+                'remarks'            => '-',
             ];
         }
 
-        $totals = ['deduction_amount' => array_sum(array_column($rows, 'deduction_amount'))];
+        $header = [
+            'form_title'         => 'FORM XX - Register of Deductions for Damage or Loss',
+            'period'             => $this->formatPeriod($month, $year),
+            'contractor_name'    => $tenant['name'] ?? '',
+            'work_nature'        => $branch['address'] ?? $branch['name'] ?? '',
+            'establishment_name' => $branch['name'] ?? '',
+            'principal_employer' => $tenant['establishment_name'] ?? $tenant['name'] ?? '',
+        ];
 
         return [
-            'header' => [
-                'form_title' => 'FORM XX - Register of Deductions for Damage or Loss',
-                'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'contractor_name' => $rawData['tenant']['name'] ?? '',
-                'work_nature' => 'Manufacturing',
-                'establishment_name' => $rawData['branch']['name'] ?? '',
-                'principal_employer' => $rawData['tenant']['name'] ?? '',
-                'tenant' => $rawData['tenant'] ?? [],
-                'branch' => $rawData['branch'] ?? [],
-            ],
-            'rows' => $rows,
-            'totals' => $totals,
-            'is_nil' => count($rows) === 0,
+            'header'  => $header,
+            'rows'    => $rows,
+            'totals'  => ['deduction_amount' => array_sum(array_column($rows, 'deduction_amount'))],
+            'is_nil'  => true,
         ];
     }
 }

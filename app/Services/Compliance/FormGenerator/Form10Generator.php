@@ -42,29 +42,34 @@ class Form10Generator extends BaseFormGenerator
                 'overtime_hours' => round($overtimeHours, 2),
                 'overtime_wages' => round($overtimeWages, 2),
                 'food_grain_benefit' => 0,
-                'is_piece_worker' => false,
+                'is_piece_worker'    => false,
                 'piece_worker_overtime' => 0,
+                'total'              => round($normalEarnings + $overtimeWages, 2),
             ];
         }
 
-        $totals = $this->calculateTotals($rows, [
+        $filteredRows = array_values(array_filter($rows, fn($r) => ($r['overtime_hours'] ?? 0) > 0));
+        $hasOvertime = count($filteredRows) > 0;
+
+        $totals = $hasOvertime ? $this->calculateTotals($filteredRows, [
             'normal_rate', 'overtime_rate', 'normal_earnings', 'overtime_hours',
             'overtime_wages', 'food_grain_benefit', 'piece_worker_overtime'
-        ]);
+        ]) : [];
 
         return [
             'header' => [
-                'form_title' => 'FORM 10 - Overtime Muster Roll',
-                'period' => $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
-                'total_workers' => count($rows),
-                'contractor_name' => $rawData['contractor_name'] ?? 'N/A',
-                'principal_employer' => $rawData['principal_employer'] ?? $rawData['tenant']['name'] ?? 'N/A',
-                'branch' => $rawData['branch'] ?? [],
-                'tenant' => $rawData['tenant'] ?? [],
+                'form_title'         => 'FORM 10 - Overtime Muster Roll',
+                'period'             => $rawData['period'] ?? $this->formatPeriod($rawData['meta']['month'] ?? 1, $rawData['meta']['year'] ?? 2024),
+                'total_workers'      => $rawData['meta']['total_workers'] ?? 0,
+                'contractor_name'    => $rawData['contractor_name'] ?? '',
+                'principal_employer' => $rawData['tenant']['name'] ?? '',
+                'branch'             => $rawData['branch'] ?? [],
+                'tenant'             => $rawData['tenant'] ?? [],
             ],
-            'rows' => $rows,
-            'totals' => $totals,
-            'is_nil' => count($rows) === 0,
+            'rows'        => $filteredRows,
+            'totals'      => $totals,
+            'hasOvertime' => $hasOvertime,
+            'is_nil'      => !$hasOvertime,
         ];
     }
 }

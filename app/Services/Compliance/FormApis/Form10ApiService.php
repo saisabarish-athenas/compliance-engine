@@ -35,17 +35,29 @@ class Form10ApiService extends BaseFormApiService
             ->map(fn($row) => (array)$row)
             ->toArray();
 
+        $totalWorkers = DB::table('workforce_employee')
+            ->where('tenant_id', $tenantId)
+            ->where('branch_id', $branchId)
+            ->where('status', 'active')
+            ->count();
+
+        $contractor = DB::table('contractors')
+            ->where('tenant_id', $tenantId)
+            ->value('contractor_name');
+
         return [
             'records' => $rows,
             'meta' => [
-                'tenant_id' => $tenantId,
-                'branch_id' => $branchId,
-                'month' => $month,
-                'year' => $year,
+                'tenant_id'    => $tenantId,
+                'branch_id'    => $branchId,
+                'month'        => $month,
+                'year'         => $year,
+                'total_workers' => $totalWorkers,
             ],
-            'tenant' => $this->getTenantDetails($tenantId),
-            'branch' => $this->getBranchDetails($branchId, $tenantId),
-            'period' => $this->formatPeriod(),
+            'tenant'            => $this->getTenantDetails($tenantId),
+            'branch'            => $this->getBranchDetails($branchId, $tenantId),
+            'period'            => $this->formatPeriod(),
+            'contractor_name'   => $contractor ?? '',
         ];
     }
 }

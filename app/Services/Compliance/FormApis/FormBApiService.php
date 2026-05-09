@@ -21,7 +21,8 @@ class FormBApiService extends BaseFormApiService
             ->select([
                 'e.employee_code',
                 'e.name as employee_name',
-                'e.designation',
+                DB::raw("COALESCE(e.pf_number, '') as uan"),
+                DB::raw('COALESCE(e.basic_salary, pe.basic_earned, 0) as rate_of_wage'),
                 'pe.basic_earned',
                 'pe.total_days_worked',
                 DB::raw('COALESCE(pe.overtime_hours, 0) as overtime_hours'),
@@ -29,9 +30,10 @@ class FormBApiService extends BaseFormApiService
                 DB::raw('COALESCE(pe.hra_earned, 0) as hra_earned'),
                 DB::raw('COALESCE(pe.other_allowances, 0) as special_allowance'),
                 DB::raw('COALESCE(pe.overtime_wages, 0) as overtime_wages'),
-                DB::raw('COALESCE(pe.other_allowances, 0) as other_earnings'),
+                DB::raw('0 as other_earnings'),
                 'pe.gross_salary',
                 DB::raw('COALESCE(pe.pf_employee, 0) as pf_employee'),
+                DB::raw('0 as pf_employer'),
                 DB::raw('COALESCE(pe.esi_employee, 0) as esi_employee'),
                 DB::raw('COALESCE(pe.other_deductions, 0) as other_deductions'),
                 DB::raw('COALESCE(pe.professional_tax, 0) as pt_deduction'),
@@ -39,6 +41,7 @@ class FormBApiService extends BaseFormApiService
                 'pe.total_deductions',
                 'pe.net_salary',
                 DB::raw("COALESCE(pe.payment_date, '') as payment_date"),
+                DB::raw("COALESCE(pe.transaction_reference, '') as bank_transaction_id"),
                 DB::raw("'' as remarks"),
             ])
             ->orderBy('e.employee_code')

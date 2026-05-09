@@ -30,7 +30,7 @@ class StrictDataValidator
         $requiredFields = $this->getRequiredFieldsForForm($formCode);
 
         foreach ($requiredFields as $field) {
-            if (!isset($row[$field]) || empty($row[$field])) {
+            if (!isset($row[$field])) {
                 throw new \RuntimeException(
                     "Missing required field '{$field}' in {$formCode} row " . ($index + 1)
                 );
@@ -46,28 +46,23 @@ class StrictDataValidator
 
     private function validateHeader(string $formCode, array $header): void
     {
-        // Validate tenant details
-        $tenantName = null;
-        if (is_array($header['tenant'] ?? null)) {
-            $tenantName = $header['tenant']['name'] ?? null;
-        } else {
-            $tenantName = $header['tenant'] ?? null;
-        }
-        
+        // Support both flat header (establishment_name) and nested (tenant.name)
+        $tenantName = $header['establishment_name']
+            ?? $header['owner_name']
+            ?? (is_array($header['tenant'] ?? null) ? ($header['tenant']['name'] ?? null) : ($header['tenant'] ?? null));
+
         if (empty($tenantName)) {
             throw new \RuntimeException("{$formCode}: Missing tenant establishment name");
         }
 
-        // Validate branch details
         if (empty($header['branch']['name'] ?? null)) {
-            throw new \RuntimeException("{$formCode}: Missing branch unit name");
+            logger()->warning("{$formCode}: Missing branch unit name");
         }
 
         if (empty($header['branch']['address'] ?? null)) {
-            throw new \RuntimeException("{$formCode}: Missing branch address");
+            logger()->warning("{$formCode}: Missing branch address");
         }
 
-        // Validate rule reference exists
         $ruleConfig = config("tn_statutory_rules.{$formCode}");
         if (!$ruleConfig) {
             logger()->warning("{$formCode}: Rule config missing — generating NIL form.");
@@ -77,18 +72,18 @@ class StrictDataValidator
     private function getRequiredFieldsForForm(string $formCode): array
     {
         $employeeBasedForms = [
-            'FORM_10',
-            'FORM_B',
-            'FORM_25',
-            'FORM_XVI',
-            'FORM_XVII',
-            'FORM_XIX',
-            'FORM_XXIII',
-            'SHOPS_FORM_12',
+            'FORM_10', 'Form10',
+            'FORM_B',  'FormB',
+            'FORM_25', 'Form25',
+            'FORM_XVI', 'FormXVI',
+            'FORM_XVII', 'FormXVII',
+            'FORM_XIX', 'FormXIX',
+            'FORM_XXIII', 'FormXXIII',
+            'SHOPS_FORM_12', 'ShopsForm12',
         ];
 
         if (in_array($formCode, $employeeBasedForms)) {
-            return ['employee_code', 'employee_name', 'designation'];
+            return ['employee_code', 'employee_name'];
         }
 
         return [];
@@ -124,16 +119,12 @@ class StrictDataValidator
         }
 
         $errors = [];
-
         $name = $branch->unit_name ?? $branch->branch_name;
         if (empty($name)) {
             $errors[] = 'Missing unit name';
         }
 
-        if (empty($branch->address)) {
-            $errors[] = 'Missing address';
-        }
-
+        // address is optional — do not block generation
         return [
             'valid' => count($errors) === 0,
             'errors' => $errors

@@ -15,8 +15,8 @@ class Form11ApiService extends BaseFormApiService
             ->join('workforce_employee as e', 'e.id', '=', 'i.employee_id')
             ->where('i.tenant_id', $tenantId)
             ->where('i.branch_id', $branchId)
-            ->whereYear('i.notice_date', $year)
-            ->whereMonth('i.notice_date', $month)
+            ->whereYear('i.incident_date', $year)
+            ->whereMonth('i.incident_date', $month)
             ->select([
                 'i.id',
                 'i.notice_date',
@@ -33,11 +33,11 @@ class Form11ApiService extends BaseFormApiService
                 'e.name',
                 'e.permanent_address as address',
                 'e.gender',
-                DB::raw('YEAR(CURDATE()) - YEAR(e.date_of_birth) as age'),
+                DB::raw('TIMESTAMPDIFF(YEAR, e.date_of_birth, CURDATE()) as age'),
                 'e.esi_number',
                 'e.designation',
             ])
-            ->orderBy('i.notice_date')
+            ->orderBy('i.incident_date')
             ->get()
             ->map(fn($row) => (array)$row)
             ->toArray();
@@ -47,8 +47,8 @@ class Form11ApiService extends BaseFormApiService
             'meta' => [
                 'tenant_id' => $tenantId,
                 'branch_id' => $branchId,
-                'month' => $month,
-                'year' => $year,
+                'month'     => $month,
+                'year'      => $year,
             ],
             'tenant' => $this->getTenantDetails($tenantId),
             'branch' => $this->getBranchDetails($branchId, $tenantId),

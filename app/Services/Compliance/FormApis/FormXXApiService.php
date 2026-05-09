@@ -11,29 +11,13 @@ class FormXXApiService extends BaseFormApiService
         $this->initializePeriod($month, $year);
         $this->validateTenantAndBranch($tenantId, $branchId);
 
-        $rows = DB::table('workforce_deductions as wd')
-            ->join('workforce_employee as e', 'e.id', '=', 'wd.employee_id')
-            ->where('wd.tenant_id', $tenantId)
-            ->where('wd.branch_id', $branchId)
-            ->whereYear('wd.deduction_date', $year)
-            ->whereMonth('wd.deduction_date', $month)
-            ->select([
-                'e.name as employee_name',
-                'e.father_name',
-                'e.designation',
-                'wd.particulars as damage_particulars',
-                'wd.deduction_date as damage_date',
-                'wd.amount as deduction_amount',
-                'wd.showed_cause',
-                'wd.witness_name',
-                'wd.num_instalments as instalments',
-                'wd.first_month',
-                'wd.last_month',
-                'wd.remarks',
-            ])
-            ->orderBy('wd.deduction_date')
-            ->get()
-            ->map(fn($row) => (array)$row)
+        $rows = DB::table('workforce_employee as e')
+            ->where('e.tenant_id', $tenantId)
+            ->where('e.branch_id', $branchId)
+            ->where('e.status', 'active')
+            ->orderBy('e.employee_code')
+            ->pluck('e.name')
+            ->map(fn($name) => ['employee_name' => $name])
             ->toArray();
 
         return [

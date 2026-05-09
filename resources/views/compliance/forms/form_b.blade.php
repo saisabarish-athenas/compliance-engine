@@ -4,339 +4,173 @@
     <meta charset="utf-8">
     <title>FORM B - Register of Wages</title>
     <style>
-        @page {
-            size: A4 landscape;
-            margin: 14mm;
-        }
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 9.5px;
-            line-height: 1;
-            color: #000;
-        }
-        .form-header {
-            text-align: center;
-            margin-bottom: 6px;
-        }
-        .form-header-title {
-            font-size: 9.5px;
-            font-weight: bold;
-            margin: 0;
-            padding: 1px 0;
-        }
-        .form-header-subtitle {
-            font-size: 9.5px;
-            margin: 0;
-            padding: 1px 0;
-        }
-        .min-wage-table {
-            width: 42%;
-            margin: 0 auto 10px 0;
-            border-collapse: collapse;
-            table-layout: fixed;
-            border: 1px solid #000;
-        }
-        .min-wage-table td {
-            border: 1px solid #000;
-            padding: 2px;
-            text-align: center;
-            line-height: 1;
-            font-size: 9.5px;
-            font-weight: bold;
-        }
-        .info-grid {
-            width: 100%;
-            margin-bottom: 8px;
-            border-collapse: collapse;
-            table-layout: fixed;
-        }
-        .info-grid tr {
-            border-bottom: 1px solid #000;
-        }
-        .info-grid td {
-            padding: 2px;
-            text-align: left;
-            line-height: 1;
-            font-size: 9.5px;
-            vertical-align: middle;
-        }
-        .info-grid td:first-child {
-            font-weight: bold;
-            width: 35%;
-        }
-        .info-grid td:nth-child(2) {
-            width: 15%;
-        }
-        .info-grid td:nth-child(3) {
-            font-weight: bold;
-            width: 35%;
-        }
-        .info-grid td:nth-child(4) {
-            width: 15%;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            table-layout: fixed;
-            border: 1px solid #000;
-            margin-bottom: 0;
-        }
-        .data-table th {
-            border: 1px solid #000;
-            padding: 0.5px 1px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 9.5px;
-            line-height: 1;
-            vertical-align: middle;
-        }
-        .data-table td {
-            border: 1px solid #000;
-            padding: 1px 2px;
-            text-align: right;
-            font-size: 9.5px;
-            line-height: 1;
-            vertical-align: middle;
-        }
-        .text-center {
-            text-align: center;
-        }
-        .text-left {
-            text-align: left;
-        }
-        .text-right {
-            text-align: right;
-        }
-        .group-header {
-            font-weight: bold;
-            background-color: #fff;
-        }
-        .grand-total-row {
-            font-weight: bold;
-        }
-        .grand-total-row td {
-            background-color: #fff;
-        }
-        .certification {
-            text-align: center;
-            padding: 2px;
-            font-size: 9.5px;
-            margin-top: 15px;
-        }
-        .footer-section {
-            text-align: right;
-            padding-right: 80px;
-            margin-top: 15px;
-        }
-        tr {
-            height: 14px;
+        @page { size: A4 landscape; margin: 8mm 5mm; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; font-size: 4.5px; color: #000; background: #fff; padding: 6mm 0; }
+
+        .form-title { text-align: center; font-weight: bold; font-size: 6px; line-height: 1.3; margin-bottom: 1px; }
+
+        .rates-table { width: 25%; border-collapse: collapse; margin-bottom: 1px; }
+        .rates-table th, .rates-table td { border: 1px solid #000; font-size: 4.5px; padding: 1px; text-align: center; }
+        .rates-table td:first-child { text-align: left; }
+
+        .info-section { font-size: 4.5px; margin: 1px 0; line-height: 1.3; }
+        .info-section p { margin: 0; padding: 0; text-align: left; }
+        .info-section p .lbl { font-weight: bold; }
+
+        table.data-table { width: 100%; border-collapse: collapse; table-layout: auto; margin: 0; font-size: 4.5px; }
+        table.data-table th, table.data-table td { border: 1px solid #000; padding: 1px; text-align: center; vertical-align: middle; line-height: 1.2; white-space: nowrap; }
+        table.data-table th { font-weight: bold; white-space: normal; word-break: break-word; }
+        table.data-table td:nth-child(1) { text-align: center; }
+        table.data-table td:nth-child(3) { text-align: left; white-space: nowrap; }
+        table.data-table td.num { text-align: right; }
+        table.data-table tr.col-nums td { font-weight: bold; background: #f0f0f0; text-align: center; }
+        table.data-table tr.total-row td { font-weight: bold; }
+
+        col.c1  { width: 2%; }
+        col.c2  { width: 3%; }
+        col.c3  { width: 26%; }
+        col.c4  { width: 3%; }  col.c5  { width: 4%; }  col.c6  { width: 3%; }
+        col.c7  { width: 3%; }  col.c8  { width: 3%; }  col.c9  { width: 3%; }
+        col.c10 { width: 3%; }  col.c11 { width: 3%; }  col.c12 { width: 3%; }
+        col.c13 { width: 3%; }  col.c14 { width: 2%; }  col.c15 { width: 2%; }
+        col.c16 { width: 2%; }  col.c17 { width: 2%; }  col.c18 { width: 4%; }
+        col.c19 { width: 3%; }  col.c20 { width: 3%; }
+        col.c21 { width: 5%; }  col.c22 { width: 5%; }  col.c23 { width: 5%; }  col.c24 { width: 5%; }
+
+        .signature-box { margin-top: 20px; margin-bottom: 4px; text-align: right; font-size: 4.5px; padding-right: 4px; }
+        .signature-space { height: 0; }
+
+        @media print {
+            @page { size: A4 landscape; margin: 8mm 5mm; }
+            body { margin: 0; padding: 6mm 0; }
+            table.data-table { page-break-inside: avoid; break-inside: avoid; }
+            thead { display: table-header-group; }
+            tr { page-break-inside: avoid; break-inside: avoid; }
         }
     </style>
 </head>
 <body>
-    <div class="form-header">
-        <div class="form-header-title">FORM B</div>
-        <div class="form-header-title">REGISTER OF WAGES</div>
-        <div class="form-header-subtitle">(See rule 2(1))</div>
+
+<table style="width:88%; margin-left:auto; margin-right:auto; border:1.5px solid #000; border-collapse:collapse;">
+<tr><td style="padding:2px 2px 6px 2px; vertical-align:top; border:none;">
+
+    <div class="form-title">
+        FORM B<br>
+        REGISTER OF WAGE [See rule 2(1)]
     </div>
 
-    <table class="min-wage-table">
-        <colgroup>
-            <col style="width: 35%;">   <!-- Label -->
-            <col style="width: 21.66%;">
-            <col style="width: 21.66%;">
-            <col style="width: 21.66%;">
-        </colgroup>
-        <tr>
-            <td colspan="4" class="text-center">Rates of Minimum Wages</td>
-        </tr>
-        <tr>
-            <td></td>
-            <td class="text-center">Skilled</td>
-            <td class="text-center">Semi-Skilled</td>
-            <td class="text-center">Unskilled</td>
-        </tr>
-        <tr>
-            <td class="text-left">Minimum Basic</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td class="text-left">DA</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <td class="text-center">Overtime</td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
+    <table class="rates-table">
+        <tr><th colspan="4">Rate of Minimum Wages</th></tr>
+        <tr><td></td><td>Skilled</td><td>Semi-Skilled</td><td>Un Skilled</td></tr>
+        <tr><td>Minimum Basic</td><td>{{ $minWages['basic']['skilled'] ?? '' }}</td><td>{{ $minWages['basic']['semi_skilled'] ?? '' }}</td><td>{{ $minWages['basic']['unskilled'] ?? '' }}</td></tr>
+        <tr><td>DA</td><td>{{ $minWages['da']['skilled'] ?? '' }}</td><td>{{ $minWages['da']['semi_skilled'] ?? '' }}</td><td>{{ $minWages['da']['unskilled'] ?? '' }}</td></tr>
+        <tr><td>Overtime</td><td>{{ $minWages['overtime']['skilled'] ?? '' }}</td><td>{{ $minWages['overtime']['semi_skilled'] ?? '' }}</td><td>{{ $minWages['overtime']['unskilled'] ?? '' }}</td></tr>
     </table>
 
-    <table class="info-grid">
-        <colgroup>
-            <col style="width: 35%;">
-            <col style="width: 15%;">
-            <col style="width: 35%;">
-            <col style="width: 15%;">
-        </colgroup>
-        <tr>
-            <td>Name of the Establishment</td>
-            <td class="text-left">{{ $header['tenant'] ?? ''['name'] ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <td>Name of Owner</td>
-            <td class="text-left">{{ $header['owner_name'] ?? 'N/A' }}</td>
-        </tr>
-        <tr>
-            <td>Wage period (Monthly/Fortnightly/Weekly/Daily/Piece Rated)</td>
-            <td class="text-left" colspan="3">{{ $header['wage_period'] ?? 'Monthly' }}</td>
-        </tr>
-    </table>
+    <div class="info-section">
+        <p><span class="lbl">Name of the Establishment :</span>&nbsp;{{ $header['establishment_name'] ?? '' }}</p>
+        <p><span class="lbl">Name of Owner :</span>&nbsp;{{ $header['owner_name'] ?? '' }}</p>
+        <p><span class="lbl">Wage period :</span>&nbsp;{{ $header['wage_period'] ?? 'Monthly' }}</p>
+    </div>
 
     <table class="data-table">
         <colgroup>
-            <col style="width: 40px;">
-            <col style="width: 90px;">
-            <col style="width: 160px;">
-            <col style="width: 80px;">
-            <col style="width: 60px;">
-            <col style="width: 60px;">
-            <col style="width: 80px;">
-            <col style="width: 80px;">
-            <col style="width: 80px;">
-            <col style="width: 80px;">
-            <col style="width: 80px;">
-            <col style="width: 70px;">
-            <col style="width: 90px;">
-            <col style="width: 70px;">
-            <col style="width: 70px;">
-            <col style="width: 80px;">
-            <col style="width: 60px;">
-            <col style="width: 70px;">
-            <col style="width: 90px;">
-            <col style="width: 100px;">
-            <col style="width: 100px;">
-            <col style="width: 120px;">
-            <col style="width: 80px;">
-            <col style="width: 70px;">
+            <col class="c1"><col class="c2"><col class="c3"><col class="c4">
+            <col class="c5"><col class="c6"><col class="c7"><col class="c8">
+            <col class="c9"><col class="c10"><col class="c11"><col class="c12">
+            <col class="c13"><col class="c14"><col class="c15"><col class="c16">
+            <col class="c17"><col class="c18"><col class="c19"><col class="c20">
+            <col class="c21"><col class="c22"><col class="c23"><col class="c24">
         </colgroup>
         <thead>
             <tr>
-                <th>Sl. No.</th>
-                <th>UAN</th>
-                <th>Name</th>
-                <th>Rate of Wage</th>
-                <th>No. of Days Worked</th>
-                <th>OT Hours Worked</th>
-                <th colspan="7" class="group-header">EARNINGS</th>
-                <th colspan="6" class="group-header">Deductions</th>
-                <th>Net Payment</th>
-                <th>Employee Signature</th>
-                <th>Receipt by Worker (Thumb Impression)</th>
-                <th>Date of Payment</th>
-                <th>Remarks</th>
+                <th rowspan="2">Sr. No.</th>
+                <th rowspan="2">UAN</th>
+                <th rowspan="2">Name</th>
+                <th rowspan="2">Rate of Wage</th>
+                <th rowspan="2" style="white-space:nowrap;">No. of<br>Days<br>Worked</th>
+                <th rowspan="2">OT Hours</th>
+                <th colspan="7">EARNINGS</th>
+                <th colspan="6">DEDUCTIONS</th>
+                <th rowspan="2">Net Payment</th>
+                <th rowspan="2" style="min-width:30px; width:5%;">Employer PF/ Welfare</th>
+                <th rowspan="2" style="min-width:30px; width:5%;">Bank Transaction ID</th>
+                <th rowspan="2" style="min-width:30px; width:5%;">Date of Payment</th>
+                <th rowspan="2" style="min-width:30px; width:5%;">Remarks</th>
             </tr>
             <tr>
-                <th>1</th>
-                <th>2</th>
-                <th>3</th>
-                <th>4</th>
-                <th>5</th>
-                <th>6</th>
-                <th>Basic</th>
-                <th>Special Allowance</th>
-                <th>DA</th>
-                <th>Payment for Overtime</th>
-                <th>HRA</th>
-                <th>Other</th>
-                <th>Total</th>
-                <th>PF</th>
-                <th>ESIC</th>
-                <th>Other</th>
-                <th>PT</th>
-                <th>Recovery</th>
-                <th>Total</th>
-                <th>20</th>
-                <th>21</th>
-                <th>22</th>
-                <th>23</th>
-                <th>24</th>
+                <th>Basic</th><th>Spl. Basic</th><th>DA</th><th>OT Pay</th>
+                <th>HRA</th><th>Others</th><th>Total</th>
+                <th>PF</th><th>ESIC</th><th>Others</th><th>PT</th><th style="white-space:nowrap;">Recovery</th><th>Total</th>
+            </tr>
+            <tr class="col-nums">
+                <td>1</td><td>2</td><td>3</td><td>4</td><td>5</td><td>6</td>
+                <td>7</td><td>8</td><td>9</td><td>10</td><td>11</td><td>12</td><td>13</td>
+                <td>14</td><td>15</td><td>16</td><td>17</td><td>18</td><td>19</td>
+                <td>20</td><td>21</td><td>22</td><td>23</td><td>24</td>
             </tr>
         </thead>
         <tbody>
-            @php
-                $dataRows = $rows ?? $entries ?? [];
-            @endphp
-
-            @forelse($dataRows ?? [] as $index => $row)
+            @forelse($rows ?? [] as $i => $row)
             <tr>
-                <td class="text-center">{{ $index + 1 }}</td>
-                <td class="text-center">{{ $row['employee_code'] ?? '' }}</td>
-                <td class="text-left">{{ $row['employee_name'] ?? '' }}</td>
-                <td class="text-right">{{ number_format($row['basic_earned'] ?? 0, 2) }}</td>
-                <td class="text-center">{{ $row['total_days_worked'] ?? '' }}</td>
-                <td class="text-right">{{ number_format($row['overtime_hours'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['basic_earned'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['special_allowance'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['da_earned'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['overtime_wages'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['hra_earned'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['other_earnings'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['gross_salary'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['pf_employee'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['esi_employee'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['other_deductions'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['pt_deduction'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['recovery'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['total_deductions'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($row['net_salary'] ?? 0, 2) }}</td>
-                <td class="text-center"></td>
-                <td class="text-center"></td>
-                <td class="text-center">{{ $row['payment_date'] ?? '' }}</td>
-                <td class="text-left">{{ $row['remarks'] ?? '' }}</td>
+                <td>{{ $i + 1 }}</td>
+                <td>{{ $row['uan'] ?? $row['employee_code'] ?? '' }}</td>
+                <td>{{ $row['employee_name'] ?? '' }}</td>
+                <td class="num">{{ number_format($row['rate_of_wage'] ?? 0, 2) }}</td>
+                <td>{{ $row['total_days_worked'] ?? '' }}</td>
+                <td class="num">{{ number_format($row['overtime_hours'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['basic_earned'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['special_allowance'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['da_earned'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['overtime_wages'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['hra_earned'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['other_earnings'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['gross_salary'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['pf_employee'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['esi_employee'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['other_deductions'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['pt_deduction'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['recovery'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['total_deductions'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['net_salary'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($row['pf_employer'] ?? 0, 2) }}</td>
+                <td>{{ $row['bank_transaction_id'] ?? '' }}</td>
+                <td>{{ $row['payment_date'] ?? '' }}</td>
+                <td>{{ $row['remarks'] ?? '' }}</td>
             </tr>
             @empty
             @endforelse
         </tbody>
         @if(!empty($totals ?? []))
         <tfoot>
-            <tr class="grand-total-row">
-                <td colspan="6" class="text-right">Grand Total</td>
-                <td class="text-right">{{ number_format($totals['basic_earned'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['special_allowance'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['da_earned'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['overtime_wages'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['hra_earned'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['other_earnings'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['gross_salary'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['pf_employee'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['esi_employee'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['other_deductions'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['pt_deduction'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['recovery'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['total_deductions'] ?? 0, 2) }}</td>
-                <td class="text-right">{{ number_format($totals['net_salary'] ?? 0, 2) }}</td>
+            <tr class="total-row">
+                <td colspan="6" style="text-align:center;">Grand Total</td>
+                <td class="num">{{ number_format($totals['basic_earned'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['special_allowance'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['da_earned'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['overtime_wages'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['hra_earned'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['other_earnings'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['gross_salary'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['pf_employee'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['esi_employee'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['other_deductions'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['pt_deduction'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['recovery'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['total_deductions'] ?? 0, 2) }}</td>
+                <td class="num">{{ number_format($totals['net_salary'] ?? 0, 2) }}</td>
                 <td colspan="4"></td>
             </tr>
         </tfoot>
         @endif
     </table>
 
-    <div class="certification">
-        Certified that wages have been paid to all workers employed for the above wage period.
-    </div>
+    <div style="height:40px;"></div>
+    <div style="text-align:right; font-size:4.5px; padding-right:4px; padding-bottom:4px;">Seal Signature of The Contractor</div>
 
-    <div class="footer-section">
-        <div>Seal Signature of the Contractor</div>
-    </div>
+</td></tr>
+</table>
+
 </body>
 </html>

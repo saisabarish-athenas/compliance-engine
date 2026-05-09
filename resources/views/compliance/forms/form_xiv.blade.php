@@ -1,214 +1,202 @@
-@extends('compliance.layouts.preview')
-
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>FORM XIV - Employment Card</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             font-family: 'Times New Roman', Times, serif;
-            padding: 20px;
+            font-size: 9px;
+            color: #000;
+            background: #fff;
         }
+
         .form-container {
-            border: 2px solid black;
-            padding: 20px;
-            margin: 0 auto;
-            width: 90%;
-            max-width: 800px;
+            width: 560px;
+            margin: 20px auto;
         }
-        .form-header {
+
+        /* ── SINGLE MASTER TABLE ── */
+        .form-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        .form-table td {
+            border: 1px solid #000;
+            padding: 3px 6px;
+            vertical-align: middle;
+            font-size: 9px;
+            line-height: 1.3;
+        }
+
+        /* Header cell */
+        .form-table td.header-cell {
             text-align: center;
-            margin-bottom: 20px;
-            font-size: 12px;
-        }
-        .form-header div {
-            margin: 3px 0;
-        }
-        .header-title {
-            font-weight: bold;
-            font-size: 13px;
-        }
-        .header-rule {
+            padding: 5px 6px;
             font-size: 10px;
-        }
-        .two-column-section {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            font-size: 11px;
-        }
-        .column {
-            flex: 1;
-        }
-        .field-row {
-            margin-bottom: 12px;
+            font-weight: bold;
             line-height: 1.4;
         }
-        .field-label {
+
+        /* Label column */
+        .form-table td.lbl {
+            width: 42%;
             font-weight: bold;
-            display: inline;
         }
-        .dot-line {
-            border-bottom: 1px dotted #000;
-            display: inline-block;
-            width: 65%;
-            height: 12px;
-            margin-left: 5px;
+
+        /* Value column */
+        .form-table td.val {
+            width: 58%;
+            font-weight: normal;
+        }
+
+        /* Signature row */
+        .form-table td.sig-cell {
+            padding: 4px 6px;
             vertical-align: bottom;
-        }
-        .detail-section {
-            margin-top: 20px;
-            font-size: 11px;
-        }
-        .detail-row {
-            margin-bottom: 14px;
-            line-height: 1.4;
-        }
-        .detail-number {
             font-weight: bold;
-            display: inline;
-            width: 3%;
+            font-size: 9px;
         }
-        .detail-label {
-            display: inline;
-        }
-        .detail-dot-line {
-            border-bottom: 1px dotted #000;
-            display: inline-block;
-            width: 60%;
-            height: 12px;
-            margin-left: 5px;
+
+        /* Signature space row */
+        .form-table td.sig-space {
+            height: 80px;
+            border-bottom: none;
             vertical-align: bottom;
-        }
-        .signature-section {
-            margin-top: 40px;
             text-align: right;
-            font-size: 11px;
+            padding: 4px 8px;
         }
-        .signature-line {
-            margin-top: 50px;
-            border-top: 1px solid #000;
-            width: 200px;
-            margin-left: auto;
+        .sig-content {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
         }
-        .signature-label {
-            margin-top: 3px;
-            font-weight: bold;
-        }
-        .signature {
-            text-align: right;
-            margin-top: 40px;
-        }
-        .sign-line {
-            width: 200px;
-            border-bottom: 1px solid black;
-            margin-left: auto;
-            margin-bottom: 5px;
-        }
-        .page-break {
-            page-break-after: always;
+        .sig-content .seal-img { width: 44px; height: auto; }
+        .sig-content .sign-img { width: 72px; height: auto; }
+
+        .page-break { page-break-after: always; }
+
+        @media print {
+            body { margin: 0; }
+            .form-container { width: 100%; margin: 0; }
         }
     </style>
 </head>
 <body>
-    @forelse($cards as $card)
-        <div class="form-container">
-            <div class="form-header">
-                <div class="header-title">FORM XIV</div>
-                <div class="header-rule">[See Rule 76]</div>
-                <div class="header-title">Employment Card</div>
+
+@forelse($cards as $card)
+<div class="form-container">
+<table class="form-table">
+
+    {{-- ── HEADER ── --}}
+    <tr>
+        <td class="header-cell" colspan="2">
+            FORM XIV<br>
+            <span style="font-size:13px; font-weight:bold;">See Rule 76 Employment Card</span>
+        </td>
+    </tr>
+
+    {{-- ── TOP INFO ROWS ── --}}
+    <tr>
+        <td class="lbl">Name and address of establishment in/under which contract is carried on :</td>
+        <td class="val">{{ $card['establishment_name'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">Name and address of Contractor :</td>
+        <td class="val">{{ $card['contractor_name'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">Nature of Work and Location of Work :</td>
+        <td class="val">{{ $card['work_location'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">Name and address of Principal Employer :</td>
+        <td class="val">{{ $card['principal_employer'] ?? '' }}</td>
+    </tr>
+
+    {{-- ── NUMBERED DETAIL ROWS ── --}}
+    <tr>
+        <td class="lbl">1.&nbsp;&nbsp; Name of the workman</td>
+        <td class="val">{{ $card['workman_name'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">2.&nbsp;&nbsp; Sl. No. in the register of workmen employed</td>
+        <td class="val">{{ $card['register_serial'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">3.&nbsp;&nbsp; Nature of employment / Designation</td>
+        <td class="val">{{ $card['designation'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">4.&nbsp;&nbsp; Date of Joining</td>
+        <td class="val">{{ $card['tenure'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">5.&nbsp;&nbsp; Wage rate (with particulars of unit, in case of piece-work)</td>
+        <td class="val">{{ $card['wage_rate'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">6.&nbsp;&nbsp; Wage Period</td>
+        <td class="val">{{ $card['wage_period'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">7.&nbsp;&nbsp; Tenure of employment</td>
+        <td class="val">From : {{ $card['tenure'] ?? '' }}</td>
+    </tr>
+    <tr>
+        <td class="lbl">8.&nbsp;&nbsp; Remarks</td>
+        <td class="val">{{ $card['remarks'] ?: '-' }}</td>
+    </tr>
+
+    {{-- ── SEAL / SIGNATURE SPACE ── --}}
+    <tr>
+        <td colspan="2" class="sig-space">
+            <div class="sig-content">
+                @if(!empty($card['seal_path']))
+                    <img src="{{ $card['seal_path'] }}" class="seal-img" alt="seal">
+                @endif
+                @if(!empty($card['signature_path']))
+                    <img src="{{ $card['signature_path'] }}" class="sign-img" alt="signature">
+                @endif
             </div>
+        </td>
+    </tr>
 
-            <div class="two-column-section">
-                <div class="column">
-                    <div class="field-row">
-                        <span class="field-label">Name and address of Contractor</span>
-                        <span class="dot-line">{{ $card['contractor_name'] ?? '' }}</span>
-                    </div>
-                    <div class="field-row">
-                        <span class="field-label">Nature of work and location of work</span>
-                        <span class="dot-line">{{ $card['work_location'] ?? '' }}</span>
-                    </div>
-                </div>
-                <div class="column">
-                    <div class="field-row">
-                        <span class="field-label">Name and address of Establishment in under which contract is carried on</span>
-                        <span class="dot-line">{{ $card['establishment_name'] ?? '' }}</span>
-                    </div>
-                    <div class="field-row">
-                        <span class="field-label">Name and address of Principal Employer</span>
-                        <span class="dot-line">{{ $card['principal_employer'] ?? '' }}</span>
-                    </div>
-                </div>
-            </div>
+    {{-- ── SIGNATURE LABELS ── --}}
+    <tr>
+        <td class="sig-cell">Signature of Individual</td>
+        <td class="sig-cell" style="text-align:right;">Signature of Contractor</td>
+    </tr>
 
-            <div class="detail-section">
-                <div class="detail-row">
-                    <span class="detail-number">1.</span>
-                    <span class="detail-label">Name of Workmen:</span>
-                    <span class="detail-dot-line">{{ $card['workman_name'] ?? '' }}</span>
-                </div>
+</table>
+</div>
 
-                <div class="detail-row">
-                    <span class="detail-number">2.</span>
-                    <span class="detail-label">Sl. No. in the register of workmen employed:</span>
-                    <span class="detail-dot-line">{{ $card['register_serial'] ?? '' }}</span>
-                </div>
+@if(!$loop->last)
+    <div class="page-break"></div>
+@endif
 
-                <div class="detail-row">
-                    <span class="detail-number">3.</span>
-                    <span class="detail-label">Nature of employment / Designation:</span>
-                    <span class="detail-dot-line">{{ $card['designation'] ?? '' }}</span>
-                </div>
+@empty
+<div class="form-container">
+<table class="form-table">
+    <tr>
+        <td class="header-cell" colspan="2">
+            FORM XIV<br>
+            <span style="font-size:13px;">See Rule 76 Employment Card</span>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align:center; padding:30px; font-size:13px;">
+            No employment records found for the selected period.
+        </td>
+    </tr>
+</table>
+</div>
+@endforelse
 
-                <div class="detail-row">
-                    <span class="detail-number">4.</span>
-                    <span class="detail-label">Wages rate (with particular of unit, in case of piece-work):</span>
-                    <span class="detail-dot-line">{{ $card['wage_rate'] ?? '' }}</span>
-                </div>
-
-                <div class="detail-row">
-                    <span class="detail-number">5.</span>
-                    <span class="detail-label">Wage period:</span>
-                    <span class="detail-dot-line">{{ $card['wage_period'] ?? '' }}</span>
-                </div>
-
-                <div class="detail-row">
-                    <span class="detail-number">6.</span>
-                    <span class="detail-label">Tenure of employment:</span>
-                    <span class="detail-dot-line">{{ $card['tenure'] ?? '' }}</span>
-                </div>
-
-                <div class="detail-row">
-                    <span class="detail-number">7.</span>
-                    <span class="detail-label">Remarks:</span>
-                    <span class="detail-dot-line">{{ $card['remarks'] ?? '' }}</span>
-                </div>
-            </div>
-
-            <div class="signature">
-                <div class="sign-line"></div>
-                <div>Signature of Contractor</div>
-            </div>
-        </div>
-
-        @if(!$loop->last)
-            <div class="page-break"></div>
-        @endif
-    @empty
-        <div class="form-container">
-            <div class="form-header">
-                <div class="header-title">FORM XIV</div>
-                <div class="header-rule">[See Rule 76]</div>
-                <div class="header-title">Employment Card</div>
-            </div>
-            <p style="text-align: center; margin-top: 40px; font-size: 12px;">No employment records found for the selected period.</p>
-        </div>
-    @endforelse
 </body>
 </html>

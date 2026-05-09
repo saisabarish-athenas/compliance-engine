@@ -20,6 +20,7 @@ class FormDApiService extends BaseFormApiService
             ->select([
                 'we.employee_code',
                 'we.name',
+                'we.designation',
                 'wa.attendance_date',
                 'wa.status',
             ])
